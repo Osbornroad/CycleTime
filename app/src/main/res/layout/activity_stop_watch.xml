@@ -31,34 +31,15 @@
         android:layout_marginTop="40dp"
         android:onClick="onClickStart"/>
 
-<!--    <Button
-        android:id="@+id/pause_button"
+    <Button
+        android:id="@+id/reset_button"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="@string/button_pause"
+        android:text="@string/button_reset"
         android:layout_below="@id/start_button"
         android:layout_centerHorizontal="true"
         android:layout_marginTop="20dp"
-        android:onClick="onClickPause"/>-->
+        android:onClick="onClickReset"/>
 
-    <Button
-        android:id="@+id/resume_button"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="@string/button_resume"
-        android:layout_below="@id/start_button"
-        android:layout_centerHorizontal="true"
-        android:layout_marginTop="20dp"
-        android:onClick="onClickResume"/>
-
-    <Button
-        android:id="@+id/stop_button"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="@string/button_stop"
-        android:layout_below="@id/resume_button"
-        android:layout_centerHorizontal="true"
-        android:layout_marginTop="20dp"
-        android:onClick="onClickStop"/>
 
 </RelativeLayout>

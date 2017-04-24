@@ -11,7 +11,6 @@ import android.widget.TextView;
 public class StopWatchActivity extends AppCompatActivity {
 
     private final int MSG_START = 0;
-//    final int MSG_PAUSE = 1;
     private final int MSG_RESUME = 2;
     private final int MSG_STOP = 3;
     private final int MSG_UPDATE = 4;
@@ -22,9 +21,7 @@ public class StopWatchActivity extends AppCompatActivity {
 
     private TextView timeRunningView;
     private Button startButton;
-//    Button pauseButton;
-    private Button resumeButton;
-    private Button stopButton;
+    private Button resetButton;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -33,9 +30,7 @@ public class StopWatchActivity extends AppCompatActivity {
 
         timeRunningView = (TextView) findViewById(R.id.time_running_view);
         startButton = (Button) findViewById(R.id.start_button);
-//        pauseButton = (Button) findViewById(R.id.pause_button);
-        resumeButton = (Button) findViewById(R.id.resume_button);
-        stopButton = (Button) findViewById(R.id.stop_button);
+        resetButton = (Button) findViewById(R.id.reset_button);
     }
 
     Handler mHandler = new Handler() {
@@ -56,11 +51,6 @@ public class StopWatchActivity extends AppCompatActivity {
                     stopWatch.onStop();
                     timeRunningView.setText(stopWatch.getFormattedElapsedTime());
                     break;
-/*                case MSG_PAUSE:
-                    mHandler.removeMessages(MSG_UPDATE);
-                    stopWatch.onPause();
-                    timeRunningView.setText(stopWatch.getFormattedElapsedTime());
-                    break;*/
                 case MSG_RESUME:
                     stopWatch.onResume();
                     mHandler.sendEmptyMessage(MSG_UPDATE);
@@ -71,19 +61,33 @@ public class StopWatchActivity extends AppCompatActivity {
         }
     };
 
+    private boolean mStarted = false;
+    private boolean mInProgress = false;
+
     public void onClickStart(View view) {
-        mHandler.sendEmptyMessage(MSG_START);
+        if (!mStarted) {
+            if (!mInProgress) {
+                mHandler.sendEmptyMessage(MSG_START);
+                mStarted = true;
+                startButton.setText(R.string.button_stop);
+                mInProgress = true;
+            } else {
+                mHandler.sendEmptyMessage(MSG_RESUME);
+                mStarted = true;
+                startButton.setText(R.string.button_stop);
+            }
+        } else {
+            mHandler.sendEmptyMessage(MSG_STOP);
+            mStarted = false;
+            startButton.setText(R.string.button_resume);
+        }
     }
 
-/*    public void onClickPause(View view) {
-        mHandler.sendEmptyMessage(MSG_PAUSE);
-    }*/
-
-    public void onClickResume(View view) {
-        mHandler.sendEmptyMessage(MSG_RESUME);
-    }
-
-    public void onClickStop(View view) {
-        mHandler.sendEmptyMessage(MSG_STOP);
+    public void onClickReset(View view) {
+        if (!mStarted) {
+            mInProgress = false;
+            timeRunningView.setText("00:00:00");
+            startButton.setText(R.string.button_start);
+        }
     }
 }
