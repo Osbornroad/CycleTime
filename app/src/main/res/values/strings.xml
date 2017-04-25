@@ -5,4 +5,13 @@
     <string name="button_resume">Resume</string>
     <string name="button_stop">Stop</string>
     <string name="button_reset">Reset</string>
+    <string name="name_employee">Employee name:</string>
+    <string name="name_process">Process:</string>
+    <string name="name_machine">Machine:</string>
+    <string name="name_part_number">Part number:</string>
+    <string name="qty_parts">Quantity:</string>
+    <string name="not_entered">Please choose...</string>
+
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
 </resources>
