@@ -5,33 +5,50 @@ package com.gmail.osbornroad.cycletime.model;
  */
 
 public class Employee {
-    private int id;
-    private String employeeName;
-    private boolean enable;
+    private Integer id;
+    private final String employeeName;
+    private final boolean enable;
 
-    public Employee(int id, String employeeName, boolean enable) {
+    public Employee(String employeeName) {
+        this(null, employeeName, true);
+    }
+
+    public Employee(String employeeName, boolean enable) {
+        this(null, employeeName, enable);
+    }
+
+    public Employee(Integer id, String employeeName, boolean enable) {
         this.id = id;
         this.employeeName = employeeName;
         this.enable = enable;
+    }
+
+    public boolean isNew() {
+        return id == null;
     }
 
     public int getId() {
         return id;
     }
 
-    public String getEmployeeName() {
-        return employeeName;
+    public void setId(int id) {
+        this.id = id;
     }
 
-    public void setEmployeeName(String employeeName) {
-        this.employeeName = employeeName;
+    public String getEmployeeName() {
+        return employeeName;
     }
 
     public boolean isEnable() {
         return enable;
     }
 
-    public void setEnable(boolean enable) {
-        this.enable = enable;
+    @Override
+    public String toString() {
+        return "Employee{" +
+                "id=" + id +
+                ", employeeName='" + employeeName + '\'' +
+                ", enable=" + enable +
+                '}';
     }
 }

@@ -2,6 +2,8 @@ package com.gmail.osbornroad.cycletime.dao;
 
 import com.gmail.osbornroad.cycletime.model.Employee;
 
+import java.util.Collection;
+
 /**
  * Created by Натусик on 24.04.2017.
  */
@@ -10,7 +12,11 @@ public interface EmployeeDao {
 
     Employee get(int id);
 
-    boolean create(Employee employee);
+    boolean save(Employee employee);
 
-    boolean update(int id, Employee employee);
+    Collection<Employee> getAll();
+
+    void delete(int id);
+
+    void printAll();
 }
