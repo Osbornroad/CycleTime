@@ -6,10 +6,21 @@ package com.gmail.osbornroad.cycletime;
 
 public class StopWatch {
 
+    private static StopWatch stopWatch;
     private long mStartTime = 0;
     private long mStopTime = 0;
     private long mTotalPaused = 0;
     private boolean mRunning = false;
+
+    private StopWatch() {
+    }
+
+    public static StopWatch getStopWatch() {
+        if (stopWatch == null) {
+            stopWatch = new StopWatch();
+        }
+        return stopWatch;
+    }
 
     public void onStart() {
         if (!mRunning) {

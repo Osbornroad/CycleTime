@@ -17,7 +17,7 @@ import java.util.concurrent.atomic.AtomicInteger;
 public class FakeEmployeeDaoImpl implements EmployeeDao {
 
     private List<Employee> employeeList;
-    private AtomicInteger idCounter = new AtomicInteger(0);
+    private AtomicInteger idCounter = new AtomicInteger(100);
 
 
     public FakeEmployeeDaoImpl() {

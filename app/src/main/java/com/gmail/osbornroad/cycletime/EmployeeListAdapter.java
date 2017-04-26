@@ -48,9 +48,9 @@ public class EmployeeListAdapter extends RecyclerView.Adapter<EmployeeListAdapte
     @Override
     public void onBindViewHolder(EmployeeViewHolder holder, int position) {
 
-        holder.bind(employees[position].getEmployeeName());
+        holder.bind(employees[position].getId(), employees[position].getEmployeeName());
 
-//        TextView textView = holder.listItemNumberView;
+//        TextView textView = holder.listItemEmployeeId;
 //        TextView employeeTextView = (TextView) textView.findViewById(R.id.tv_item_number);
 //        textView.setText(employees[position].getEmployeeName());
     }
@@ -62,24 +62,28 @@ public class EmployeeListAdapter extends RecyclerView.Adapter<EmployeeListAdapte
 
     class EmployeeViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener{
 
-        TextView listItemNumberView;
-//        TextView viewHolderIndex;
+        TextView listItemEmployeeId;
+        TextView listItemEmployeeName;
+        int id;
 
         public EmployeeViewHolder(View itemView) {
             super(itemView);
-            listItemNumberView = (TextView) itemView.findViewById(R.id.tv_item_number);
-//            viewHolderIndex = (TextView) itemView.findViewById(R.id.tv_view_holder_instance)
+            listItemEmployeeId = (TextView) itemView.findViewById(R.id.tv_employee_id);
+            listItemEmployeeName = (TextView) itemView.findViewById(R.id.tv_employee_name);
             itemView.setOnClickListener(this);
         }
 
         @Override
         public void onClick(View v) {
             int clickedPosition = getAdapterPosition();
-            mOnClickListener.onListItemClick(clickedPosition);
+            mOnClickListener.onListItemClick(id);
+//            mOnClickListener.onListItemClick(clickedPosition);
         }
 
-        public void bind(String text) {
-            listItemNumberView.setText(text);
+        public void bind(int employeeId, String employeeName) {
+            id = employeeId;
+            listItemEmployeeId.setText(String.valueOf(employeeId));
+            listItemEmployeeName.setText(employeeName);
         }
     }
 

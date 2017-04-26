@@ -1,5 +1,6 @@
 package com.gmail.osbornroad.cycletime;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
@@ -37,8 +38,8 @@ public class EmployeeChooseActivity extends AppCompatActivity implements Employe
 
     @Override
     public void onListItemClick(int clickedItemIndex) {
-        String toastMessage = "Item #" + clickedItemIndex + " clicked.";
-        mToast = Toast.makeText(this, toastMessage, Toast.LENGTH_LONG);
-        mToast.show();
+        Intent intent = new Intent(this, StopWatchActivity.class);
+        intent.putExtra("employeeId", clickedItemIndex);
+        startActivity(intent);
     }
 }

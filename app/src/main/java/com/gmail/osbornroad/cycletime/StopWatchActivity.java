@@ -10,9 +10,11 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.TextView;
-import android.widget.Toast;
 
+import com.gmail.osbornroad.cycletime.dao.FakeEmployeeDaoImpl;
 import com.gmail.osbornroad.cycletime.model.Employee;
+import com.gmail.osbornroad.cycletime.service.EmployeeService;
+import com.gmail.osbornroad.cycletime.service.EmployeeServiceImpl;
 
 public class StopWatchActivity extends AppCompatActivity {
 
@@ -22,17 +24,21 @@ public class StopWatchActivity extends AppCompatActivity {
     private final int MSG_UPDATE = 4;
 
 
-    private StopWatch stopWatch = new StopWatch();
+    private StopWatch stopWatch;
+    private boolean mStarted;
+    private boolean mInProgress;
     private final int REFRESH_RATE = 100;
 
     private TextView timeRunningView;
     private Button startButton;
     private Button resetButton;
 
+    private EmployeeService employeeService;
+
     //Choosing employee
     private LinearLayout lineEmployee;
     private TextView employeeInfo;
-    private Employee selectedEmployee = null;
+    private Employee selectedEmployee;
 
     private EmployeeListAdapter employeeListAdapter;
     private RecyclerView employeeRecyclerView;
@@ -41,6 +47,22 @@ public class StopWatchActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_stop_watch);
+
+        stopWatch  = StopWatch.getStopWatch();
+
+        if (savedInstanceState != null && savedInstanceState.containsKey("mStarted")) {
+            mStarted = savedInstanceState.getBoolean("mStarted");
+        } else {
+            mStarted = false;
+        }
+
+        if (savedInstanceState != null && savedInstanceState.containsKey("mInProgress")) {
+            mInProgress = savedInstanceState.getBoolean("mInProgress");
+        } else {
+            mInProgress = false;
+        }
+
+        employeeService = new EmployeeServiceImpl(new FakeEmployeeDaoImpl());
 
         timeRunningView = (TextView) findViewById(R.id.time_running_view);
         startButton = (Button) findViewById(R.id.start_button);
@@ -52,15 +74,28 @@ public class StopWatchActivity extends AppCompatActivity {
         employeeInfo.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                employeeInfo.setText("Hello");
-                Toast.makeText(v.getContext(), "Employee choosen", Toast.LENGTH_SHORT).show();
-
                 Intent intent = new Intent(v.getContext(), EmployeeChooseActivity.class);
                 startActivity(intent);
             }
         });
+        setSampleInfo();
     }
 
+    @Override
+    protected void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+        outState.putBoolean("mStarted", mStarted);
+        outState.putBoolean("mInProgress", mInProgress);
+    }
+
+    private void setSampleInfo() {
+        Intent intent = getIntent();
+        if (intent.hasExtra("employeeId")) {
+            int employeeId = intent.getExtras().getInt("employeeId");
+            selectedEmployee = employeeService.get(employeeId);
+            employeeInfo.setText(selectedEmployee.getEmployeeName());
+        }
+    }
 
 
     Handler mHandler = new Handler() {
@@ -91,8 +126,6 @@ public class StopWatchActivity extends AppCompatActivity {
         }
     };
 
-    private boolean mStarted = false;
-    private boolean mInProgress = false;
 
     public void onClickStart(View view) {
         if (!mStarted) {
