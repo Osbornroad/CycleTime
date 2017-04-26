@@ -23,79 +23,93 @@ public class StopWatchActivity extends AppCompatActivity {
     private final int MSG_STOP = 3;
     private final int MSG_UPDATE = 4;
 
-
+    /**
+     * StopWatch is singletone
+     */
     private StopWatch stopWatch;
-    /** mStarted
-    after Start button
-    Including Pause condition
+    /**
+     * mStarted == true after Start button pressed including Pause condition
      */
     private boolean mStarted;
-    /** mInProgress
-    after Resume/Start button
-    Continue counting
+    /**
+     * mInProgress == true after Resume/Start button Continue counting until Reset pressed
      */
     private boolean mInProgress;
+    /**
+     * REFRESH_RATE is constant for RecyclerView item setting
+     */
     private final int REFRESH_RATE = 100;
-
+    /**
+     * StopWatch interface
+     */
     private TextView timeRunningView;
     private Button startButton;
     private Button resetButton;
-
+    /**
+     * Employee setting interface
+     * lineEmployee contains employeeInfo
+     */
     private EmployeeService employeeService;
-
-    //Choosing employee
     private LinearLayout lineEmployee;
     private TextView employeeInfo;
     private Employee selectedEmployee;
-
-/*    private EmployeeListAdapter employeeListAdapter;
-    private RecyclerView employeeRecyclerView;*/
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_stop_watch);
-
-        stopWatch  = StopWatch.getStopWatch();
-
-        if (savedInstanceState != null && savedInstanceState.containsKey("mStarted")) {
-            mStarted = savedInstanceState.getBoolean("mStarted");
-        } else {
-            mStarted = false;
-        }
-
-        if (savedInstanceState != null && savedInstanceState.containsKey("mInProgress")) {
-            mInProgress = savedInstanceState.getBoolean("mInProgress");
-        } else {
-            mInProgress = false;
-        }
-
-        employeeService = new EmployeeServiceImpl(new FakeEmployeeDaoImpl());
-
+        /**
+         * StopWatch main functional creating
+         */
+        stopWatch = StopWatch.getStopWatch();
         timeRunningView = (TextView) findViewById(R.id.time_running_view);
         startButton = (Button) findViewById(R.id.start_button);
         resetButton = (Button) findViewById(R.id.reset_button);
-
+        /**
+         * Employee setting interface creating
+         */
+        employeeService = new EmployeeServiceImpl(new FakeEmployeeDaoImpl());
         lineEmployee = (LinearLayout) findViewById(R.id.line_employee);
         employeeInfo = (TextView) findViewById(R.id.employee_name_data);
-
         employeeInfo.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 Intent intent = new Intent(v.getContext(), EmployeeChooseActivity.class);
-//                startActivity(intent);
                 startActivityForResult(intent, 0);
             }
         });
-        setSampleInfo(savedInstanceState);
+        /**
+         * Setting saved data
+         */
+        setSavedInfo(savedInstanceState);
+        /**
+         * Refresh Stopwatch interface after activity creation
+         */
         stopWatchResume();
     }
-
-    @Override
-    public void onRestoreInstanceState(Bundle savedInstanceState, PersistableBundle persistentState) {
-        super.onRestoreInstanceState(savedInstanceState, persistentState);
+    /**
+     * Setting saved data
+     */
+    private void setSavedInfo(Bundle savedInstanceState) {
+        if (savedInstanceState != null) {
+            if (savedInstanceState.containsKey("mStarted")) {
+                mStarted = savedInstanceState.getBoolean("mStarted");
+            }
+            if (savedInstanceState.containsKey("mInProgress")) {
+                mInProgress = savedInstanceState.getBoolean("mInProgress");
+            }
+            if (savedInstanceState.containsKey("employeeId")) {
+                int id = savedInstanceState.getInt("employeeId");
+                selectedEmployee = employeeService.get(id);
+                employeeInfo.setText(selectedEmployee.getEmployeeName());
+            }
+        }
     }
 
+    /**
+     * Save data before activity termination
+     * @param outState
+     */
     @Override
     protected void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
@@ -106,21 +120,15 @@ public class StopWatchActivity extends AppCompatActivity {
         }
     }
 
-    @Override
-    protected void onRestart() {
-        super.onRestart();
-    }
-
-    @Override
-    protected void onResume() {
-        super.onResume();
-    }
-
-    @Override
-    protected void onStart() {
-        super.onStart();
-    }
-
+    /**
+     * Setting data, which has been received from child activities:
+     * EmployeeChooseActivity
+     * ProcessChooseActivity
+     * MachineChooseActivity
+     * @param requestCode
+     * @param resultCode
+     * @param data
+     */
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         if (data == null) {
@@ -132,25 +140,9 @@ public class StopWatchActivity extends AppCompatActivity {
             employeeInfo.setText(selectedEmployee.getEmployeeName());
         }
     }
-
-    private void setSampleInfo(Bundle savedInstanceState) {
-        if (savedInstanceState != null) {
-            if (savedInstanceState.containsKey("mStarted")) {
-                mStarted = savedInstanceState.getBoolean("mStarted");
-            }
-            if (savedInstanceState.containsKey("mInProgress")) {
-                mInProgress = savedInstanceState.getBoolean("mInProgress");
-            }
-            stopWatchResume();
-            if (savedInstanceState.containsKey("employeeId")) {
-                int id = savedInstanceState.getInt("employeeId");
-                selectedEmployee = employeeService.get(id);
-                employeeInfo.setText(selectedEmployee.getEmployeeName());
-            }
-        }
-    }
-
-
+    /**
+     * Handler managing of Stopwatch displaying
+     */
     Handler mHandler = new Handler() {
         @Override
         public void handleMessage(Message msg) {
@@ -178,8 +170,9 @@ public class StopWatchActivity extends AppCompatActivity {
             }
         }
     };
-
-
+    /**
+     * Refresh Stopwatch interface after activity creation
+     */
     private void stopWatchResume() {
         if (mStarted) {
             if (mInProgress) {
@@ -190,7 +183,10 @@ public class StopWatchActivity extends AppCompatActivity {
             }
         }
     }
-
+    /**
+     * Stopwatch Start button handler
+     * @param view
+     */
     public void onClickStart(View view) {
         if (!mStarted) {
             if (!mInProgress) {
@@ -209,7 +205,10 @@ public class StopWatchActivity extends AppCompatActivity {
             startButton.setText(R.string.button_resume);
         }
     }
-
+    /**
+     * Stopwatch Reset button handler
+     * @param view
+     */
     public void onClickReset(View view) {
         if (!mStarted) {
             mInProgress = false;
