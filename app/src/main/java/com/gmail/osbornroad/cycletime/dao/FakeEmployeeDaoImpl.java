@@ -31,7 +31,14 @@ public class FakeEmployeeDaoImpl implements EmployeeDao {
         employeeList.add(new Employee(getNewId(), "Логутенков", true));
         employeeList.add(new Employee(getNewId(), "Иванов", true));
         employeeList.add(new Employee(getNewId(), "Смирнова", true));
-        employeeList.add(new Employee(getNewId(), "Архипова", true));
+        employeeList.add(new Employee(getNewId(), "Богданов", true));
+        employeeList.add(new Employee(getNewId(), "Юшков", true));
+        employeeList.add(new Employee(getNewId(), "Сергеев", true));
+        employeeList.add(new Employee(getNewId(), "Хижанкова", true));
+        employeeList.add(new Employee(getNewId(), "Пшеницын", true));
+        employeeList.add(new Employee(getNewId(), "Насибулов", true));
+        employeeList.add(new Employee(getNewId(), "Милованов", true));
+        employeeList.add(new Employee(getNewId(), "Павленко", true));
     }
 
     private int getNewId() {
@@ -66,7 +73,7 @@ public class FakeEmployeeDaoImpl implements EmployeeDao {
     }
 
     @Override
-    public Collection<Employee> getAll() {
+    public List<Employee> getAll() {
         return employeeList;
     }
 

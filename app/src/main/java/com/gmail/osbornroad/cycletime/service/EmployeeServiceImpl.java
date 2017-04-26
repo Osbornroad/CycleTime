@@ -4,7 +4,9 @@ import com.gmail.osbornroad.cycletime.dao.EmployeeDao;
 import com.gmail.osbornroad.cycletime.dao.FakeEmployeeDaoImpl;
 import com.gmail.osbornroad.cycletime.model.Employee;
 
-import java.util.Collection;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.List;
 
 /**
  * Created by User on 25.04.2017.
@@ -29,8 +31,15 @@ public class EmployeeServiceImpl implements EmployeeService {
     }
 
     @Override
-    public Collection<Employee> getAll() {
-        return employeeDao.getAll();
+    public List<Employee> getAll() {
+        List<Employee> employees = employeeDao.getAll();
+        Collections.sort(employees, new Comparator<Employee>() {
+            @Override
+            public int compare(Employee o1, Employee o2) {
+                return o1.getEmployeeName().compareTo(o2.getEmployeeName());
+            }
+        });
+        return employees;
     }
 
     @Override

@@ -5,7 +5,6 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
 import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.RecyclerView;
 import android.view.View;
 import android.widget.Button;
 import android.widget.LinearLayout;
@@ -25,7 +24,15 @@ public class StopWatchActivity extends AppCompatActivity {
 
 
     private StopWatch stopWatch;
+    /** mStarted
+    after Start button
+    Including Pause condition
+     */
     private boolean mStarted;
+    /** mInProgress
+    after Resume/Start button
+    Continue counting
+     */
     private boolean mInProgress;
     private final int REFRESH_RATE = 100;
 
@@ -40,8 +47,8 @@ public class StopWatchActivity extends AppCompatActivity {
     private TextView employeeInfo;
     private Employee selectedEmployee;
 
-    private EmployeeListAdapter employeeListAdapter;
-    private RecyclerView employeeRecyclerView;
+/*    private EmployeeListAdapter employeeListAdapter;
+    private RecyclerView employeeRecyclerView;*/
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -75,10 +82,12 @@ public class StopWatchActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 Intent intent = new Intent(v.getContext(), EmployeeChooseActivity.class);
-                startActivity(intent);
+//                startActivity(intent);
+                startActivityForResult(intent, 0);
             }
         });
-        setSampleInfo();
+//        setSampleInfo();
+        stopWatchResume();
     }
 
     @Override
@@ -88,6 +97,35 @@ public class StopWatchActivity extends AppCompatActivity {
         outState.putBoolean("mInProgress", mInProgress);
     }
 
+    @Override
+    protected void onRestart() {
+//        setSampleInfo();
+        super.onRestart();
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+    }
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        if (data == null) {
+            return;
+        }
+        if (data.hasExtra("employeeId")) {
+            int employeeId = data.getExtras().getInt("employeeId");
+            selectedEmployee = employeeService.get(employeeId);
+            employeeInfo.setText(selectedEmployee.getEmployeeName());
+        }
+    }
+
+/*
     private void setSampleInfo() {
         Intent intent = getIntent();
         if (intent.hasExtra("employeeId")) {
@@ -97,6 +135,7 @@ public class StopWatchActivity extends AppCompatActivity {
         }
     }
 
+*/
 
     Handler mHandler = new Handler() {
         @Override
@@ -126,6 +165,17 @@ public class StopWatchActivity extends AppCompatActivity {
         }
     };
 
+
+    private void stopWatchResume() {
+        mHandler.sendEmptyMessage(MSG_UPDATE);
+        if (mStarted) {
+            if (mInProgress) {
+                startButton.setText(R.string.button_stop);
+            } else {
+                startButton.setText(R.string.button_resume);
+            }
+        }
+    }
 
     public void onClickStart(View view) {
         if (!mStarted) {
