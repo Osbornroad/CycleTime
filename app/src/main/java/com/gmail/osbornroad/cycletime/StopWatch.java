@@ -37,11 +37,6 @@ public class StopWatch {
         }
     }
 
-//    public void onPause() {
-//        mStopTime = System.currentTimeMillis();
-//        mRunning = false;
-//    }
-
     public void onResume() {
         if (!mRunning) {
             mTotalPaused += System.currentTimeMillis() - mStopTime;
@@ -68,34 +63,4 @@ public class StopWatch {
         String output = String.format("%02d:%02d:%02d", hours, minutes, seconds);
         return output;
     }
-
-
-/*    public static void main(String[] args) throws InterruptedException {
-        final StopWatch s = new StopWatch();
-        s.onStart();
-        new Thread(){
-            @Override
-            public void run() {
-                while(true) {
-                    System.out.println(s.getFormattedElapsedTime());
-                    try {
-                        Thread.sleep(1000);
-                    } catch (InterruptedException e) {
-                        e.printStackTrace();
-                    }
-                }
-
-            }
-        }.start();
-        Thread.sleep(5000);
-        s.onPause();
-        Thread.sleep(5000);
-        s.onResume();
-        Thread.sleep(5000);
-        s.onPause();
-        Thread.sleep(5000);
-        s.onResume();
-        Thread.sleep(5000);
-        s.onStop();
-    }*/
 }

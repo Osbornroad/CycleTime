@@ -4,17 +4,19 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
-import android.os.PersistableBundle;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.widget.Button;
-import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.gmail.osbornroad.cycletime.dao.FakeEmployeeDaoImpl;
+import com.gmail.osbornroad.cycletime.dao.FakeProcessDaoImpl;
 import com.gmail.osbornroad.cycletime.model.Employee;
+import com.gmail.osbornroad.cycletime.model.Process;
 import com.gmail.osbornroad.cycletime.service.EmployeeService;
 import com.gmail.osbornroad.cycletime.service.EmployeeServiceImpl;
+import com.gmail.osbornroad.cycletime.service.FakeProcessServiceImpl;
+import com.gmail.osbornroad.cycletime.service.ProcessService;
 
 public class StopWatchActivity extends AppCompatActivity {
 
@@ -50,9 +52,15 @@ public class StopWatchActivity extends AppCompatActivity {
      * lineEmployee contains employeeInfo
      */
     private EmployeeService employeeService;
-    private LinearLayout lineEmployee;
+//    private LinearLayout lineEmployee;
     private TextView employeeInfo;
     private Employee selectedEmployee;
+    /**
+     * Process setting interface
+     */
+    private ProcessService processService;
+    private TextView processInfo;
+    private Process selectedProcess;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -69,12 +77,24 @@ public class StopWatchActivity extends AppCompatActivity {
          * Employee setting interface creating
          */
         employeeService = new EmployeeServiceImpl(new FakeEmployeeDaoImpl());
-        lineEmployee = (LinearLayout) findViewById(R.id.line_employee);
+//        lineEmployee = (LinearLayout) findViewById(R.id.line_employee);
         employeeInfo = (TextView) findViewById(R.id.employee_name_data);
         employeeInfo.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 Intent intent = new Intent(v.getContext(), EmployeeChooseActivity.class);
+                startActivityForResult(intent, 0);
+            }
+        });
+        /**
+         * Process setting interface creating
+         */
+        processService = new FakeProcessServiceImpl(new FakeProcessDaoImpl());
+        processInfo = (TextView) findViewById(R.id.process_name_data);
+        processInfo.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(v.getContext(), ProcessChooseActivity.class);
                 startActivityForResult(intent, 0);
             }
         });
@@ -99,9 +119,14 @@ public class StopWatchActivity extends AppCompatActivity {
                 mInProgress = savedInstanceState.getBoolean("mInProgress");
             }
             if (savedInstanceState.containsKey("employeeId")) {
-                int id = savedInstanceState.getInt("employeeId");
-                selectedEmployee = employeeService.get(id);
+                int employeeId = savedInstanceState.getInt("employeeId");
+                selectedEmployee = employeeService.get(employeeId);
                 employeeInfo.setText(selectedEmployee.getEmployeeName());
+            }
+            if (savedInstanceState.containsKey("processId")) {
+                int processId = savedInstanceState.getInt("processId");
+                selectedProcess = processService.get(processId);
+                processInfo.setText(selectedProcess.getProcessName());
             }
         }
     }
@@ -117,6 +142,9 @@ public class StopWatchActivity extends AppCompatActivity {
         outState.putBoolean("mInProgress", mInProgress);
         if (selectedEmployee != null) {
             outState.putInt("employeeId", selectedEmployee.getId());
+        }
+        if (selectedProcess != null) {
+            outState.putInt("processId", selectedProcess.getId());
         }
     }
 
@@ -138,6 +166,11 @@ public class StopWatchActivity extends AppCompatActivity {
             int employeeId = data.getExtras().getInt("employeeId");
             selectedEmployee = employeeService.get(employeeId);
             employeeInfo.setText(selectedEmployee.getEmployeeName());
+        }
+        if (data.hasExtra("processId")) {
+            int processId = data.getExtras().getInt("processId");
+            selectedProcess = processService.get(processId);
+            processInfo.setText(selectedProcess.getProcessName());
         }
     }
     /**

@@ -11,6 +11,10 @@ import android.support.v7.widget.RecyclerView;
 import com.gmail.osbornroad.cycletime.dao.FakeEmployeeDaoImpl;
 import com.gmail.osbornroad.cycletime.service.EmployeeServiceImpl;
 
+/**
+ * Implement EmployeeListAdapter.ListItemClickListener for clickable of list items
+ */
+
 public class EmployeeChooseActivity extends AppCompatActivity implements EmployeeListAdapter.ListItemClickListener {
 
     private static final int NUM_LIST_ITEMS = 100;
@@ -21,40 +25,33 @@ public class EmployeeChooseActivity extends AppCompatActivity implements Employe
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_employee_choose);
-
+        /**
+         * Get RecyclerView by Id
+         * Set LayoutManager
+         * Set dividers
+         */
         recyclerView = (RecyclerView) findViewById(R.id.rv_employee);
-
-
         LinearLayoutManager layoutManager = new LinearLayoutManager(this);
         recyclerView.setLayoutManager(layoutManager);
-
         recyclerView.addItemDecoration(new DividerItemDecoration(recyclerView.getContext(),
                 layoutManager.getOrientation()));
-
         recyclerView.setHasFixedSize(true);
-
         recyclerView.setItemAnimator(new DefaultItemAnimator());
-
+        /**
+         * Get adapter, set to RecyclerView
+         */
         employeeListAdapter = new EmployeeListAdapter(new EmployeeServiceImpl(new FakeEmployeeDaoImpl()), this);
         recyclerView.setAdapter(employeeListAdapter);
     }
-
+    /**
+     * Send result to StopWatchActivity of clicked employee list item
+     * @param clickedEmployeeId Id of clicked employee list item
+     */
     @Override
-    public void onListItemClick(int clickedItemIndex) {
-
+    public void onListItemClick(int clickedEmployeeId) {
         Intent intent = new Intent();
-        intent. putExtra("employeeId", clickedItemIndex);
+        intent. putExtra("employeeId", clickedEmployeeId);
         setResult(RESULT_OK, intent);
         finish();
-
-/*        Intent intent = NavUtils.getParentActivityIntent(this);
-        intent.putExtra("employeeId", clickedItemIndex);
-        intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-        NavUtils.navigateUpTo(this, intent);*/
-
-
-/*        Intent intent = new Intent(this, StopWatchActivity.class);
-        intent.putExtra("employeeId", clickedItemIndex);
-        startActivity(intent);*/
     }
 }

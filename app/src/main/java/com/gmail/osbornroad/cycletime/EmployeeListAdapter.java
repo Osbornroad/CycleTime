@@ -24,35 +24,27 @@ public class EmployeeListAdapter extends RecyclerView.Adapter<EmployeeListAdapte
         this.employeeService = employeeService;
         this.employees = employeeService.getEmployeesArray();
         this.mOnClickListener = mOnClickListener;
-
     }
 
+    /**
+     * Interface ListItemClickListener for clickable of list items
+     */
     interface ListItemClickListener {
-        void onListItemClick(int clickedItemIndex);
+        void onListItemClick(int clickedEmployeeId);
     }
 
     @Override
     public EmployeeViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-
         Context context = parent.getContext();
         int layoutIdForListItem = R.layout.card_employee;
         LayoutInflater inflater = LayoutInflater.from(context);
-        boolean shouldAttachToParentImmediately = false;
-
-        View view = inflater.inflate(layoutIdForListItem, parent, shouldAttachToParentImmediately);
-        EmployeeViewHolder viewHolder = new EmployeeViewHolder(view);
-
-        return viewHolder;
+        View view = inflater.inflate(layoutIdForListItem, parent, false);
+        return new EmployeeViewHolder(view);
     }
 
     @Override
     public void onBindViewHolder(EmployeeViewHolder holder, int position) {
-
         holder.bind(employees[position].getId(), employees[position].getEmployeeName());
-
-//        TextView textView = holder.listItemEmployeeId;
-//        TextView employeeTextView = (TextView) textView.findViewById(R.id.tv_item_number);
-//        textView.setText(employees[position].getEmployeeName());
     }
 
     @Override
@@ -75,9 +67,7 @@ public class EmployeeListAdapter extends RecyclerView.Adapter<EmployeeListAdapte
 
         @Override
         public void onClick(View v) {
-            int clickedPosition = getAdapterPosition();
             mOnClickListener.onListItemClick(id);
-//            mOnClickListener.onListItemClick(clickedPosition);
         }
 
         public void bind(int employeeId, String employeeName) {
@@ -86,5 +76,4 @@ public class EmployeeListAdapter extends RecyclerView.Adapter<EmployeeListAdapte
             listItemEmployeeName.setText(employeeName);
         }
     }
-
 }

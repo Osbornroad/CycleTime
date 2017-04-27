@@ -8,7 +8,8 @@
         android:label="@string/app_name"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".StopWatchActivity"
+        <activity
+            android:name=".StopWatchActivity"
             android:launchMode="singleTop">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -17,11 +18,10 @@
             </intent-filter>
         </activity>
         <activity
-            android:label="@string/choose_employee"
             android:name=".EmployeeChooseActivity"
-            android:parentActivityName=".StopWatchActivity">
-
-        </activity>
+            android:label="@string/choose_employee"
+            android:parentActivityName=".StopWatchActivity"></activity>
+        <activity android:name=".ProcessChooseActivity"></activity>
     </application>
 
 </manifest>
