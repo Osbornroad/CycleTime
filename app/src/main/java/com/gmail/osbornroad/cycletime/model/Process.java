@@ -10,9 +10,9 @@ public class Process {
     private Integer id;
     private final String processName;
     private final boolean enable;
-    private final List<Machine> machineList;
+    private final List<Integer> machineList;
 
-    public Process(Integer id, String processName, boolean enable, List<Machine> machineList) {
+    public Process(Integer id, String processName, boolean enable, List<Integer> machineList) {
         this.id = id;
         this.processName = processName;
         this.enable = enable;
@@ -39,7 +39,7 @@ public class Process {
         return enable;
     }
 
-    public List<Machine> getMachineList() {
+    public List<Integer> getMachineList() {
         return machineList;
     }
 

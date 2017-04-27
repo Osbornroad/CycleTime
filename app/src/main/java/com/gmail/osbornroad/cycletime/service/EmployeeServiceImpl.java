@@ -27,7 +27,7 @@ public class EmployeeServiceImpl implements EmployeeService {
 
     @Override
     public boolean save(Employee employee) {
-        return employeeDao.save(employee);
+        throw new UnsupportedOperationException();
     }
 
     @Override
@@ -44,7 +44,7 @@ public class EmployeeServiceImpl implements EmployeeService {
 
     @Override
     public void delete(int id) {
-        employeeDao.delete(id);
+        throw new UnsupportedOperationException();
     }
 
     @Override
