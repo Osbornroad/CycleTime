@@ -21,7 +21,10 @@
             android:name=".EmployeeChooseActivity"
             android:label="@string/choose_employee"
             android:parentActivityName=".StopWatchActivity"></activity>
-        <activity android:name=".ProcessChooseActivity"></activity>
+        <activity
+            android:name=".ProcessChooseActivity"
+            android:label="@string/choose_process"
+            android:parentActivityName=".StopWatchActivity"></activity>
     </application>
 
 </manifest>
