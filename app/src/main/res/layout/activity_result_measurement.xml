@@ -1,0 +1,207 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/activity_result_measurement"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:paddingBottom="@dimen/activity_vertical_margin"
+    android:paddingLeft="@dimen/activity_horizontal_margin"
+    android:paddingRight="@dimen/activity_horizontal_margin"
+    android:paddingTop="@dimen/activity_vertical_margin"
+    tools:context="com.gmail.osbornroad.cycletime.ResultMeasurementActivity">
+
+
+    <LinearLayout
+        android:paddingLeft="15dp"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:layout_marginTop="30dp">
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:paddingTop="10dp"
+            android:paddingBottom="10dp">
+
+            <TextView
+                android:text="@string/name_employee"
+                android:layout_width="140dp"
+                android:layout_height="wrap_content"
+                android:textSize="16sp"
+                android:clickable="true"
+                android:textColor="@android:color/black"/>
+
+            <TextView
+                android:id="@+id/employee_name_in_result"
+                android:text="@string/no_data"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textSize="16sp"
+                android:clickable="true"
+                android:maxLines="1"
+                android:textColor="#757575"/>
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:paddingTop="10dp"
+            android:paddingBottom="10dp">
+
+            <TextView
+                android:text="@string/name_process"
+                android:layout_width="140dp"
+                android:layout_height="wrap_content"
+                android:textSize="16sp"
+                android:clickable="true"
+                android:textColor="@android:color/black"/>
+
+            <TextView
+                android:id="@+id/process_name_in_result"
+                android:text="@string/no_data"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textSize="16sp"
+                android:clickable="true"
+                android:maxLines="1"
+                android:textColor="#757575"/>
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:paddingTop="10dp"
+            android:paddingBottom="10dp">
+
+            <TextView
+                android:text="@string/name_machine"
+                android:layout_width="140dp"
+                android:layout_height="wrap_content"
+                android:textSize="16sp"
+                android:clickable="true"
+                android:textColor="@android:color/black"/>
+
+            <TextView
+                android:id="@+id/machine_name_in_result"
+                android:text="@string/no_data"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textSize="16sp"
+                android:clickable="true"
+                android:maxLines="1"
+                android:textColor="#757575"/>
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:paddingTop="10dp"
+            android:paddingBottom="10dp">
+
+            <TextView
+                android:text="@string/name_part_number"
+                android:layout_width="140dp"
+                android:layout_height="wrap_content"
+                android:textSize="16sp"
+                android:clickable="true"
+                android:textColor="@android:color/black"/>
+
+            <TextView
+                android:id="@+id/part_name_in_result"
+                android:text="@string/no_data"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textSize="16sp"
+                android:maxLines="1"
+                android:textColor="#757575"/>
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:paddingTop="10dp"
+            android:paddingBottom="10dp">
+
+            <TextView
+                android:text="@string/qty_parts"
+                android:layout_width="140dp"
+                android:layout_height="wrap_content"
+                android:textSize="16sp"
+                android:clickable="true"
+                android:textColor="@android:color/black"/>
+
+            <TextView
+                android:id="@+id/part_qty_in_result"
+                android:text="@string/no_data"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textSize="16sp"
+                android:maxLines="1"
+                android:textColor="#757575"/>
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:paddingTop="10dp"
+            android:paddingBottom="10dp">
+
+            <TextView
+                android:text="@string/stopwatch_result"
+                android:layout_width="140dp"
+                android:layout_height="wrap_content"
+                android:textSize="16sp"
+                android:clickable="true"
+                android:textColor="@android:color/black"/>
+
+            <TextView
+                android:id="@+id/total_time_in_result"
+                android:text="@string/no_data"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textSize="16sp"
+                android:maxLines="1"
+                android:textColor="#757575"/>
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:paddingTop="10dp"
+            android:paddingBottom="10dp">
+
+            <TextView
+                android:text="@string/cycle_time_result"
+                android:layout_width="140dp"
+                android:layout_height="wrap_content"
+                android:textSize="16sp"
+                android:clickable="true"
+                android:textColor="@android:color/black"/>
+
+            <TextView
+                android:id="@+id/cycle_time_in_result"
+                android:text="@string/no_data"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textSize="16sp"
+                android:maxLines="1"
+                android:textColor="#757575"/>
+
+        </LinearLayout>
+    </LinearLayout>
+
+</RelativeLayout>

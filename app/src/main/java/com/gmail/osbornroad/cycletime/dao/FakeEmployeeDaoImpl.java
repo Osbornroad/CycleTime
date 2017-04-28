@@ -3,7 +3,6 @@ package com.gmail.osbornroad.cycletime.dao;
 import com.gmail.osbornroad.cycletime.model.Employee;
 
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.Iterator;
@@ -18,7 +17,7 @@ public class FakeEmployeeDaoImpl implements EmployeeDao {
 
     private List<Employee> employeeList;
     private AtomicInteger idCounter = new AtomicInteger(100);
-
+    private String[] employeeNamesArray;
 
     public FakeEmployeeDaoImpl() {
         this.employeeList = new ArrayList<>();
@@ -26,7 +25,30 @@ public class FakeEmployeeDaoImpl implements EmployeeDao {
     }
 
     private void populateEmployeeList() {
-        employeeList.add(new Employee(getNewId(), "Макаров", true));
+
+        employeeNamesArray = new String[] {
+                "Архипова Анастасия",
+                "Смирнова Анастасия",
+                "Насибулов Дамир",
+                "Иванов Александр",
+                "Хижанкова Татьяна",
+                "Павленко Иван",
+                "Юшков Яков",
+                "Макаров Дмитрий",
+                "Николаева Дарья",
+                "Быстров Максим",
+                "Пшеницын Иван",
+                "Милованов Александр",
+                "Логутенков Алексей",
+                "Богданов Артём",
+                "Сергеев Александр"
+        };
+
+        for (String name : employeeNamesArray) {
+            employeeList.add(new Employee(getNewId(), name, true));
+        }
+
+/*        employeeList.add(new Employee(getNewId(), "Макаров", true));
         employeeList.add(new Employee(getNewId(), "Быстров", true));
         employeeList.add(new Employee(getNewId(), "Логутенков", true));
         employeeList.add(new Employee(getNewId(), "Иванов", true));
@@ -38,7 +60,7 @@ public class FakeEmployeeDaoImpl implements EmployeeDao {
         employeeList.add(new Employee(getNewId(), "Пшеницын", true));
         employeeList.add(new Employee(getNewId(), "Насибулов", true));
         employeeList.add(new Employee(getNewId(), "Милованов", true));
-        employeeList.add(new Employee(getNewId(), "Павленко", true));
+        employeeList.add(new Employee(getNewId(), "Павленко", true));*/
     }
 
     private int getNewId() {

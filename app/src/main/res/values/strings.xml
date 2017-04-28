@@ -16,4 +16,10 @@
     <string name="choose_process">Choose process</string>
     <string name="choose_machine">Choose machine</string>
     <string name="choose_part">Choose part</string>
+    <string name="input_number">Please input...</string>
+    <string name="action_calc_title">Calculate</string>
+    <string name="no_data">No data</string>
+    <string name="stopwatch_result">Total time:</string>
+    <string name="cycle_time_result">Cycle time:</string>
+    <string name="stopwatch_result_title">Result</string>
 </resources>

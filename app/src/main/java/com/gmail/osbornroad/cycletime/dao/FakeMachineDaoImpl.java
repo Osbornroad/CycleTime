@@ -48,10 +48,12 @@ public class FakeMachineDaoImpl implements MachineDao {
                 "PCO Diesel P32S",
                 "PCO straight",
                 "QCN",
-                "Chamfering",
-                "Endform #2",
-                "Endform #1",
+                "Endform T-9",
+                "Endform T-8",
+                "Endform T-7",
+                "Endform T-6",
                 "Buffing",
+                "Chamfering",
                 "Laser",
                 "HPC"
         };

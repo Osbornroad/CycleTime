@@ -32,6 +32,10 @@
         <activity
             android:name=".PartChooseActivity"
             android:label="@string/choose_part"
+            android:parentActivityName=".StopWatchActivity" />
+        <activity
+            android:name=".ResultMeasurementActivity"
+            android:label="@string/stopwatch_result_title"
             android:parentActivityName=".StopWatchActivity"/>
     </application>
 
