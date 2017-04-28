@@ -10,12 +10,20 @@ import android.widget.Button;
 import android.widget.TextView;
 
 import com.gmail.osbornroad.cycletime.dao.FakeEmployeeDaoImpl;
+import com.gmail.osbornroad.cycletime.dao.FakeMachineDaoImpl;
+import com.gmail.osbornroad.cycletime.dao.FakePartDaoImpl;
 import com.gmail.osbornroad.cycletime.dao.FakeProcessDaoImpl;
 import com.gmail.osbornroad.cycletime.model.Employee;
+import com.gmail.osbornroad.cycletime.model.Machine;
+import com.gmail.osbornroad.cycletime.model.Part;
 import com.gmail.osbornroad.cycletime.model.Process;
 import com.gmail.osbornroad.cycletime.service.EmployeeService;
 import com.gmail.osbornroad.cycletime.service.EmployeeServiceImpl;
+import com.gmail.osbornroad.cycletime.service.FakeMachineServiceImpl;
+import com.gmail.osbornroad.cycletime.service.FakePartServiceImpl;
 import com.gmail.osbornroad.cycletime.service.FakeProcessServiceImpl;
+import com.gmail.osbornroad.cycletime.service.MachineService;
+import com.gmail.osbornroad.cycletime.service.PartService;
 import com.gmail.osbornroad.cycletime.service.ProcessService;
 
 public class StopWatchActivity extends AppCompatActivity {
@@ -40,7 +48,7 @@ public class StopWatchActivity extends AppCompatActivity {
     /**
      * REFRESH_RATE is constant for RecyclerView item setting
      */
-    private final int REFRESH_RATE = 100;
+    private final int REFRESH_RATE = 10;
     /**
      * StopWatch interface
      */
@@ -61,6 +69,18 @@ public class StopWatchActivity extends AppCompatActivity {
     private ProcessService processService;
     private TextView processInfo;
     private Process selectedProcess;
+    /**
+     * Machine setting interface
+     */
+    private MachineService machineService;
+    private TextView machineInfo;
+    private Machine selectedMachine;
+    /**
+     * Part setting interface
+     */
+    private PartService partService;
+    private TextView partInfo;
+    private Part selectedPart;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -99,6 +119,30 @@ public class StopWatchActivity extends AppCompatActivity {
             }
         });
         /**
+         * Machine setting interface creating
+         */
+        machineService = new FakeMachineServiceImpl(new FakeMachineDaoImpl());
+        machineInfo = (TextView) findViewById(R.id.machine_name_data);
+        machineInfo.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(v.getContext(), MachineChooseActivity.class);
+                startActivityForResult(intent, 0);
+            }
+        });
+        /**
+         * Part setting interface creating
+         */
+        partService = new FakePartServiceImpl(new FakePartDaoImpl());
+        partInfo = (TextView) findViewById(R.id.part_name_data);
+        partInfo.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(v.getContext(), PartChooseActivity.class);
+                startActivityForResult(intent, 0);
+            }
+        });
+        /**
          * Setting saved data
          */
         setSavedInfo(savedInstanceState);
@@ -128,6 +172,16 @@ public class StopWatchActivity extends AppCompatActivity {
                 selectedProcess = processService.get(processId);
                 processInfo.setText(selectedProcess.getProcessName());
             }
+            if (savedInstanceState.containsKey("machineId")) {
+                int machineId = savedInstanceState.getInt("machineId");
+                selectedMachine = machineService.get(machineId);
+                machineInfo.setText(selectedProcess.getProcessName());
+            }
+            if (savedInstanceState.containsKey("partId")) {
+                int partId = savedInstanceState.getInt("partId");
+                selectedPart = partService.get(partId);
+                partInfo.setText(selectedPart.getPartName());
+            }
         }
     }
 
@@ -145,6 +199,12 @@ public class StopWatchActivity extends AppCompatActivity {
         }
         if (selectedProcess != null) {
             outState.putInt("processId", selectedProcess.getId());
+        }
+        if (selectedMachine != null) {
+            outState.putInt("machineId", selectedMachine.getId());
+        }
+        if (selectedPart != null) {
+            outState.putInt("partId", selectedPart.getId());
         }
     }
 
@@ -171,6 +231,16 @@ public class StopWatchActivity extends AppCompatActivity {
             int processId = data.getExtras().getInt("processId");
             selectedProcess = processService.get(processId);
             processInfo.setText(selectedProcess.getProcessName());
+        }
+        if (data.hasExtra("machineId")) {
+            int machineId = data.getExtras().getInt("machineId");
+            selectedMachine = machineService.get(machineId);
+            machineInfo.setText(selectedMachine.getMachineName());
+        }
+        if (data.hasExtra("partId")) {
+            int partId = data.getExtras().getInt("partId");
+            selectedPart = partService.get(partId);
+            partInfo.setText(selectedPart.getPartName());
         }
     }
     /**

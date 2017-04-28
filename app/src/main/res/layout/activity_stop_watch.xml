@@ -17,7 +17,7 @@
         android:text="00:00:00"
         android:layout_alignParentTop="true"
         android:layout_centerHorizontal="true"
-        android:layout_marginTop="20dp"
+        android:layout_marginTop="10dp"
         android:textSize="80sp"
         android:textAppearance="?android:attr/textAppearanceLarge"/>
 
@@ -29,7 +29,7 @@
         android:layout_below="@id/time_running_view"
         android:layout_marginLeft="40dp"
         android:layout_alignParentLeft="true"
-        android:layout_marginTop="30dp"
+        android:layout_marginTop="20dp"
         android:onClick="onClickStart"/>
 
     <Button
@@ -40,7 +40,7 @@
         android:layout_below="@id/time_running_view"
         android:layout_marginRight="40dp"
         android:layout_alignParentRight="true"
-        android:layout_marginTop="30dp"
+        android:layout_marginTop="20dp"
         android:onClick="onClickReset"/>
 
 
@@ -52,7 +52,7 @@
     android:layout_height="wrap_content"
     android:orientation="vertical"
     android:layout_below="@id/start_button"
-    android:layout_marginTop="50dp">
+    android:layout_marginTop="30dp">
 
     <LinearLayout
         android:id="@+id/line_employee"
@@ -65,18 +65,20 @@
         <TextView
             android:id="@+id/employee_name"
             android:text="@string/name_employee"
-            android:layout_width="160dp"
+            android:layout_width="140dp"
             android:layout_height="wrap_content"
-            android:textSize="18sp"
-            android:clickable="true"/>
+            android:textSize="16sp"
+            android:clickable="true"
+            android:textColor="@android:color/black"/>
 
         <TextView
             android:id="@+id/employee_name_data"
             android:text="@string/not_entered"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:textSize="18sp"
-            android:clickable="true"/>
+            android:textSize="16sp"
+            android:clickable="true"
+            android:maxLines="1"/>
 
     </LinearLayout>
 
@@ -91,18 +93,20 @@
         <TextView
             android:id="@+id/process_name"
             android:text="@string/name_process"
-            android:layout_width="160dp"
+            android:layout_width="140dp"
             android:layout_height="wrap_content"
-            android:textSize="18sp"
-            android:clickable="true"/>
+            android:textSize="16sp"
+            android:clickable="true"
+            android:textColor="@android:color/black"/>
 
         <TextView
             android:id="@+id/process_name_data"
             android:text="@string/not_entered"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:textSize="18sp"
-            android:clickable="true"/>
+            android:textSize="16sp"
+            android:clickable="true"
+            android:maxLines="1"/>
 
     </LinearLayout>
 
@@ -117,18 +121,20 @@
         <TextView
             android:id="@+id/machine_name"
             android:text="@string/name_machine"
-            android:layout_width="160dp"
+            android:layout_width="140dp"
             android:layout_height="wrap_content"
-            android:textSize="18sp"
-            android:clickable="true"/>
+            android:textSize="16sp"
+            android:clickable="true"
+            android:textColor="@android:color/black"/>
 
         <TextView
             android:id="@+id/machine_name_data"
             android:text="@string/not_entered"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:textSize="18sp"
-            android:clickable="true"/>
+            android:textSize="16sp"
+            android:clickable="true"
+            android:maxLines="1"/>
 
     </LinearLayout>
 
@@ -143,18 +149,20 @@
         <TextView
             android:id="@+id/part_number_name"
             android:text="@string/name_part_number"
-            android:layout_width="160dp"
+            android:layout_width="140dp"
             android:layout_height="wrap_content"
-            android:textSize="18sp"
-            android:clickable="true"/>
+            android:textSize="16sp"
+            android:clickable="true"
+            android:textColor="@android:color/black"/>
 
         <TextView
-            android:id="@+id/part_number_name_data"
+            android:id="@+id/part_name_data"
             android:text="@string/not_entered"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:textSize="18sp"
-            android:clickable="true"/>
+            android:textSize="16sp"
+            android:clickable="true"
+            android:maxLines="1"/>
 
     </LinearLayout>
 
@@ -169,22 +177,22 @@
         <TextView
             android:id="@+id/part_qty"
             android:text="@string/qty_parts"
-            android:layout_width="160dp"
+            android:layout_width="140dp"
             android:layout_height="wrap_content"
-            android:textSize="18sp"
-            android:clickable="true"/>
+            android:textSize="16sp"
+            android:clickable="true"
+            android:textColor="@android:color/black"/>
 
         <TextView
             android:id="@+id/part_qty_data"
             android:text="@string/not_entered"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:textSize="18sp"
-            android:clickable="true"/>
+            android:textSize="16sp"
+            android:clickable="true"
+            android:maxLines="1"/>
 
     </LinearLayout>
-
-
 
 </LinearLayout>
 
