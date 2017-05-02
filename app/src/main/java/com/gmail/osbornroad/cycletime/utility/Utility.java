@@ -23,6 +23,10 @@ public class Utility {
     private static final MachineService MACHINE_SERVICE = new FakeMachineServiceImpl(new FakeMachineDaoImpl());
     private static final PartService PART_SERVICE = new FakePartServiceImpl(new FakePartDaoImpl());
 
+    private static final String[] MAIL_ADDRESSES = {
+            "artem.gapenkov@sanoh-rus.com",
+            "maksim.tkachenko@sanoh-rus.com"};
+
     public static EmployeeService getEmployeeService() {
         return EMPLOYEE_SERVICE;
     }
@@ -37,5 +41,9 @@ public class Utility {
 
     public static PartService getPartService() {
         return PART_SERVICE;
+    }
+
+    public static String[] getMailAddresses() {
+        return MAIL_ADDRESSES;
     }
 }

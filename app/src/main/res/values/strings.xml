@@ -22,4 +22,5 @@
     <string name="stopwatch_result">Total time:</string>
     <string name="cycle_time_result">Cycle time:</string>
     <string name="stopwatch_result_title">Result</string>
+    <string name="action_mail_send">Send...</string>
 </resources>

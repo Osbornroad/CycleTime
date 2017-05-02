@@ -9,7 +9,9 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.gmail.osbornroad.cycletime.dao.FakeEmployeeDaoImpl;
 import com.gmail.osbornroad.cycletime.dao.FakeMachineDaoImpl;
@@ -40,11 +42,11 @@ public class StopWatchActivity extends AppCompatActivity {
      */
     private StopWatch stopWatch;
     /**
-     * mStarted == true after Start button pressed including Pause condition
+     * mStarted == true after Start button pressed until Stop pressed
      */
     private boolean mStarted;
     /**
-     * mInProgress == true after Resume/Start button Continue counting until Reset pressed
+     * mInProgress == true after Resume/Start button, Continue counting until Reset pressed
      */
     private boolean mInProgress;
     /**
@@ -83,6 +85,8 @@ public class StopWatchActivity extends AppCompatActivity {
     private PartService partService;
     private TextView partInfo;
     private Part selectedPart;
+
+    private EditText partQuantity;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -144,6 +148,9 @@ public class StopWatchActivity extends AppCompatActivity {
                 startActivityForResult(intent, 0);
             }
         });
+
+        partQuantity = (EditText) findViewById(R.id.part_qty_data);
+
         /**
          * Setting saved data
          */
@@ -345,7 +352,34 @@ public class StopWatchActivity extends AppCompatActivity {
                 if (selectedPart != null) {
                     intent.putExtra("partId", selectedPart.getId());
                 }
+                if (!partQuantity.getText().toString().equals("")) {
+                    int quantity;
+                    try {
+                        quantity = Integer.parseInt(partQuantity.getText().toString());
+                    } catch (NumberFormatException e) {
+                        Toast.makeText(this, "Please input correct quantity", Toast.LENGTH_SHORT).show();
+                        return true;
+                    }
+                    intent.putExtra("partQuantity", quantity);
+                } else {
+                    Toast.makeText(this, "Please input correct quantity", Toast.LENGTH_SHORT).show();
+                    return true;
+                }
+                if (mInProgress) {
+                    if (!mStarted) {
+                        int resultStopWatch = (int) stopWatch.getElapsedTimeInSec();
+                        intent.putExtra("resultStopWatch", resultStopWatch);
+                    } else {
+                        Toast.makeText(this, "Stopwatch still running", Toast.LENGTH_SHORT).show();
+                        return true;
+                    }
+                }
+                else {
+                    Toast.makeText(this, "Stopwatch data is zero", Toast.LENGTH_SHORT).show();
+                    return true;
+                }
                 startActivity(intent);
+                break;
         }
         return true;
     }

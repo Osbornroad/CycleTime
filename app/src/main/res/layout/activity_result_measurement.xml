@@ -16,7 +16,10 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="vertical"
-        android:layout_marginTop="30dp">
+        android:layout_marginTop="31dp"
+        android:layout_alignParentTop="true"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true">
 
         <LinearLayout
             android:layout_width="wrap_content"
@@ -26,7 +29,7 @@
             android:paddingBottom="10dp">
 
             <TextView
-                android:text="@string/name_employee"
+                android:text="@string/cycle_time_result"
                 android:layout_width="140dp"
                 android:layout_height="wrap_content"
                 android:textSize="16sp"
@@ -34,14 +37,101 @@
                 android:textColor="@android:color/black"/>
 
             <TextView
-                android:id="@+id/employee_name_in_result"
+                android:id="@+id/cycle_time_in_result"
                 android:text="@string/no_data"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:textSize="16sp"
-                android:clickable="true"
                 android:maxLines="1"
-                android:textColor="#757575"/>
+                android:textColor="@color/result_no_data"/>
+
+        </LinearLayout>
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:background="@android:color/darker_gray"/>
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:paddingTop="10dp"
+            android:paddingBottom="10dp">
+
+            <TextView
+                android:text="@string/stopwatch_result"
+                android:layout_width="140dp"
+                android:layout_height="wrap_content"
+                android:textSize="16sp"
+                android:clickable="true"
+                android:textColor="@android:color/black"/>
+
+            <TextView
+                android:id="@+id/total_time_in_result"
+                android:text="@string/no_data"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textSize="16sp"
+                android:maxLines="1"
+                android:textColor="@color/result_no_data"/>
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:paddingTop="10dp"
+            android:paddingBottom="10dp">
+
+            <TextView
+                android:text="@string/qty_parts"
+                android:layout_width="140dp"
+                android:layout_height="wrap_content"
+                android:textSize="16sp"
+                android:clickable="true"
+                android:textColor="@android:color/black"/>
+
+            <TextView
+                android:id="@+id/part_qty_in_result"
+                android:text="@string/no_data"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textSize="16sp"
+                android:maxLines="1"
+                android:textColor="@color/result_no_data"/>
+
+        </LinearLayout>
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:background="@android:color/darker_gray"/>
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:paddingTop="10dp"
+            android:paddingBottom="10dp">
+
+            <TextView
+                android:text="@string/name_part_number"
+                android:layout_width="140dp"
+                android:layout_height="wrap_content"
+                android:textSize="16sp"
+                android:clickable="true"
+                android:textColor="@android:color/black"/>
+
+            <TextView
+                android:id="@+id/part_name_in_result"
+                android:text="@string/no_data"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textSize="16sp"
+                android:maxLines="1"
+                android:textColor="@color/result_no_data"/>
 
         </LinearLayout>
 
@@ -68,7 +158,7 @@
                 android:textSize="16sp"
                 android:clickable="true"
                 android:maxLines="1"
-                android:textColor="#757575"/>
+                android:textColor="@color/result_no_data"/>
 
         </LinearLayout>
 
@@ -95,7 +185,7 @@
                 android:textSize="16sp"
                 android:clickable="true"
                 android:maxLines="1"
-                android:textColor="#757575"/>
+                android:textColor="@color/result_no_data"/>
 
         </LinearLayout>
 
@@ -107,7 +197,7 @@
             android:paddingBottom="10dp">
 
             <TextView
-                android:text="@string/name_part_number"
+                android:text="@string/name_employee"
                 android:layout_width="140dp"
                 android:layout_height="wrap_content"
                 android:textSize="16sp"
@@ -115,93 +205,17 @@
                 android:textColor="@android:color/black"/>
 
             <TextView
-                android:id="@+id/part_name_in_result"
+                android:id="@+id/employee_name_in_result"
                 android:text="@string/no_data"
                 android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:textSize="16sp"
-                android:maxLines="1"
-                android:textColor="#757575"/>
-
-        </LinearLayout>
-
-        <LinearLayout
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:orientation="horizontal"
-            android:paddingTop="10dp"
-            android:paddingBottom="10dp">
-
-            <TextView
-                android:text="@string/qty_parts"
-                android:layout_width="140dp"
                 android:layout_height="wrap_content"
                 android:textSize="16sp"
                 android:clickable="true"
-                android:textColor="@android:color/black"/>
-
-            <TextView
-                android:id="@+id/part_qty_in_result"
-                android:text="@string/no_data"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:textSize="16sp"
                 android:maxLines="1"
-                android:textColor="#757575"/>
+                android:textColor="@color/result_no_data"/>
 
         </LinearLayout>
 
-        <LinearLayout
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:orientation="horizontal"
-            android:paddingTop="10dp"
-            android:paddingBottom="10dp">
-
-            <TextView
-                android:text="@string/stopwatch_result"
-                android:layout_width="140dp"
-                android:layout_height="wrap_content"
-                android:textSize="16sp"
-                android:clickable="true"
-                android:textColor="@android:color/black"/>
-
-            <TextView
-                android:id="@+id/total_time_in_result"
-                android:text="@string/no_data"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:textSize="16sp"
-                android:maxLines="1"
-                android:textColor="#757575"/>
-
-        </LinearLayout>
-
-        <LinearLayout
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:orientation="horizontal"
-            android:paddingTop="10dp"
-            android:paddingBottom="10dp">
-
-            <TextView
-                android:text="@string/cycle_time_result"
-                android:layout_width="140dp"
-                android:layout_height="wrap_content"
-                android:textSize="16sp"
-                android:clickable="true"
-                android:textColor="@android:color/black"/>
-
-            <TextView
-                android:id="@+id/cycle_time_in_result"
-                android:text="@string/no_data"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:textSize="16sp"
-                android:maxLines="1"
-                android:textColor="#757575"/>
-
-        </LinearLayout>
     </LinearLayout>
 
 </RelativeLayout>
