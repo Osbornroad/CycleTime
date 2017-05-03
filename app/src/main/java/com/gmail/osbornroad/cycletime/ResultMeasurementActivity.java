@@ -3,6 +3,7 @@ package com.gmail.osbornroad.cycletime;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
+import android.support.v4.app.NavUtils;
 import android.support.v7.app.AppCompatActivity;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -54,8 +55,10 @@ public class ResultMeasurementActivity extends AppCompatActivity {
         setContentView(R.layout.activity_result_measurement);
 
         intent = getIntent();
-
         setSampleData();
+
+        getSupportActionBar().setHomeButtonEnabled(true);
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
     }
 
     @Override
@@ -67,6 +70,12 @@ public class ResultMeasurementActivity extends AppCompatActivity {
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
+            case android.R.id.home:
+//                Toast.makeText(this, "Back button pressed", Toast.LENGTH_SHORT).show();
+                NavUtils.navigateUpFromSameTask(this);
+                if(getSupportFragmentManager().getBackStackEntryCount()>0)
+                    getSupportFragmentManager().popBackStack();
+                return true;
             case R.id.action_mail:
                 Intent emailIntent = new Intent(Intent.ACTION_SEND);
                 emailIntent.setData(Uri.parse("mailto:"));
@@ -91,7 +100,7 @@ public class ResultMeasurementActivity extends AppCompatActivity {
                     Toast.makeText(this, R.string.no_email_app, Toast.LENGTH_SHORT).show();
                 }
         }
-        return true;
+        return super.onOptionsItemSelected(item);
     }
 
     private void setSampleData() {
