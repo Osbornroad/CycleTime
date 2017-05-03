@@ -196,7 +196,10 @@
             android:textSize="16sp"
             android:maxLines="1"
             android:padding="0sp"
-            android:textColor="#757575"/>
+            android:textColor="#757575"
+            android:inputType="numberDecimal"
+            android:imeOptions="actionSend"
+            android:cursorVisible="false"/>
 
     </LinearLayout>
 

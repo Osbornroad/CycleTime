@@ -184,12 +184,15 @@ public class StopWatchActivity extends AppCompatActivity {
             if (savedInstanceState.containsKey("machineId")) {
                 int machineId = savedInstanceState.getInt("machineId");
                 selectedMachine = machineService.get(machineId);
-                machineInfo.setText(selectedProcess.getProcessName());
+                machineInfo.setText(selectedMachine.getMachineName());
             }
             if (savedInstanceState.containsKey("partId")) {
                 int partId = savedInstanceState.getInt("partId");
                 selectedPart = partService.get(partId);
                 partInfo.setText(selectedPart.getPartName());
+            }
+            if (savedInstanceState.containsKey("timeRunningView")) {
+                timeRunningView.setText(savedInstanceState.getString("timeRunningView"));
             }
         }
     }
@@ -215,6 +218,7 @@ public class StopWatchActivity extends AppCompatActivity {
         if (selectedPart != null) {
             outState.putInt("partId", selectedPart.getId());
         }
+        outState.putString("timeRunningView", timeRunningView.getText().toString());
     }
 
     /**

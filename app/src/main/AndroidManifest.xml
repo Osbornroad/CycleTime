@@ -36,7 +36,12 @@
         <activity
             android:name=".ResultMeasurementActivity"
             android:label="@string/stopwatch_result_title"
-            android:parentActivityName=".StopWatchActivity"/>
+            android:screenOrientation="portrait"
+            android:parentActivityName=".StopWatchActivity">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value=".StopWatchActivity"/>
+        </activity>
     </application>
 
 </manifest>

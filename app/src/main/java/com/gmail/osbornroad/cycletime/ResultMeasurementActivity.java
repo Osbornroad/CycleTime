@@ -1,11 +1,13 @@
 package com.gmail.osbornroad.cycletime;
 
 import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.gmail.osbornroad.cycletime.service.EmployeeService;
 import com.gmail.osbornroad.cycletime.service.MachineService;
@@ -67,19 +69,27 @@ public class ResultMeasurementActivity extends AppCompatActivity {
         switch (item.getItemId()) {
             case R.id.action_mail:
                 Intent emailIntent = new Intent(Intent.ACTION_SEND);
+                emailIntent.setData(Uri.parse("mailto:"));
                 emailIntent.putExtra(Intent.EXTRA_EMAIL, Utility.getMailAddresses());
                 emailIntent.putExtra(Intent.EXTRA_SUBJECT, "Cycletime result for " + processNameDisplay.getText() + " " + partNameDisplay.getText());
                 emailIntent.putExtra(Intent.EXTRA_TEXT,
-                        getResources().getString(R.string.cycle_time_result) + ": " + "\t" + cycleTimeDisplay.getText() + "\n" +
-                                getResources().getString(R.string.stopwatch_result) + ": " + "\t" + resultStopWatchDisplay.getText() + "\n" +
-                                getResources().getString(R.string.qty_parts) + ": " + "\t" + partQuantityDisplay.getText() + "\n" +
-                                getResources().getString(R.string.name_part_number) + ": " + "\t" + partNameDisplay.getText() + "\n" +
-                                getResources().getString(R.string.name_machine) + ": " + "\t" + machineNameDisplay.getText() + "\n" +
-                                getResources().getString(R.string.name_process) + ": " + "\t" + processNameDisplay.getText() + "\n" +
-                                getResources().getString(R.string.name_employee) + ": " + "\t" + employeeNameDisplay.getText()
+                        getResources().getString(R.string.cycle_time_result) + " " + "\t" + cycleTimeDisplay.getText() + "\n" +
+                                "============================================================" + "\n" +
+                                getResources().getString(R.string.stopwatch_result) + " " + "\t" + resultStopWatchDisplay.getText() + "\n" +
+                                getResources().getString(R.string.qty_parts) + " " + "\t" + partQuantityDisplay.getText() + "\n" +
+                                "============================================================" + "\n" +
+                                getResources().getString(R.string.name_part_number) + " " + "\t" + partNameDisplay.getText() + "\n" +
+                                getResources().getString(R.string.name_machine) + " " + "\t" + machineNameDisplay.getText() + "\n" +
+                                getResources().getString(R.string.name_process) + " " + "\t" + processNameDisplay.getText() + "\n" +
+                                getResources().getString(R.string.name_employee) + " " + "\t" + employeeNameDisplay.getText()
                 );
                 emailIntent.setType("message/rfc822");
-                startActivity(Intent.createChooser(emailIntent, "Send email..."));
+                if (emailIntent.resolveActivity(getPackageManager()) != null) {
+                    startActivity(Intent.createChooser(emailIntent, "Send email..."));
+                }
+                else {
+                    Toast.makeText(this, R.string.no_email_app, Toast.LENGTH_SHORT).show();
+                }
         }
         return true;
     }
