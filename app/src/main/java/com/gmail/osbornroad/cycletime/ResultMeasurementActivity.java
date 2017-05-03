@@ -83,10 +83,10 @@ public class ResultMeasurementActivity extends AppCompatActivity {
                 emailIntent.putExtra(Intent.EXTRA_SUBJECT, "Cycletime result for " + processNameDisplay.getText() + " " + partNameDisplay.getText());
                 emailIntent.putExtra(Intent.EXTRA_TEXT,
                         getResources().getString(R.string.cycle_time_result) + " " + "\t" + cycleTimeDisplay.getText() + "\n" +
-                                "============================================================" + "\n" +
+                                "========================================" + "\n" +
                                 getResources().getString(R.string.stopwatch_result) + " " + "\t" + resultStopWatchDisplay.getText() + "\n" +
                                 getResources().getString(R.string.qty_parts) + " " + "\t" + partQuantityDisplay.getText() + "\n" +
-                                "============================================================" + "\n" +
+                                "========================================" + "\n" +
                                 getResources().getString(R.string.name_part_number) + " " + "\t" + partNameDisplay.getText() + "\n" +
                                 getResources().getString(R.string.name_machine) + " " + "\t" + machineNameDisplay.getText() + "\n" +
                                 getResources().getString(R.string.name_process) + " " + "\t" + processNameDisplay.getText() + "\n" +
