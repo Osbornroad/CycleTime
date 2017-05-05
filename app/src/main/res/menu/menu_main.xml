@@ -7,4 +7,8 @@
         android:id="@+id/action_calc"
         android:title="@string/action_calc_title"
         app:showAsAction="ifRoom"/>
+    <item
+        android:id="@+id/go_to_drawer"
+        android:title="Drawer"
+        app:showAsAction="ifRoom"/>
 </menu>

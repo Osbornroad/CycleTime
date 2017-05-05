@@ -36,8 +36,8 @@
         <activity
             android:name=".ResultMeasurementActivity"
             android:label="@string/stopwatch_result_title"
-            android:parentActivityName=".StopWatchActivity">
-        </activity>
+            android:parentActivityName=".StopWatchActivity"></activity>
+        <activity android:name=".DrawerTestActivity"></activity>
     </application>
 
 </manifest>

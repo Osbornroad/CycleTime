@@ -342,6 +342,10 @@ public class StopWatchActivity extends AppCompatActivity {
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
+            case R.id.go_to_drawer:
+                Intent drawerIntent = new Intent(this, DrawerTestActivity.class);
+                startActivity(drawerIntent);
+                break;
             case R.id.action_calc:
                 Intent intent = new Intent(this, ResultMeasurementActivity.class);
                 if (selectedEmployee != null) {
