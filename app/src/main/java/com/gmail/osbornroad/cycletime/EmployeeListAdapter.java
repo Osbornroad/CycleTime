@@ -54,13 +54,11 @@ public class EmployeeListAdapter extends RecyclerView.Adapter<EmployeeListAdapte
 
     class EmployeeViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener{
 
-        TextView listItemEmployeeId;
         TextView listItemEmployeeName;
         int id;
 
         public EmployeeViewHolder(View itemView) {
             super(itemView);
-            listItemEmployeeId = (TextView) itemView.findViewById(R.id.tv_employee_id);
             listItemEmployeeName = (TextView) itemView.findViewById(R.id.tv_employee_name);
             itemView.setOnClickListener(this);
         }
@@ -72,7 +70,6 @@ public class EmployeeListAdapter extends RecyclerView.Adapter<EmployeeListAdapte
 
         public void bind(int employeeId, String employeeName) {
             id = employeeId;
-            listItemEmployeeId.setText(String.valueOf(employeeId));
             listItemEmployeeName.setText(employeeName);
         }
     }
