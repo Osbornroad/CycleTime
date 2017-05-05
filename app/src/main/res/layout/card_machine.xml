@@ -11,13 +11,8 @@
 
     <TextView
         android:id="@+id/tv_machine_name"
-        style="@style/TextAppearance.AppCompat.Title"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_gravity="center_vertical|start"
-        android:fontFamily="monospace"
-        android:textColor="#000"
-        android:text="Machine"
+        style="@style/ListForChoose"
+        tools:text="Machine"
         />
 
 </FrameLayout>
