@@ -11,11 +11,7 @@
         <activity
             android:name=".StopWatchActivity"
             android:launchMode="singleTop">
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
 
-                <category android:name="android.intent.category.LAUNCHER" />
-            </intent-filter>
         </activity>
         <activity
             android:name=".EmployeeChooseActivity"
@@ -36,8 +32,15 @@
         <activity
             android:name=".ResultMeasurementActivity"
             android:label="@string/stopwatch_result_title"
-            android:parentActivityName=".StopWatchActivity"></activity>
-        <activity android:name=".DrawerTestActivity"></activity>
+            android:parentActivityName=".StopWatchActivity" />
+        <activity android:name=".DrawerTestActivity" />
+        <activity android:name=".CoreActivity">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
     </application>
 
 </manifest>

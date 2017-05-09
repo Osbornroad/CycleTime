@@ -11,7 +11,7 @@
     <string name="name_part_number">PART</string>
     <string name="qty_parts">QUANTITY</string>
     <string name="not_entered">Touch for choose</string>
-    <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="employees_fragment">Employees fragment</string>
     <string name="choose_employee">Choose employee</string>
     <string name="choose_process">Choose process</string>
     <string name="choose_machine">Choose machine</string>
@@ -24,4 +24,19 @@
     <string name="stopwatch_result_title">Result</string>
     <string name="action_mail_send">Send...</string>
     <string name="no_email_app">No email app on this device</string>
+    <string-array name="main_drawer_array">
+        <item>Stopwatch</item>
+        <item>Employees</item>
+        <item>Processes</item>
+        <item>Machines</item>
+        <item>Parts</item>
+    </string-array>
+    <string name="processes_fragment">Processes fragment</string>
+    <string name="machines_fragment">Machines fragment</string>
+    <string name="parts_fragment">Parts fragment</string>
+    <string name="employees_fragment_title">Employees</string>
+    <string name="stopwatch_fragment_title">Stopwatch</string>
+    <string name="processes_fragment_title">Processes</string>
+    <string name="machines_fragment_title">Machines</string>
+    <string name="parts_fragment_title">Parts</string>
 </resources>
