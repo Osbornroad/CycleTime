@@ -39,4 +39,19 @@
     <string name="processes_fragment_title">Processes</string>
     <string name="machines_fragment_title">Machines</string>
     <string name="parts_fragment_title">Parts</string>
+    <string name="open_drawer">Open drawer</string>
+    <string name="close_drawer">Close drawer</string>
+    <string name="title_activity_main">MainActivity</string>
+
+    <string name="navigation_drawer_open">Open navigation drawer</string>
+    <string name="navigation_drawer_close">Close navigation drawer</string>
+
+    <string name="action_settings">Settings</string>
+    <string name="nav_header_title">CYCLE TIME STOPWATCH</string>
+    <string name="nav_header_text">Time management tool</string>
+    <string name="nav_menu_stopwatch">Stopwatch</string>
+    <string name="nav_menu_employees">Employees</string>
+    <string name="nav_menu_processes">Processes</string>
+    <string name="nav_menu_machines">Machines</string>
+    <string name="nav_menu_parts">Parts</string>
 </resources>

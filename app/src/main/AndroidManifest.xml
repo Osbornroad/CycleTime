@@ -10,9 +10,7 @@
         android:theme="@style/AppTheme">
         <activity
             android:name=".StopWatchActivity"
-            android:launchMode="singleTop">
-
-        </activity>
+            android:launchMode="singleTop"></activity>
         <activity
             android:name=".EmployeeChooseActivity"
             android:label="@string/choose_employee"
@@ -33,8 +31,13 @@
             android:name=".ResultMeasurementActivity"
             android:label="@string/stopwatch_result_title"
             android:parentActivityName=".StopWatchActivity" />
-        <activity android:name=".DrawerTestActivity" />
         <activity android:name=".CoreActivity">
+
+        </activity>
+        <activity
+            android:name=".MainActivity"
+            android:label="@string/title_activity_main"
+            android:theme="@style/AppTheme.NoActionBar">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
