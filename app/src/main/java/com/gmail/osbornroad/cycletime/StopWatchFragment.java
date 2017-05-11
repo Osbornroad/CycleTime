@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
+import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -44,6 +45,8 @@ public class StopWatchFragment extends Fragment {
     private final int MSG_RESUME = 2;
     private final int MSG_STOP = 3;
     private final int MSG_UPDATE = 4;
+
+    MainActivity mainActivity;
 
     /**
      * StopWatch is singletone
@@ -100,32 +103,49 @@ public class StopWatchFragment extends Fragment {
         return mInProgress;
     }
 
-    public boolean ismStarted() {
-        return mStarted;
-    }
-
+    /**
+     * Getters
+     */
+    public boolean ismStarted() {        return mStarted;    }
     public StopWatch getStopWatch() {
         return stopWatch;
     }
-
     public Employee getSelectedEmployee() {
         return selectedEmployee;
     }
-
     public Process getSelectedProcess() {
         return selectedProcess;
     }
-
     public Machine getSelectedMachine() {
         return selectedMachine;
     }
-
     public Part getSelectedPart() {
         return selectedPart;
     }
-
     public EditText getPartQuantity() {
         return partQuantity;
+    }
+
+    public EmployeeService getEmployeeService() {
+        return employeeService;
+    }
+
+    public ProcessService getProcessService() {
+        return processService;
+    }
+
+    public MachineService getMachineService() {
+        return machineService;
+    }
+
+    public PartService getPartService() {
+        return partService;
+    }
+
+    @Override
+    public void onCreate(@Nullable Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+
     }
 
     @Override
@@ -193,6 +213,10 @@ public class StopWatchFragment extends Fragment {
 
         partQuantity = (EditText) rootView.findViewById(R.id.part_qty_data);
 
+        mainActivity = (MainActivity) getActivity();
+
+        setInfoWithoutSavedInstanceState();
+
         /**
          * Setting saved data
          */
@@ -237,6 +261,59 @@ public class StopWatchFragment extends Fragment {
 
         return rootView;
     }
+
+    @Override
+    public void onPause() {
+        mainActivity.mStartedInActivity = mStarted;
+        mainActivity.mInProgressInActivity = mInProgress;
+        mainActivity.selectedEmployeeInActivity = selectedEmployee;
+        mainActivity.selectedProcessInActivity = selectedProcess;
+        mainActivity.selectedMachineInActivity = selectedMachine;
+        mainActivity.selectedPartInActivity = selectedPart;
+        int quantity;
+        try {
+            quantity = Integer.parseInt(partQuantity.getText().toString());
+        } catch (NumberFormatException e) {
+            quantity = 0;
+        }
+        mainActivity.partQuantityInActivity = quantity;
+        super.onPause();
+    }
+
+    private void setInfoWithoutSavedInstanceState() {
+        mStarted = mainActivity.mStartedInActivity;
+        mInProgress = mainActivity.mInProgressInActivity;
+        selectedEmployee = mainActivity.selectedEmployeeInActivity;
+        selectedProcess = mainActivity.selectedProcessInActivity;
+        selectedMachine = mainActivity.selectedMachineInActivity;
+        selectedPart = mainActivity.selectedPartInActivity;
+
+        int quantity = mainActivity.partQuantityInActivity;
+        if (quantity > 0) {
+            partQuantity.setText(String.valueOf(quantity));
+        }
+
+        if (selectedEmployee != null) {
+            employeeInfo.setText(selectedEmployee.getEmployeeName());
+            employeeInfo.setTextColor(getResources().getColor(R.color.result_exists_data));
+        }
+
+        if (selectedProcess != null) {
+            processInfo.setText(selectedProcess.getProcessName());
+            processInfo.setTextColor(getResources().getColor(R.color.result_exists_data));
+        }
+
+        if (selectedMachine != null) {
+            machineInfo.setText(selectedMachine.getMachineName());
+            machineInfo.setTextColor(getResources().getColor(R.color.result_exists_data));
+        }
+
+        if (selectedPart != null) {
+            partInfo.setText(selectedPart.getPartName());
+            partInfo.setTextColor(getResources().getColor(R.color.result_exists_data));
+        }
+    }
+
     /**
      * Setting saved data
      */
@@ -374,8 +451,11 @@ public class StopWatchFragment extends Fragment {
      * Refresh Stopwatch interface after activity creation
      */
     private void stopWatchResume() {
-        if (mStarted) {
-            if (mInProgress) {
+
+        timeRunningView.setText(stopWatch.getFormattedElapsedTime());
+
+        if (mInProgress) {
+            if (mStarted) {
                 mHandler.sendEmptyMessage(MSG_UPDATE);
                 startButton.setText(R.string.button_stop);
             } else {
@@ -383,93 +463,5 @@ public class StopWatchFragment extends Fragment {
             }
         }
     }
-/*    *//**
-     * Stopwatch Start button handler
-     * @param view
-     *//*
-    public void onClickStart(View view) {
-        if (!mStarted) {
-            if (!mInProgress) {
-                mHandler.sendEmptyMessage(MSG_START);
-                mStarted = true;
-                startButton.setText(R.string.button_stop);
-                mInProgress = true;
-            } else {
-                mHandler.sendEmptyMessage(MSG_RESUME);
-                mStarted = true;
-                startButton.setText(R.string.button_stop);
-            }
-        } else {
-            mHandler.sendEmptyMessage(MSG_STOP);
-            mStarted = false;
-            startButton.setText(R.string.button_resume);
-        }
-    }
-    *//**
-     * Stopwatch Reset button handler
-     * @param view
-     *//*
-    public void onClickReset(View view) {
-        if (!mStarted) {
-            mInProgress = false;
-            timeRunningView.setText("00:00:00");
-            startButton.setText(R.string.button_start);
-        }
-    }*/
-
-/*    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        getMenuInflater().inflate(R.menu.menu_main, menu);
-        return super.onCreateOptionsMenu(menu);
-    }*/
-
-   /* @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        switch (item.getItemId()) {
-            case R.id.action_calc:
-                Intent intent = new Intent(this, ResultMeasurementActivity.class);
-                if (selectedEmployee != null) {
-                    intent.putExtra("employeeId", selectedEmployee.getId());
-                }
-                if (selectedProcess != null) {
-                    intent.putExtra("processId", selectedProcess.getId());
-                }
-                if (selectedMachine != null) {
-                    intent.putExtra("machineId", selectedMachine.getId());
-                }
-                if (selectedPart != null) {
-                    intent.putExtra("partId", selectedPart.getId());
-                }
-                if (!partQuantity.getText().toString().equals("")) {
-                    int quantity;
-                    try {
-                        quantity = Integer.parseInt(partQuantity.getText().toString());
-                    } catch (NumberFormatException e) {
-                        Toast.makeText(this, "Please input correct quantity", Toast.LENGTH_SHORT).show();
-                        return true;
-                    }
-                    intent.putExtra("partQuantity", quantity);
-                } else {
-                    Toast.makeText(this, "Please input correct quantity", Toast.LENGTH_SHORT).show();
-                    return true;
-                }
-                if (mInProgress) {
-                    if (!mStarted) {
-                        int resultStopWatch = (int) stopWatch.getElapsedTimeInSec();
-                        intent.putExtra("resultStopWatch", resultStopWatch);
-                    } else {
-                        Toast.makeText(this, "Stopwatch still running", Toast.LENGTH_SHORT).show();
-                        return true;
-                    }
-                }
-                else {
-                    Toast.makeText(this, "Stopwatch data is zero", Toast.LENGTH_SHORT).show();
-                    return true;
-                }
-                startActivity(intent);
-                break;
-        }
-        return true;
-    }*/
 }
 

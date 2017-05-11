@@ -15,16 +15,42 @@ import android.view.MenuItem;
 import android.widget.EditText;
 import android.widget.Toast;
 
+import com.gmail.osbornroad.cycletime.dao.FakeEmployeeDaoImpl;
+import com.gmail.osbornroad.cycletime.dao.FakeMachineDaoImpl;
+import com.gmail.osbornroad.cycletime.dao.FakePartDaoImpl;
+import com.gmail.osbornroad.cycletime.dao.FakeProcessDaoImpl;
 import com.gmail.osbornroad.cycletime.model.Employee;
 import com.gmail.osbornroad.cycletime.model.Machine;
 import com.gmail.osbornroad.cycletime.model.Part;
 import com.gmail.osbornroad.cycletime.model.Process;
+import com.gmail.osbornroad.cycletime.service.EmployeeService;
+import com.gmail.osbornroad.cycletime.service.EmployeeServiceImpl;
+import com.gmail.osbornroad.cycletime.service.FakeMachineServiceImpl;
+import com.gmail.osbornroad.cycletime.service.FakePartServiceImpl;
+import com.gmail.osbornroad.cycletime.service.FakeProcessServiceImpl;
+import com.gmail.osbornroad.cycletime.service.MachineService;
+import com.gmail.osbornroad.cycletime.service.PartService;
+import com.gmail.osbornroad.cycletime.service.ProcessService;
 
 public class MainActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
 
-    Fragment fragment;
-    Class fragmentClass;
+    private Fragment fragment;
+    private Class fragmentClass;
+    private FragmentManager fragMan;
+
+    private EmployeeService employeeService;
+    private ProcessService processService;
+    private MachineService machineService;
+    private PartService partService;
+
+    protected boolean mStartedInActivity;
+    protected boolean mInProgressInActivity;
+    protected Employee selectedEmployeeInActivity;
+    protected Process selectedProcessInActivity;
+    protected Machine selectedMachineInActivity;
+    protected Part selectedPartInActivity;
+    protected int partQuantityInActivity;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -63,6 +89,63 @@ public class MainActivity extends AppCompatActivity
             fm.beginTransaction().replace(R.id.content_main, fragment, "visible_fragment").commit();
             setTitle(getResources().getString(R.string.stopwatch_fragment_title));
         }
+
+        setSavedInfo(savedInstanceState);
+    }
+
+    private void setSavedInfo(Bundle savedInstanceState) {
+        if (fragment.getClass() != StopWatchFragment.class) {
+            return;
+        }
+
+        employeeService = new EmployeeServiceImpl(new FakeEmployeeDaoImpl());
+        processService = new FakeProcessServiceImpl(new FakeProcessDaoImpl());
+        machineService = new FakeMachineServiceImpl(new FakeMachineDaoImpl());
+        partService = new FakePartServiceImpl(new FakePartDaoImpl());
+
+        if (savedInstanceState != null) {
+            if (savedInstanceState.containsKey("mStarted")) {
+                mStartedInActivity = savedInstanceState.getBoolean("mStarted");
+            }
+            if (savedInstanceState.containsKey("mInProgress")) {
+                mInProgressInActivity = savedInstanceState.getBoolean("mInProgress");
+            }
+            if (savedInstanceState.containsKey("employeeId")) {
+                int employeeId = savedInstanceState.getInt("employeeId");
+                selectedEmployeeInActivity = employeeService.get(employeeId);
+            }
+            if (savedInstanceState.containsKey("processId")) {
+                int processId = savedInstanceState.getInt("processId");
+                selectedProcessInActivity = processService.get(processId);
+            }
+            if (savedInstanceState.containsKey("machineId")) {
+                int machineId = savedInstanceState.getInt("machineId");
+                selectedMachineInActivity = machineService.get(machineId);
+            }
+            if (savedInstanceState.containsKey("partId")) {
+                int partId = savedInstanceState.getInt("partId");
+                selectedPartInActivity = partService.get(partId);
+            }
+        }
+    }
+
+    @Override
+    protected void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+        outState.putBoolean("mStarted", mStartedInActivity);
+        outState.putBoolean("mInProgress", mInProgressInActivity);
+        if (selectedEmployeeInActivity != null) {
+            outState.putInt("employeeId", selectedEmployeeInActivity.getId());
+        }
+        if (selectedProcessInActivity != null) {
+            outState.putInt("processId", selectedProcessInActivity.getId());
+        }
+        if (selectedMachineInActivity != null) {
+            outState.putInt("machineId", selectedMachineInActivity.getId());
+        }
+        if (selectedPartInActivity != null) {
+            outState.putInt("partId", selectedPartInActivity.getId());
+        }
     }
 
     @Override
@@ -91,8 +174,8 @@ public class MainActivity extends AppCompatActivity
 
         if (id == R.id.main_action_calc) {
 
-                FragmentManager fragMan = getSupportFragmentManager();
-                Fragment fragment = fragMan.findFragmentByTag("visible_fragment");
+                fragMan = getSupportFragmentManager();
+                fragment = fragMan.findFragmentByTag("visible_fragment");
 
                 if (!(fragment instanceof StopWatchFragment)) {
                     return false;
@@ -166,11 +249,14 @@ public class MainActivity extends AppCompatActivity
 
 /*        Fragment fragment = null;
         Class fragmentClass = null;*/
-
+        DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         int id = item.getItemId();
 
         if (id == R.id.nav_stopwatch) {
-            // Handle the camera action
+            if (fragment.getClass() == StopWatchFragment.class) {
+                drawer.closeDrawer(GravityCompat.START);
+                return true;
+            }
             fragmentClass = StopWatchFragment.class;
         } else if (id == R.id.nav_employee) {
             fragmentClass = EmployeesFragment.class;
@@ -193,7 +279,6 @@ public class MainActivity extends AppCompatActivity
         item.setChecked(true);
         setTitle(item.getTitle());
 
-        DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         drawer.closeDrawer(GravityCompat.START);
         return true;
     }
