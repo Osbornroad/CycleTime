@@ -14,23 +14,6 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
 
-import com.gmail.osbornroad.cycletime.dao.FakeEmployeeDaoImpl;
-import com.gmail.osbornroad.cycletime.dao.FakeMachineDaoImpl;
-import com.gmail.osbornroad.cycletime.dao.FakePartDaoImpl;
-import com.gmail.osbornroad.cycletime.dao.FakeProcessDaoImpl;
-import com.gmail.osbornroad.cycletime.model.Employee;
-import com.gmail.osbornroad.cycletime.model.Machine;
-import com.gmail.osbornroad.cycletime.model.Part;
-import com.gmail.osbornroad.cycletime.model.Process;
-import com.gmail.osbornroad.cycletime.service.EmployeeService;
-import com.gmail.osbornroad.cycletime.service.EmployeeServiceImpl;
-import com.gmail.osbornroad.cycletime.service.FakeMachineServiceImpl;
-import com.gmail.osbornroad.cycletime.service.FakePartServiceImpl;
-import com.gmail.osbornroad.cycletime.service.FakeProcessServiceImpl;
-import com.gmail.osbornroad.cycletime.service.MachineService;
-import com.gmail.osbornroad.cycletime.service.PartService;
-import com.gmail.osbornroad.cycletime.service.ProcessService;
-
 
 /**
  * A simple {@link Fragment} subclass.
@@ -55,11 +38,11 @@ public class StopWatchFragment extends Fragment {
     /**
      * mStarted == true after Start button pressed until Stop pressed
      */
-    private boolean mStarted;
+//    private boolean mStarted;
     /**
      * mInProgress == true after Resume/Start button, Continue counting until Reset pressed
      */
-    private boolean mInProgress;
+//    private boolean mInProgress;
     /**
      * REFRESH_RATE is constant for RecyclerView item setting
      */
@@ -74,38 +57,36 @@ public class StopWatchFragment extends Fragment {
      * Employee setting interface
      * lineEmployee contains employeeInfo
      */
-    private EmployeeService employeeService;
+//    private EmployeeService employeeService;
     //    private LinearLayout lineEmployee;
     private TextView employeeInfo;
-    private Employee selectedEmployee;
+//    private Employee selectedEmployee;
     /**
      * Process setting interface
      */
-    private ProcessService processService;
     private TextView processInfo;
-    private Process selectedProcess;
     /**
      * Machine setting interface
      */
-    private MachineService machineService;
+//    private MachineService machineService;
     private TextView machineInfo;
-    private Machine selectedMachine;
+//    private Machine selectedMachine;
     /**
      * Part setting interface
      */
-    private PartService partService;
+//    private PartService partService;
     private TextView partInfo;
-    private Part selectedPart;
+//    private Part selectedPart;
 
     private EditText partQuantity;
 
-    public boolean ismInProgress() {
-        return mInProgress;
-    }
-
-    /**
+//    public boolean ismInProgress() {
+//        return mInProgress;
+//    }
+/*
+    *//**
      * Getters
-     */
+     *//*
     public boolean ismStarted() {        return mStarted;    }
     public StopWatch getStopWatch() {
         return stopWatch;
@@ -140,7 +121,7 @@ public class StopWatchFragment extends Fragment {
 
     public PartService getPartService() {
         return partService;
-    }
+    }*/
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
@@ -164,7 +145,7 @@ public class StopWatchFragment extends Fragment {
         /**
          * Employee setting interface creating
          */
-        employeeService = new EmployeeServiceImpl(new FakeEmployeeDaoImpl());
+//        employeeService = new EmployeeServiceImpl(new FakeEmployeeDaoImpl());
 //        lineEmployee = (LinearLayout) findViewById(R.id.line_employee);
         employeeInfo = (TextView) rootView.findViewById(R.id.employee_name_data);
         employeeInfo.setOnClickListener(new View.OnClickListener() {
@@ -177,7 +158,7 @@ public class StopWatchFragment extends Fragment {
         /**
          * Process setting interface creating
          */
-        processService = new FakeProcessServiceImpl(new FakeProcessDaoImpl());
+//        processService = new FakeProcessServiceImpl(new FakeProcessDaoImpl());
         processInfo = (TextView) rootView.findViewById(R.id.process_name_data);
         processInfo.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -189,7 +170,7 @@ public class StopWatchFragment extends Fragment {
         /**
          * Machine setting interface creating
          */
-        machineService = new FakeMachineServiceImpl(new FakeMachineDaoImpl());
+//        machineService = new FakeMachineServiceImpl(new FakeMachineDaoImpl());
         machineInfo = (TextView) rootView.findViewById(R.id.machine_name_data);
         machineInfo.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -201,7 +182,7 @@ public class StopWatchFragment extends Fragment {
         /**
          * Part setting interface creating
          */
-        partService = new FakePartServiceImpl(new FakePartDaoImpl());
+//        partService = new FakePartServiceImpl(new FakePartDaoImpl());
         partInfo = (TextView) rootView.findViewById(R.id.part_name_data);
         partInfo.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -220,7 +201,7 @@ public class StopWatchFragment extends Fragment {
         /**
          * Setting saved data
          */
-        setSavedInfo(savedInstanceState);
+//        setSavedInfo(savedInstanceState);
         /**
          * Refresh Stopwatch interface after activity creation
          */
@@ -229,20 +210,20 @@ public class StopWatchFragment extends Fragment {
         startButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (!mStarted) {
-                    if (!mInProgress) {
+                if (!mainActivity.mStarted) {
+                    if (!mainActivity.mInProgress) {
                         mHandler.sendEmptyMessage(MSG_START);
-                        mStarted = true;
+                        mainActivity.mStarted = true;
                         startButton.setText(R.string.button_stop);
-                        mInProgress = true;
+                        mainActivity.mInProgress = true;
                     } else {
                         mHandler.sendEmptyMessage(MSG_RESUME);
-                        mStarted = true;
+                        mainActivity.mStarted = true;
                         startButton.setText(R.string.button_stop);
                     }
                 } else {
                     mHandler.sendEmptyMessage(MSG_STOP);
-                    mStarted = false;
+                    mainActivity.mStarted = false;
                     startButton.setText(R.string.button_resume);
                 }
             }
@@ -251,8 +232,8 @@ public class StopWatchFragment extends Fragment {
         resetButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (!mStarted) {
-                    mInProgress = false;
+                if (!mainActivity.mStarted) {
+                    mainActivity.mInProgress = false;
                     timeRunningView.setText("00:00:00");
                     startButton.setText(R.string.button_start);
                 }
@@ -261,62 +242,66 @@ public class StopWatchFragment extends Fragment {
 
         return rootView;
     }
-
     @Override
     public void onPause() {
-        mainActivity.mStartedInActivity = mStarted;
-        mainActivity.mInProgressInActivity = mInProgress;
-        mainActivity.selectedEmployeeInActivity = selectedEmployee;
-        mainActivity.selectedProcessInActivity = selectedProcess;
-        mainActivity.selectedMachineInActivity = selectedMachine;
-        mainActivity.selectedPartInActivity = selectedPart;
+/*        mainActivity.mStarted = mStarted;
+        mainActivity.mInProgress = mInProgress;
+        mainActivity.selectedEmployee = selectedEmployee;
+        mainActivity.selectedProcess = selectedProcess;
+        mainActivity.selectedMachine = selectedMachine;
+        mainActivity.selectedPart = selectedPart;*/
         int quantity;
         try {
             quantity = Integer.parseInt(partQuantity.getText().toString());
         } catch (NumberFormatException e) {
             quantity = 0;
         }
-        mainActivity.partQuantityInActivity = quantity;
+        mainActivity.partQuantity = quantity;
         super.onPause();
     }
 
     private void setInfoWithoutSavedInstanceState() {
-        mStarted = mainActivity.mStartedInActivity;
-        mInProgress = mainActivity.mInProgressInActivity;
-        selectedEmployee = mainActivity.selectedEmployeeInActivity;
-        selectedProcess = mainActivity.selectedProcessInActivity;
-        selectedMachine = mainActivity.selectedMachineInActivity;
-        selectedPart = mainActivity.selectedPartInActivity;
+/*        mStarted = mainActivity.mStarted;
+        mInProgress = mainActivity.mInProgress;
+        selectedEmployee = mainActivity.selectedEmployee;
+        selectedProcess = mainActivity.selectedProcess;
+        selectedMachine = mainActivity.selectedMachine;
+        selectedPart = mainActivity.selectedPart;
 
-        int quantity = mainActivity.partQuantityInActivity;
+        employeeService = mainActivity.employeeService;
+        processService = mainActivity.processService;
+        machineService = mainActivity.machineService;
+        partService = mainActivity.partService;*/
+
+        int quantity = mainActivity.partQuantity;
         if (quantity > 0) {
             partQuantity.setText(String.valueOf(quantity));
         }
 
-        if (selectedEmployee != null) {
-            employeeInfo.setText(selectedEmployee.getEmployeeName());
+        if (mainActivity.selectedEmployee != null) {
+            employeeInfo.setText(mainActivity.selectedEmployee.getEmployeeName());
             employeeInfo.setTextColor(getResources().getColor(R.color.result_exists_data));
         }
 
-        if (selectedProcess != null) {
-            processInfo.setText(selectedProcess.getProcessName());
+        if (mainActivity.selectedProcess != null) {
+            processInfo.setText(mainActivity.selectedProcess.getProcessName());
             processInfo.setTextColor(getResources().getColor(R.color.result_exists_data));
         }
 
-        if (selectedMachine != null) {
-            machineInfo.setText(selectedMachine.getMachineName());
+        if (mainActivity.selectedMachine != null) {
+            machineInfo.setText(mainActivity.selectedMachine.getMachineName());
             machineInfo.setTextColor(getResources().getColor(R.color.result_exists_data));
         }
 
-        if (selectedPart != null) {
-            partInfo.setText(selectedPart.getPartName());
+        if (mainActivity.selectedPart != null) {
+            partInfo.setText(mainActivity.selectedPart.getPartName());
             partInfo.setTextColor(getResources().getColor(R.color.result_exists_data));
         }
     }
 
     /**
      * Setting saved data
-     */
+     *//*
     private void setSavedInfo(Bundle savedInstanceState) {
         if (savedInstanceState != null) {
             if (savedInstanceState.containsKey("mStarted")) {
@@ -353,11 +338,11 @@ public class StopWatchFragment extends Fragment {
                 timeRunningView.setText(savedInstanceState.getString("timeRunningView"));
             }
         }
-    }
-    /**
+    }*/
+/*    *//**
      * Save data before activity termination
      * @param outState
-     */
+     *//*
     @Override
     public void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
@@ -376,7 +361,7 @@ public class StopWatchFragment extends Fragment {
             outState.putInt("partId", selectedPart.getId());
         }
         outState.putString("timeRunningView", timeRunningView.getText().toString());
-    }
+    }*/
 
     /**
      * Setting data, which has been received from child activities:
@@ -394,26 +379,26 @@ public class StopWatchFragment extends Fragment {
         }
         if (data.hasExtra("employeeId")) {
             int employeeId = data.getExtras().getInt("employeeId");
-            selectedEmployee = employeeService.get(employeeId);
-            employeeInfo.setText(selectedEmployee.getEmployeeName());
+            mainActivity.selectedEmployee = mainActivity.employeeService.get(employeeId);
+            employeeInfo.setText(mainActivity.selectedEmployee.getEmployeeName());
             employeeInfo.setTextColor(getResources().getColor(R.color.result_exists_data));
         }
         if (data.hasExtra("processId")) {
             int processId = data.getExtras().getInt("processId");
-            selectedProcess = processService.get(processId);
-            processInfo.setText(selectedProcess.getProcessName());
+            mainActivity.selectedProcess = mainActivity.processService.get(processId);
+            processInfo.setText(mainActivity.selectedProcess.getProcessName());
             processInfo.setTextColor(getResources().getColor(R.color.result_exists_data));
         }
         if (data.hasExtra("machineId")) {
             int machineId = data.getExtras().getInt("machineId");
-            selectedMachine = machineService.get(machineId);
-            machineInfo.setText(selectedMachine.getMachineName());
+            mainActivity.selectedMachine = mainActivity.machineService.get(machineId);
+            machineInfo.setText(mainActivity.selectedMachine.getMachineName());
             machineInfo.setTextColor(getResources().getColor(R.color.result_exists_data));
         }
         if (data.hasExtra("partId")) {
             int partId = data.getExtras().getInt("partId");
-            selectedPart = partService.get(partId);
-            partInfo.setText(selectedPart.getPartName());
+            mainActivity.selectedPart = mainActivity.partService.get(partId);
+            partInfo.setText(mainActivity.selectedPart.getPartName());
             partInfo.setTextColor(getResources().getColor(R.color.result_exists_data));
         }
     }
@@ -454,8 +439,8 @@ public class StopWatchFragment extends Fragment {
 
         timeRunningView.setText(stopWatch.getFormattedElapsedTime());
 
-        if (mInProgress) {
-            if (mStarted) {
+        if (mainActivity.mInProgress) {
+            if (mainActivity.mStarted) {
                 mHandler.sendEmptyMessage(MSG_UPDATE);
                 startButton.setText(R.string.button_stop);
             } else {

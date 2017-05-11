@@ -12,25 +12,17 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.widget.EditText;
 import android.widget.Toast;
 
-import com.gmail.osbornroad.cycletime.dao.FakeEmployeeDaoImpl;
-import com.gmail.osbornroad.cycletime.dao.FakeMachineDaoImpl;
-import com.gmail.osbornroad.cycletime.dao.FakePartDaoImpl;
-import com.gmail.osbornroad.cycletime.dao.FakeProcessDaoImpl;
 import com.gmail.osbornroad.cycletime.model.Employee;
 import com.gmail.osbornroad.cycletime.model.Machine;
 import com.gmail.osbornroad.cycletime.model.Part;
 import com.gmail.osbornroad.cycletime.model.Process;
 import com.gmail.osbornroad.cycletime.service.EmployeeService;
-import com.gmail.osbornroad.cycletime.service.EmployeeServiceImpl;
-import com.gmail.osbornroad.cycletime.service.FakeMachineServiceImpl;
-import com.gmail.osbornroad.cycletime.service.FakePartServiceImpl;
-import com.gmail.osbornroad.cycletime.service.FakeProcessServiceImpl;
 import com.gmail.osbornroad.cycletime.service.MachineService;
 import com.gmail.osbornroad.cycletime.service.PartService;
 import com.gmail.osbornroad.cycletime.service.ProcessService;
+import com.gmail.osbornroad.cycletime.utility.Utility;
 
 public class MainActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
@@ -39,34 +31,40 @@ public class MainActivity extends AppCompatActivity
     private Class fragmentClass;
     private FragmentManager fragMan;
 
-    private EmployeeService employeeService;
-    private ProcessService processService;
-    private MachineService machineService;
-    private PartService partService;
+    protected EmployeeService employeeService;
+    protected ProcessService processService;
+    protected MachineService machineService;
+    protected PartService partService;
 
-    protected boolean mStartedInActivity;
-    protected boolean mInProgressInActivity;
-    protected Employee selectedEmployeeInActivity;
-    protected Process selectedProcessInActivity;
-    protected Machine selectedMachineInActivity;
-    protected Part selectedPartInActivity;
-    protected int partQuantityInActivity;
+    /**
+     * mStarted == true after Start button pressed until Stop pressed
+     * mInProgress == true after Resume/Start button, Continue counting until Reset pressed
+     */
+    protected boolean mStarted;
+    protected boolean mInProgress;
+
+    protected Employee selectedEmployee;
+    protected Process selectedProcess;
+    protected Machine selectedMachine;
+    protected Part selectedPart;
+    protected int partQuantity;
+
+    private StopWatch stopWatch;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
-/*        FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
-        fab.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
-                        .setAction("Action", null).show();
-            }
-        });*/
+        stopWatch = StopWatch.getStopWatch();
+
+        employeeService = Utility.getEmployeeService();
+        processService = Utility.getProcessService();
+        machineService = Utility.getMachineService();
+        partService = Utility.getPartService();
 
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
@@ -90,41 +88,42 @@ public class MainActivity extends AppCompatActivity
             setTitle(getResources().getString(R.string.stopwatch_fragment_title));
         }
 
-        setSavedInfo(savedInstanceState);
+        if (fragment.getClass() == StopWatchFragment.class) {
+            setSavedInfo(savedInstanceState);
+        }
+
     }
 
     private void setSavedInfo(Bundle savedInstanceState) {
-        if (fragment.getClass() != StopWatchFragment.class) {
+/*        if (fragment.getClass() != StopWatchFragment.class) {
             return;
-        }
-
-        employeeService = new EmployeeServiceImpl(new FakeEmployeeDaoImpl());
-        processService = new FakeProcessServiceImpl(new FakeProcessDaoImpl());
-        machineService = new FakeMachineServiceImpl(new FakeMachineDaoImpl());
-        partService = new FakePartServiceImpl(new FakePartDaoImpl());
+        }*/
 
         if (savedInstanceState != null) {
             if (savedInstanceState.containsKey("mStarted")) {
-                mStartedInActivity = savedInstanceState.getBoolean("mStarted");
+                mStarted = savedInstanceState.getBoolean("mStarted");
             }
             if (savedInstanceState.containsKey("mInProgress")) {
-                mInProgressInActivity = savedInstanceState.getBoolean("mInProgress");
+                mInProgress = savedInstanceState.getBoolean("mInProgress");
             }
             if (savedInstanceState.containsKey("employeeId")) {
                 int employeeId = savedInstanceState.getInt("employeeId");
-                selectedEmployeeInActivity = employeeService.get(employeeId);
+                selectedEmployee = employeeService.get(employeeId);
             }
             if (savedInstanceState.containsKey("processId")) {
                 int processId = savedInstanceState.getInt("processId");
-                selectedProcessInActivity = processService.get(processId);
+                selectedProcess = processService.get(processId);
             }
             if (savedInstanceState.containsKey("machineId")) {
                 int machineId = savedInstanceState.getInt("machineId");
-                selectedMachineInActivity = machineService.get(machineId);
+                selectedMachine = machineService.get(machineId);
             }
             if (savedInstanceState.containsKey("partId")) {
                 int partId = savedInstanceState.getInt("partId");
-                selectedPartInActivity = partService.get(partId);
+                selectedPart = partService.get(partId);
+            }
+            if (savedInstanceState.containsKey("partQuantity")) {
+                partQuantity = savedInstanceState.getInt("partQuantity");
             }
         }
     }
@@ -132,19 +131,22 @@ public class MainActivity extends AppCompatActivity
     @Override
     protected void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
-        outState.putBoolean("mStarted", mStartedInActivity);
-        outState.putBoolean("mInProgress", mInProgressInActivity);
-        if (selectedEmployeeInActivity != null) {
-            outState.putInt("employeeId", selectedEmployeeInActivity.getId());
+        outState.putBoolean("mStarted", mStarted);
+        outState.putBoolean("mInProgress", mInProgress);
+        if (selectedEmployee != null) {
+            outState.putInt("employeeId", selectedEmployee.getId());
         }
-        if (selectedProcessInActivity != null) {
-            outState.putInt("processId", selectedProcessInActivity.getId());
+        if (selectedProcess != null) {
+            outState.putInt("processId", selectedProcess.getId());
         }
-        if (selectedMachineInActivity != null) {
-            outState.putInt("machineId", selectedMachineInActivity.getId());
+        if (selectedMachine != null) {
+            outState.putInt("machineId", selectedMachine.getId());
         }
-        if (selectedPartInActivity != null) {
-            outState.putInt("partId", selectedPartInActivity.getId());
+        if (selectedPart != null) {
+            outState.putInt("partId", selectedPart.getId());
+        }
+        if (partQuantity > 0) {
+            outState.putInt("partQuantity", partQuantity);
         }
     }
 
@@ -181,14 +183,14 @@ public class MainActivity extends AppCompatActivity
                     return false;
                 }
 
-                Employee selectedEmployee = ((StopWatchFragment) fragment).getSelectedEmployee();
+/*                Employee selectedEmployee = ((StopWatchFragment) fragment).getSelectedEmployee();
                 Process selectedProcess = ((StopWatchFragment) fragment).getSelectedProcess();
                 Machine selectedMachine = ((StopWatchFragment) fragment).getSelectedMachine();
                 Part selectedPart = ((StopWatchFragment) fragment).getSelectedPart();
                 EditText partQuantity = ((StopWatchFragment) fragment).getPartQuantity();
                 boolean mInProgress = ((StopWatchFragment) fragment).ismInProgress();
                 boolean mStarted = ((StopWatchFragment) fragment).ismStarted();
-                StopWatch stopWatch = ((StopWatchFragment) fragment).getStopWatch();
+                StopWatch stopWatch = ((StopWatchFragment) fragment).getStopWatch();*/
 
                 Intent intent = new Intent(this, ResultMeasurementActivity.class);
                 if (selectedEmployee != null) {
@@ -203,10 +205,10 @@ public class MainActivity extends AppCompatActivity
                 if (selectedPart != null) {
                     intent.putExtra("partId", selectedPart.getId());
                 }
-                if (!partQuantity.getText().toString().equals("")) {
+                if (partQuantity > 0) {
                     int quantity;
                     try {
-                        quantity = Integer.parseInt(partQuantity.getText().toString());
+                        quantity = Integer.parseInt(String.valueOf(partQuantity));
                     } catch (NumberFormatException e) {
                         Toast.makeText(this, "Please input correct quantity", Toast.LENGTH_SHORT).show();
                         return true;
