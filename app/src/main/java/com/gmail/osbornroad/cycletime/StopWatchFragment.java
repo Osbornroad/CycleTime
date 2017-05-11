@@ -29,20 +29,12 @@ public class StopWatchFragment extends Fragment {
     private final int MSG_STOP = 3;
     private final int MSG_UPDATE = 4;
 
-    MainActivity mainActivity;
+    private MainActivity mainActivity;
 
     /**
      * StopWatch is singletone
      */
     private StopWatch stopWatch;
-    /**
-     * mStarted == true after Start button pressed until Stop pressed
-     */
-//    private boolean mStarted;
-    /**
-     * mInProgress == true after Resume/Start button, Continue counting until Reset pressed
-     */
-//    private boolean mInProgress;
     /**
      * REFRESH_RATE is constant for RecyclerView item setting
      */
@@ -53,75 +45,11 @@ public class StopWatchFragment extends Fragment {
     private TextView timeRunningView;
     private Button startButton;
     private Button resetButton;
-    /**
-     * Employee setting interface
-     * lineEmployee contains employeeInfo
-     */
-//    private EmployeeService employeeService;
-    //    private LinearLayout lineEmployee;
     private TextView employeeInfo;
-//    private Employee selectedEmployee;
-    /**
-     * Process setting interface
-     */
     private TextView processInfo;
-    /**
-     * Machine setting interface
-     */
-//    private MachineService machineService;
     private TextView machineInfo;
-//    private Machine selectedMachine;
-    /**
-     * Part setting interface
-     */
-//    private PartService partService;
     private TextView partInfo;
-//    private Part selectedPart;
-
     private EditText partQuantity;
-
-//    public boolean ismInProgress() {
-//        return mInProgress;
-//    }
-/*
-    *//**
-     * Getters
-     *//*
-    public boolean ismStarted() {        return mStarted;    }
-    public StopWatch getStopWatch() {
-        return stopWatch;
-    }
-    public Employee getSelectedEmployee() {
-        return selectedEmployee;
-    }
-    public Process getSelectedProcess() {
-        return selectedProcess;
-    }
-    public Machine getSelectedMachine() {
-        return selectedMachine;
-    }
-    public Part getSelectedPart() {
-        return selectedPart;
-    }
-    public EditText getPartQuantity() {
-        return partQuantity;
-    }
-
-    public EmployeeService getEmployeeService() {
-        return employeeService;
-    }
-
-    public ProcessService getProcessService() {
-        return processService;
-    }
-
-    public MachineService getMachineService() {
-        return machineService;
-    }
-
-    public PartService getPartService() {
-        return partService;
-    }*/
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
@@ -132,9 +60,7 @@ public class StopWatchFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        // Inflate the layout for this fragment
         View rootView =  inflater.inflate(R.layout.fragment_stop_watch, container, false);
-
         /**
          * StopWatch main functional creating
          */
@@ -145,20 +71,18 @@ public class StopWatchFragment extends Fragment {
         /**
          * Employee setting interface creating
          */
-//        employeeService = new EmployeeServiceImpl(new FakeEmployeeDaoImpl());
-//        lineEmployee = (LinearLayout) findViewById(R.id.line_employee);
         employeeInfo = (TextView) rootView.findViewById(R.id.employee_name_data);
         employeeInfo.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent = new Intent(v.getContext(), EmployeeChooseActivity.class);
-                startActivityForResult(intent, 0);
+                mainActivity.switchFragment(EmployeesFragment.class, getResources().getString(R.string.employees_fragment_title));
+/*                Intent intent = new Intent(v.getContext(), EmployeeChooseActivity.class);
+                startActivityForResult(intent, 0);*/
             }
         });
         /**
          * Process setting interface creating
          */
-//        processService = new FakeProcessServiceImpl(new FakeProcessDaoImpl());
         processInfo = (TextView) rootView.findViewById(R.id.process_name_data);
         processInfo.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -170,7 +94,6 @@ public class StopWatchFragment extends Fragment {
         /**
          * Machine setting interface creating
          */
-//        machineService = new FakeMachineServiceImpl(new FakeMachineDaoImpl());
         machineInfo = (TextView) rootView.findViewById(R.id.machine_name_data);
         machineInfo.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -182,7 +105,6 @@ public class StopWatchFragment extends Fragment {
         /**
          * Part setting interface creating
          */
-//        partService = new FakePartServiceImpl(new FakePartDaoImpl());
         partInfo = (TextView) rootView.findViewById(R.id.part_name_data);
         partInfo.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -195,13 +117,10 @@ public class StopWatchFragment extends Fragment {
         partQuantity = (EditText) rootView.findViewById(R.id.part_qty_data);
 
         mainActivity = (MainActivity) getActivity();
-
-        setInfoWithoutSavedInstanceState();
-
         /**
          * Setting saved data
          */
-//        setSavedInfo(savedInstanceState);
+        setInfoWithoutSavedInstanceState();
         /**
          * Refresh Stopwatch interface after activity creation
          */
@@ -244,12 +163,6 @@ public class StopWatchFragment extends Fragment {
     }
     @Override
     public void onPause() {
-/*        mainActivity.mStarted = mStarted;
-        mainActivity.mInProgress = mInProgress;
-        mainActivity.selectedEmployee = selectedEmployee;
-        mainActivity.selectedProcess = selectedProcess;
-        mainActivity.selectedMachine = selectedMachine;
-        mainActivity.selectedPart = selectedPart;*/
         int quantity;
         try {
             quantity = Integer.parseInt(partQuantity.getText().toString());
@@ -261,18 +174,6 @@ public class StopWatchFragment extends Fragment {
     }
 
     private void setInfoWithoutSavedInstanceState() {
-/*        mStarted = mainActivity.mStarted;
-        mInProgress = mainActivity.mInProgress;
-        selectedEmployee = mainActivity.selectedEmployee;
-        selectedProcess = mainActivity.selectedProcess;
-        selectedMachine = mainActivity.selectedMachine;
-        selectedPart = mainActivity.selectedPart;
-
-        employeeService = mainActivity.employeeService;
-        processService = mainActivity.processService;
-        machineService = mainActivity.machineService;
-        partService = mainActivity.partService;*/
-
         int quantity = mainActivity.partQuantity;
         if (quantity > 0) {
             partQuantity.setText(String.valueOf(quantity));
@@ -300,77 +201,10 @@ public class StopWatchFragment extends Fragment {
     }
 
     /**
-     * Setting saved data
-     *//*
-    private void setSavedInfo(Bundle savedInstanceState) {
-        if (savedInstanceState != null) {
-            if (savedInstanceState.containsKey("mStarted")) {
-                mStarted = savedInstanceState.getBoolean("mStarted");
-            }
-            if (savedInstanceState.containsKey("mInProgress")) {
-                mInProgress = savedInstanceState.getBoolean("mInProgress");
-            }
-            if (savedInstanceState.containsKey("employeeId")) {
-                int employeeId = savedInstanceState.getInt("employeeId");
-                selectedEmployee = employeeService.get(employeeId);
-                employeeInfo.setText(selectedEmployee.getEmployeeName());
-                employeeInfo.setTextColor(getResources().getColor(R.color.result_exists_data));
-            }
-            if (savedInstanceState.containsKey("processId")) {
-                int processId = savedInstanceState.getInt("processId");
-                selectedProcess = processService.get(processId);
-                processInfo.setText(selectedProcess.getProcessName());
-                processInfo.setTextColor(getResources().getColor(R.color.result_exists_data));
-            }
-            if (savedInstanceState.containsKey("machineId")) {
-                int machineId = savedInstanceState.getInt("machineId");
-                selectedMachine = machineService.get(machineId);
-                machineInfo.setText(selectedMachine.getMachineName());
-                machineInfo.setTextColor(getResources().getColor(R.color.result_exists_data));
-            }
-            if (savedInstanceState.containsKey("partId")) {
-                int partId = savedInstanceState.getInt("partId");
-                selectedPart = partService.get(partId);
-                partInfo.setText(selectedPart.getPartName());
-                partInfo.setTextColor(getResources().getColor(R.color.result_exists_data));
-            }
-            if (savedInstanceState.containsKey("timeRunningView")) {
-                timeRunningView.setText(savedInstanceState.getString("timeRunningView"));
-            }
-        }
-    }*/
-/*    *//**
-     * Save data before activity termination
-     * @param outState
-     *//*
-    @Override
-    public void onSaveInstanceState(Bundle outState) {
-        super.onSaveInstanceState(outState);
-        outState.putBoolean("mStarted", mStarted);
-        outState.putBoolean("mInProgress", mInProgress);
-        if (selectedEmployee != null) {
-            outState.putInt("employeeId", selectedEmployee.getId());
-        }
-        if (selectedProcess != null) {
-            outState.putInt("processId", selectedProcess.getId());
-        }
-        if (selectedMachine != null) {
-            outState.putInt("machineId", selectedMachine.getId());
-        }
-        if (selectedPart != null) {
-            outState.putInt("partId", selectedPart.getId());
-        }
-        outState.putString("timeRunningView", timeRunningView.getText().toString());
-    }*/
-
-    /**
      * Setting data, which has been received from child activities:
      * EmployeeChooseActivity
      * ProcessChooseActivity
      * MachineChooseActivity
-     * @param requestCode
-     * @param resultCode
-     * @param data
      */
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {

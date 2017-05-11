@@ -30,6 +30,7 @@ public class MainActivity extends AppCompatActivity
     private Fragment fragment;
     private Class fragmentClass;
     private FragmentManager fragMan;
+    FragmentManager fm;
 
     protected EmployeeService employeeService;
     protected ProcessService processService;
@@ -48,7 +49,9 @@ public class MainActivity extends AppCompatActivity
     protected Machine selectedMachine;
     protected Part selectedPart;
     protected int partQuantity;
-
+    /**
+     * StopWatch is singletone
+     */
     private StopWatch stopWatch;
 
     @Override
@@ -75,6 +78,8 @@ public class MainActivity extends AppCompatActivity
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
 
+        fm = getSupportFragmentManager();
+
         if (fragment == null) {
             try {
                 fragment = StopWatchFragment.class.newInstance();
@@ -83,7 +88,6 @@ public class MainActivity extends AppCompatActivity
             } catch (IllegalAccessException e) {
                 e.printStackTrace();
             }
-            FragmentManager fm = getSupportFragmentManager();
             fm.beginTransaction().replace(R.id.content_main, fragment, "visible_fragment").commit();
             setTitle(getResources().getString(R.string.stopwatch_fragment_title));
         }
@@ -94,11 +98,18 @@ public class MainActivity extends AppCompatActivity
 
     }
 
-    private void setSavedInfo(Bundle savedInstanceState) {
-/*        if (fragment.getClass() != StopWatchFragment.class) {
-            return;
-        }*/
+    protected void switchFragment(Class fragmentClass, String title) {
+        try {
+            fm.beginTransaction().replace(R.id.content_main, (Fragment) fragmentClass.newInstance(), "visible_fragment").commit();
+        } catch (InstantiationException e) {
+            e.printStackTrace();
+        } catch (IllegalAccessException e) {
+            e.printStackTrace();
+        }
+        setTitle(title);
+    }
 
+    private void setSavedInfo(Bundle savedInstanceState) {
         if (savedInstanceState != null) {
             if (savedInstanceState.containsKey("mStarted")) {
                 mStarted = savedInstanceState.getBoolean("mStarted");
@@ -162,18 +173,13 @@ public class MainActivity extends AppCompatActivity
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        // Inflate the menu; this adds items to the action bar if it is present.
         getMenuInflater().inflate(R.menu.main, menu);
         return true;
     }
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        // Handle action bar item clicks here. The action bar will
-        // automatically handle clicks on the Home/Up button, so long
-        // as you specify a parent activity in AndroidManifest.xml.
         int id = item.getItemId();
-
         if (id == R.id.main_action_calc) {
 
                 fragMan = getSupportFragmentManager();
@@ -182,15 +188,6 @@ public class MainActivity extends AppCompatActivity
                 if (!(fragment instanceof StopWatchFragment)) {
                     return false;
                 }
-
-/*                Employee selectedEmployee = ((StopWatchFragment) fragment).getSelectedEmployee();
-                Process selectedProcess = ((StopWatchFragment) fragment).getSelectedProcess();
-                Machine selectedMachine = ((StopWatchFragment) fragment).getSelectedMachine();
-                Part selectedPart = ((StopWatchFragment) fragment).getSelectedPart();
-                EditText partQuantity = ((StopWatchFragment) fragment).getPartQuantity();
-                boolean mInProgress = ((StopWatchFragment) fragment).ismInProgress();
-                boolean mStarted = ((StopWatchFragment) fragment).ismStarted();
-                StopWatch stopWatch = ((StopWatchFragment) fragment).getStopWatch();*/
 
                 Intent intent = new Intent(this, ResultMeasurementActivity.class);
                 if (selectedEmployee != null) {
@@ -249,8 +246,6 @@ public class MainActivity extends AppCompatActivity
     public boolean onNavigationItemSelected(MenuItem item) {
         // Handle navigation view item clicks here.
 
-/*        Fragment fragment = null;
-        Class fragmentClass = null;*/
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         int id = item.getItemId();
 
@@ -276,12 +271,17 @@ public class MainActivity extends AppCompatActivity
             e.printStackTrace();
         }
 
-        FragmentManager fm = getSupportFragmentManager();
+//        FragmentManager fm = getSupportFragmentManager();
         fm.beginTransaction().replace(R.id.content_main, fragment, "visible_fragment").commit();
         item.setChecked(true);
         setTitle(item.getTitle());
 
         drawer.closeDrawer(GravityCompat.START);
         return true;
+    }
+
+    public void setSelectedEmployee(int clickedEmployeeId) {
+        selectedEmployee = employeeService.get(clickedEmployeeId);
+        switchFragment(StopWatchFragment.class, getResources().getString(R.string.stopwatch_fragment_title));
     }
 }
