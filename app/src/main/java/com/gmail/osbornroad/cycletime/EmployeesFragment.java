@@ -1,6 +1,7 @@
 package com.gmail.osbornroad.cycletime;
 
 import android.os.Bundle;
+import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.DividerItemDecoration;
@@ -9,7 +10,6 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Toast;
 
 import com.gmail.osbornroad.cycletime.dao.FakeEmployeeDaoImpl;
 import com.gmail.osbornroad.cycletime.service.EmployeeServiceImpl;
@@ -21,6 +21,11 @@ public class EmployeesFragment extends Fragment implements EmployeeListAdapter.L
     private RecyclerView recyclerView;
     private MainActivity mainActivity;
 
+    @Override
+    public void onCreate(@Nullable Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setRetainInstance(true);
+    }
 
     public EmployeesFragment() {
         // Required empty public constructor
@@ -50,14 +55,11 @@ public class EmployeesFragment extends Fragment implements EmployeeListAdapter.L
         return rootView;
     }
 
+
+
     @Override
     public void onListItemClick(int clickedEmployeeId) {
-/*        Intent intent = new Intent();
-        intent. putExtra("employeeId", clickedEmployeeId);
-        setResult(RESULT_OK, intent);
-        finish();*/
         mainActivity.setSelectedEmployee(clickedEmployeeId);
-        Toast.makeText(getActivity().getApplicationContext(), "Choosen ID: " + clickedEmployeeId, Toast.LENGTH_SHORT).show();
     }
 
 }

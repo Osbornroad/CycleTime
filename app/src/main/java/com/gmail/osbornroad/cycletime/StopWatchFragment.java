@@ -24,6 +24,8 @@ public class StopWatchFragment extends Fragment {
         // Required empty public constructor
     }
 
+    private final int FRAGMENT_ID = 0;
+
     private final int MSG_START = 0;
     private final int MSG_RESUME = 2;
     private final int MSG_STOP = 3;
@@ -171,6 +173,12 @@ public class StopWatchFragment extends Fragment {
         }
         mainActivity.partQuantity = quantity;
         super.onPause();
+    }
+
+    @Override
+    public void onResume() {
+        stopWatchResume();
+        super.onResume();
     }
 
     private void setInfoWithoutSavedInstanceState() {

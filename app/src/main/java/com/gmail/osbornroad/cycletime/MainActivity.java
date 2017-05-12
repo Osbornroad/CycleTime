@@ -5,6 +5,7 @@ import android.os.Bundle;
 import android.support.design.widget.NavigationView;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
+import android.support.v4.app.FragmentTransaction;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
@@ -30,7 +31,7 @@ public class MainActivity extends AppCompatActivity
     private Fragment fragment;
     private Class fragmentClass;
     private FragmentManager fragMan;
-    FragmentManager fm;
+//    FragmentManager fm;
 
     protected EmployeeService employeeService;
     protected ProcessService processService;
@@ -78,9 +79,17 @@ public class MainActivity extends AppCompatActivity
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
 
-        fm = getSupportFragmentManager();
+        fragMan = getSupportFragmentManager();
+        fragMan.addOnBackStackChangedListener(new FragmentManager.OnBackStackChangedListener() {
+            @Override
+            public void onBackStackChanged() {
+                setActionBarTitle();
+            }
+        });
 
-        if (fragment == null) {
+        setSavedFragment(savedInstanceState);
+
+/*        if (fragment == null) {
             try {
                 fragment = StopWatchFragment.class.newInstance();
             } catch (InstantiationException e) {
@@ -88,25 +97,91 @@ public class MainActivity extends AppCompatActivity
             } catch (IllegalAccessException e) {
                 e.printStackTrace();
             }
-            fm.beginTransaction().replace(R.id.content_main, fragment, "visible_fragment").commit();
+            fragMan.beginTransaction().replace(R.id.content_main, fragment, "visible_fragment").commit();
             setTitle(getResources().getString(R.string.stopwatch_fragment_title));
-        }
+        }*/
 
-        if (fragment.getClass() == StopWatchFragment.class) {
+//        if (fragment.getClass() == StopWatchFragment.class) {
             setSavedInfo(savedInstanceState);
-        }
+//        }
 
     }
 
-    protected void switchFragment(Class fragmentClass, String title) {
+    private void setSavedFragment(Bundle savedInstanceState) {
+        Class savedFragmentClass = null;
+        if (savedInstanceState != null) {
+            if (savedInstanceState.containsKey("fragmentName")) {
+                try {
+                    savedFragmentClass = Class.forName((String) savedInstanceState.get("fragmentName"));
+                } catch (ClassNotFoundException e) {
+                    e.printStackTrace();
+                }
+            }
+        } else {
+            savedFragmentClass = StopWatchFragment.class;
+        }
+        switchFragment(savedFragmentClass, "");
+    }
+
+    private void setActionBarTitle() {
+        String title = null;
+        if (fragment instanceof StopWatchFragment) {
+            title = getResources().getString(R.string.stopwatch_fragment_title);
+        } else if (fragment instanceof EmployeesFragment) {
+            title = getResources().getString(R.string.employees_fragment_title);
+        }
+        setTitle(title);
+    }
+
+/*    protected void switchFragmentWithoutBackStack(Class fragmentClass, String title) {
         try {
-            fm.beginTransaction().replace(R.id.content_main, (Fragment) fragmentClass.newInstance(), "visible_fragment").commit();
+            fragment= (Fragment) fragmentClass.newInstance();
         } catch (InstantiationException e) {
             e.printStackTrace();
         } catch (IllegalAccessException e) {
             e.printStackTrace();
         }
-        setTitle(title);
+        FragmentTransaction transaction = fragMan.beginTransaction();
+        transaction.replace(R.id.content_main, fragment, "visible_fragment");
+//        transaction.setTransition(TRANSIT_FRAGMENT_FADE);
+//        transaction.addToBackStack(null);
+        transaction.commit();
+        invalidateOptionsMenu();
+        setActionBarTitle();
+//        setTitle(title);
+    }*/
+
+    protected void switchFragment(Class fragmentClass, String title) {
+        Fragment currentFragment = fragMan.findFragmentByTag("visible_fragment");
+        try {
+            fragment= (Fragment) fragmentClass.newInstance();
+        } catch (InstantiationException e) {
+            e.printStackTrace();
+        } catch (IllegalAccessException e) {
+            e.printStackTrace();
+        }
+        FragmentTransaction transaction = fragMan.beginTransaction();
+        transaction.replace(R.id.content_main, fragment, "visible_fragment");
+/*//        transaction.setTransition(TRANSIT_FRAGMENT_FADE);
+        if (currentFragment != null) {
+            transaction.remove(currentFragment);
+*//*            if (fragment.getClass() != currentFragment.getClass()) {
+                transaction.addToBackStack(null);
+            }*//*
+        }
+        */
+
+//        transaction.add(R.id.content_main, fragment, "visible_fragment");
+        if (currentFragment != null) {
+            if (fragment.getClass() == currentFragment.getClass()) {
+                fragMan.popBackStack();
+            }
+        }
+        transaction.addToBackStack(null);
+        transaction.commit();
+        invalidateOptionsMenu();
+        setActionBarTitle();
+//        setTitle(title);
     }
 
     private void setSavedInfo(Bundle savedInstanceState) {
@@ -144,6 +219,9 @@ public class MainActivity extends AppCompatActivity
         super.onSaveInstanceState(outState);
         outState.putBoolean("mStarted", mStarted);
         outState.putBoolean("mInProgress", mInProgress);
+        if (fragment != null) {
+            outState.putString("fragmentName", fragment.getClass().getName());
+        }
         if (selectedEmployee != null) {
             outState.putInt("employeeId", selectedEmployee.getId());
         }
@@ -169,17 +247,37 @@ public class MainActivity extends AppCompatActivity
         } else {
             super.onBackPressed();
         }
+        if (fragMan.getBackStackEntryCount() == 0) {
+            finish();
+        }
+        fragment = fragMan.findFragmentByTag("visible_fragment");
+        setActionBarTitle();
     }
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        getMenuInflater().inflate(R.menu.main, menu);
+        getMenuInflater().inflate(R.menu.menu_main, menu);
         return true;
+    }
+
+    @Override
+    public boolean onPrepareOptionsMenu(Menu menu) {
+        menu.findItem(R.id.main_action_calc).setVisible(fragment.getClass() == StopWatchFragment.class);
+        return super.onPrepareOptionsMenu(menu);
     }
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         int id = item.getItemId();
+
+        if (id == android.R.id.home) {
+            FragmentManager fm = getSupportFragmentManager();
+            if (fm.getBackStackEntryCount() > 0) {
+                fm.popBackStack();
+            }
+            return true;
+        }
+
         if (id == R.id.main_action_calc) {
 
                 fragMan = getSupportFragmentManager();
@@ -272,7 +370,7 @@ public class MainActivity extends AppCompatActivity
         }
 
 //        FragmentManager fm = getSupportFragmentManager();
-        fm.beginTransaction().replace(R.id.content_main, fragment, "visible_fragment").commit();
+        fragMan.beginTransaction().replace(R.id.content_main, fragment, "visible_fragment").commit();
         item.setChecked(true);
         setTitle(item.getTitle());
 

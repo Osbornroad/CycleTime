@@ -342,7 +342,7 @@ public class StopWatchActivity extends AppCompatActivity {
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
-            case R.id.action_calc:
+            case R.id.main_action_calc:
                 Intent intent = new Intent(this, ResultMeasurementActivity.class);
                 if (selectedEmployee != null) {
                     intent.putExtra("employeeId", selectedEmployee.getId());
