@@ -58,22 +58,27 @@ public class Utility {
         ContentValues cv = new ContentValues();
         cv.put(StopWatchContract.EmployeeEntry.COLUMN_EMPLOYEE_NAME, "Архипова Анастасия");
         cv.put(StopWatchContract.EmployeeEntry.COLUMN_EMPLOYEE_ENABLE, 1);
+        list.add(cv);
 
         cv = new ContentValues();
         cv.put(StopWatchContract.EmployeeEntry.COLUMN_EMPLOYEE_NAME, "Смирнова Анастасия");
         cv.put(StopWatchContract.EmployeeEntry.COLUMN_EMPLOYEE_ENABLE, 1);
+        list.add(cv);
 
         cv = new ContentValues();
         cv.put(StopWatchContract.EmployeeEntry.COLUMN_EMPLOYEE_NAME, "Насибулов Дамир");
         cv.put(StopWatchContract.EmployeeEntry.COLUMN_EMPLOYEE_ENABLE, 1);
+        list.add(cv);
 
         cv = new ContentValues();
         cv.put(StopWatchContract.EmployeeEntry.COLUMN_EMPLOYEE_NAME, "Иванов Александр");
         cv.put(StopWatchContract.EmployeeEntry.COLUMN_EMPLOYEE_ENABLE, 1);
+        list.add(cv);
 
         cv = new ContentValues();
         cv.put(StopWatchContract.EmployeeEntry.COLUMN_EMPLOYEE_NAME, "Хижанкова Татьяна");
         cv.put(StopWatchContract.EmployeeEntry.COLUMN_EMPLOYEE_ENABLE, 1);
+        list.add(cv);
 
         try {
             db.beginTransaction();

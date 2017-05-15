@@ -10,8 +10,10 @@ import android.support.v7.widget.DividerItemDecoration;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 
+import com.gmail.osbornroad.cycletime.dao.DBEmployeeDaoImpl;
 import com.gmail.osbornroad.cycletime.dao.StopWatchContract;
 import com.gmail.osbornroad.cycletime.dao.StopWatchDbHelper;
+import com.gmail.osbornroad.cycletime.service.EmployeeServiceImpl;
 import com.gmail.osbornroad.cycletime.utility.Utility;
 
 /**
@@ -23,7 +25,7 @@ public class EmployeeChooseActivity extends AppCompatActivity implements Employe
     private static final int NUM_LIST_ITEMS = 100;
     private EmployeeListAdapter employeeListAdapter;
     private RecyclerView recyclerView;
-    private SQLiteDatabase mDb;
+//    private SQLiteDatabase mDb;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -42,15 +44,18 @@ public class EmployeeChooseActivity extends AppCompatActivity implements Employe
         recyclerView.setHasFixedSize(true);
         recyclerView.setItemAnimator(new DefaultItemAnimator());
 
-        StopWatchDbHelper helper = new StopWatchDbHelper(this);
-        mDb = helper.getWritableDatabase();
-        Utility.insertFakeEmployeeData(mDb);
+/*        StopWatchDbHelper helper = new StopWatchDbHelper(this);
+        mDb = helper.getWritableDatabase();*/
+        /**
+         * TODO fake data - delete
+         */
+//        Utility.insertFakeEmployeeData(mDb);
         /**
          * Get adapter, set to RecyclerView
          */
-        Cursor cursor = getAllEmployees();
-        employeeListAdapter = new EmployeeListAdapter(this, cursor);
-//        employeeListAdapter = new EmployeeListAdapter(new EmployeeServiceImpl(new FakeEmployeeDaoImpl()), this);
+//        Cursor cursor = getAllEmployees();
+//        employeeListAdapter = new EmployeeListAdapter(this, cursor);
+        employeeListAdapter = new EmployeeListAdapter(new EmployeeServiceImpl(new DBEmployeeDaoImpl(this)), this);
         recyclerView.setAdapter(employeeListAdapter);
     }
     /**
@@ -65,7 +70,7 @@ public class EmployeeChooseActivity extends AppCompatActivity implements Employe
         finish();
     }
 
-    private Cursor getAllEmployees() {
+/*    private Cursor getAllEmployees() {
         return mDb.query(
                 StopWatchContract.EmployeeEntry.TABLE_NAME,
                 null,
@@ -75,5 +80,5 @@ public class EmployeeChooseActivity extends AppCompatActivity implements Employe
                 null,
                 StopWatchContract.EmployeeEntry.COLUMN_EMPLOYEE_NAME
         );
-    }
+    }*/
 }

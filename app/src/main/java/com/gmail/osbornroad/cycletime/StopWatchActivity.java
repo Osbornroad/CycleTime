@@ -1,6 +1,7 @@
 package com.gmail.osbornroad.cycletime;
 
 import android.content.Intent;
+import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
@@ -230,6 +231,9 @@ public class StopWatchActivity extends AppCompatActivity {
      * @param resultCode
      * @param data
      */
+
+    private SQLiteDatabase mDb;
+
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         if (data == null) {
@@ -237,6 +241,8 @@ public class StopWatchActivity extends AppCompatActivity {
         }
         if (data.hasExtra("employeeId")) {
             int employeeId = data.getExtras().getInt("employeeId");
+
+
             selectedEmployee = employeeService.get(employeeId);
             employeeInfo.setText(selectedEmployee.getEmployeeName());
         }
