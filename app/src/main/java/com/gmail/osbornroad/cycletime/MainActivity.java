@@ -13,6 +13,8 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.SubMenu;
+import android.view.View;
 import android.widget.Toast;
 
 import com.gmail.osbornroad.cycletime.model.Employee;
@@ -50,6 +52,8 @@ public class MainActivity extends AppCompatActivity
     protected Machine selectedMachine;
     protected Part selectedPart;
     protected int partQuantity;
+
+    private NavigationView navigationView = null;
     /**
      * StopWatch is singletone
      */
@@ -70,14 +74,39 @@ public class MainActivity extends AppCompatActivity
         machineService = Utility.getMachineService();
         partService = Utility.getPartService();
 
+        navigationView = (NavigationView) findViewById(R.id.nav_view);
+        navigationView.setNavigationItemSelectedListener(this);
+
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
-                this, drawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
+                this, drawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close) {
+            @Override
+            public void onDrawerOpened(View drawerView) {
+
+                super.onDrawerOpened(drawerView);
+            }
+
+            @Override
+            public void onDrawerClosed(View drawerView) {
+                /*final Menu menu = navigationView.getMenu();
+                for (int i = 0; i < menu.size(); i++) {
+                    MenuItem item = menu.getItem(i);
+                    if (item.hasSubMenu()) {
+                        SubMenu subMenu = item.getSubMenu();
+                        for (int j = 0; j < subMenu.size(); j++) {
+                            MenuItem subMenuItem = subMenu.getItem(j);
+                            subMenuItem.setChecked(false);
+                        }
+                    } else {
+                        item.setChecked(false);
+                    }
+                }*/
+                super.onDrawerClosed(drawerView);
+            }
+        };
         drawer.addDrawerListener(toggle);
         toggle.syncState();
 
-        NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
-        navigationView.setNavigationItemSelectedListener(this);
 
         fragMan = getSupportFragmentManager();
         fragMan.addOnBackStackChangedListener(new FragmentManager.OnBackStackChangedListener() {
@@ -252,6 +281,27 @@ public class MainActivity extends AppCompatActivity
         }
         fragment = fragMan.findFragmentByTag("visible_fragment");
         setActionBarTitle();
+
+        /**
+         * TODO: Add interface NavigationFragment to all fragments
+         */
+
+        final Menu menu = navigationView.getMenu();
+                for (int i = 0; i < menu.size(); i++) {
+                    MenuItem item = menu.getItem(i);
+                    if (item.hasSubMenu()) {
+                        SubMenu subMenu = item.getSubMenu();
+                        for (int j = 0; j < subMenu.size(); j++) {
+                            MenuItem subMenuItem = subMenu.getItem(j);
+                            subMenuItem.setChecked(false);
+                        }
+                    } else {
+                        item.setChecked(false);
+                    }
+                }
+
+        MenuItem item = menu.getItem(((NavigationFragment) fragment).getMenuId());
+        item.setChecked(true);
     }
 
     @Override
@@ -363,23 +413,24 @@ public class MainActivity extends AppCompatActivity
             fragmentClass = PartsFragment.class;
         }
 
-        try {
+/*        try {
             fragment = (Fragment) fragmentClass.newInstance();
         } catch (Exception e) {
             e.printStackTrace();
-        }
+        }*/
 
 //        FragmentManager fm = getSupportFragmentManager();
-        fragMan.beginTransaction().replace(R.id.content_main, fragment, "visible_fragment").commit();
+        switchFragment(fragmentClass, "");
+//        fragMan.beginTransaction().replace(R.id.content_main, fragment, "visible_fragment").commit();
         item.setChecked(true);
-        setTitle(item.getTitle());
+//        setTitle(item.getTitle());
 
         drawer.closeDrawer(GravityCompat.START);
         return true;
     }
 
     public void setSelectedEmployee(int clickedEmployeeId) {
-        selectedEmployee = employeeService.get(clickedEmployeeId);
-        switchFragment(StopWatchFragment.class, getResources().getString(R.string.stopwatch_fragment_title));
+/*        selectedEmployee = employeeService.get(clickedEmployeeId);
+        switchFragment(StopWatchFragment.class, getResources().getString(R.string.stopwatch_fragment_title));*/
     }
 }

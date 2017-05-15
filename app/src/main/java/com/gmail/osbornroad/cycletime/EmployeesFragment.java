@@ -11,15 +11,15 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-import com.gmail.osbornroad.cycletime.dao.FakeEmployeeDaoImpl;
-import com.gmail.osbornroad.cycletime.service.EmployeeServiceImpl;
-
-public class EmployeesFragment extends Fragment implements EmployeeListAdapter.ListItemClickListener {
+public class EmployeesFragment extends Fragment implements EmployeeListAdapter.ListItemClickListener, NavigationFragment {
 
     private static final int NUM_LIST_ITEMS = 100;
     private EmployeeListAdapter employeeListAdapter;
     private RecyclerView recyclerView;
     private MainActivity mainActivity;
+
+    private final int FRAGMENT_ID = 1;
+
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
@@ -47,8 +47,8 @@ public class EmployeesFragment extends Fragment implements EmployeeListAdapter.L
         /**
          * Get adapter, set to RecyclerView
          */
-        employeeListAdapter = new EmployeeListAdapter(new EmployeeServiceImpl(new FakeEmployeeDaoImpl()), this);
-        recyclerView.setAdapter(employeeListAdapter);
+//        employeeListAdapter = new EmployeeListAdapter(new EmployeeServiceImpl(new FakeEmployeeDaoImpl()), this);
+//        recyclerView.setAdapter(employeeListAdapter);
 
         mainActivity = (MainActivity) getActivity();
 
@@ -59,7 +59,11 @@ public class EmployeesFragment extends Fragment implements EmployeeListAdapter.L
 
     @Override
     public void onListItemClick(int clickedEmployeeId) {
-        mainActivity.setSelectedEmployee(clickedEmployeeId);
+//        mainActivity.setSelectedEmployee(clickedEmployeeId);
     }
 
+    @Override
+    public int getMenuId() {
+        return FRAGMENT_ID;
+    }
 }

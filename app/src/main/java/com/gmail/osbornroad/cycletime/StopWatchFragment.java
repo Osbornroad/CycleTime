@@ -18,7 +18,7 @@ import android.widget.TextView;
 /**
  * A simple {@link Fragment} subclass.
  */
-public class StopWatchFragment extends Fragment {
+public class StopWatchFragment extends Fragment implements NavigationFragment {
 
     public StopWatchFragment() {
         // Required empty public constructor
@@ -77,9 +77,9 @@ public class StopWatchFragment extends Fragment {
         employeeInfo.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                mainActivity.switchFragment(EmployeesFragment.class, getResources().getString(R.string.employees_fragment_title));
-/*                Intent intent = new Intent(v.getContext(), EmployeeChooseActivity.class);
-                startActivityForResult(intent, 0);*/
+//                mainActivity.switchFragment(EmployeesFragment.class, getResources().getString(R.string.employees_fragment_title));
+                Intent intent = new Intent(v.getContext(), EmployeeChooseActivity.class);
+                startActivityForResult(intent, 0);
             }
         });
         /**
@@ -289,6 +289,11 @@ public class StopWatchFragment extends Fragment {
                 startButton.setText(R.string.button_resume);
             }
         }
+    }
+
+    @Override
+    public int getMenuId() {
+        return FRAGMENT_ID;
     }
 }
 
