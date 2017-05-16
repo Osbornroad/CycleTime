@@ -10,7 +10,7 @@ import android.view.MenuItem;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.gmail.osbornroad.cycletime.service.EmployeeService;
+import com.gmail.osbornroad.cycletime.model.Employee;
 import com.gmail.osbornroad.cycletime.service.MachineService;
 import com.gmail.osbornroad.cycletime.service.PartService;
 import com.gmail.osbornroad.cycletime.service.ProcessService;
@@ -18,12 +18,11 @@ import com.gmail.osbornroad.cycletime.utility.Utility;
 
 public class ResultMeasurementActivity extends AppCompatActivity {
 
-    private EmployeeService employeeService = Utility.getEmployeeService();
     private ProcessService processService = Utility.getProcessService();
     private MachineService machineService = Utility.getMachineService();
     private PartService partService = Utility.getPartService();
 
-    private int employeeId;
+    private Employee employee;
     private int processId;
     private int machineId;
     private int partId;
@@ -32,14 +31,6 @@ public class ResultMeasurementActivity extends AppCompatActivity {
     private int cycleTime;
 
     private Intent intent;
-
-/*    private TextView employeeNameTitle;
-    private TextView processNameTitle;
-    private TextView machineNameTitle;
-    private TextView partNameTitle;
-    private TextView partQuantityTitle;
-    private TextView resultStopWatchTitle;
-    private TextView cycleTimeTitle;*/
 
     private TextView employeeNameDisplay;
     private TextView processNameDisplay;
@@ -104,14 +95,6 @@ public class ResultMeasurementActivity extends AppCompatActivity {
     }
 
     private void setSampleData() {
-/*
-        employeeNameTitle = (TextView) findViewById(R.id.name_employee);
-        processNameTitle = (TextView) findViewById(R.id.employee_name_in_result);;
-        machineNameTitle = (TextView) findViewById(R.id.employee_name_in_result);;
-        partNameTitle = (TextView) findViewById(R.id.employee_name_in_result);;
-        partQuantityTitle = (TextView) findViewById(R.id.employee_name_in_result);;
-        resultStopWatchTitle = (TextView) findViewById(R.id.employee_name_in_result);;
-        cycleTimeTitle = (TextView) findViewById(R.id.employee_name_in_result);;*/
 
         employeeNameDisplay = (TextView) findViewById(R.id.employee_name_in_result);
         processNameDisplay = (TextView) findViewById(R.id.process_name_in_result);
@@ -121,9 +104,9 @@ public class ResultMeasurementActivity extends AppCompatActivity {
         resultStopWatchDisplay = (TextView) findViewById(R.id.total_time_in_result);
         cycleTimeDisplay = (TextView) findViewById(R.id.cycle_time_in_result);
 
-        if (intent.hasExtra("employeeId")) {
-            employeeId = intent.getIntExtra("employeeId", 0);
-            employeeNameDisplay.setText(employeeService.get(this.employeeId).getEmployeeName());
+        if (intent.hasExtra("selectedEmployee")) {
+            employee = intent.getParcelableExtra("selectedEmployee");
+            employeeNameDisplay.setText(employee.getEmployeeName());
             employeeNameDisplay.setTextColor(getResources().getColor(R.color.result_exists_data));
         }
         if (intent.hasExtra("processId")) {

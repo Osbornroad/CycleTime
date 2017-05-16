@@ -1,5 +1,6 @@
 package com.gmail.osbornroad.cycletime;
 
+import android.database.Cursor;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
@@ -10,6 +11,9 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+
+import com.gmail.osbornroad.cycletime.dao.StopWatchContract;
+import com.gmail.osbornroad.cycletime.model.Employee;
 
 public class EmployeesFragment extends Fragment implements EmployeeListAdapter.ListItemClickListener, NavigationFragment {
 
@@ -52,18 +56,39 @@ public class EmployeesFragment extends Fragment implements EmployeeListAdapter.L
 
         mainActivity = (MainActivity) getActivity();
 
+        Cursor cursor = getAllEmployees();
+        employeeListAdapter = new EmployeeListAdapter(this, cursor);
+        recyclerView.setAdapter(employeeListAdapter);
+
         return rootView;
     }
 
-
-
     @Override
-    public void onListItemClick(int clickedEmployeeId) {
-//        mainActivity.setSelectedEmployee(clickedEmployeeId);
+    public void onListItemClick(Employee employee) {
+        mainActivity.selectedEmployee = employee;
+        mainActivity.notAddToBackStack = true;
+        mainActivity.switchFragment(StopWatchFragment.class, getResources().getString(R.string.stopwatch_fragment_title));
     }
+
+    /*    @Override
+    public void onListItemClick(int clickedEmployeeId) {
+        mainActivity.setSelectedEmployee(clickedEmployeeId);
+    }*/
 
     @Override
     public int getMenuId() {
         return FRAGMENT_ID;
+    }
+
+    private Cursor getAllEmployees() {
+        return mainActivity.mDb.query(
+                StopWatchContract.EmployeeEntry.TABLE_NAME,
+                null,
+                null,
+                null,
+                null,
+                null,
+                StopWatchContract.EmployeeEntry.COLUMN_EMPLOYEE_NAME
+        );
     }
 }

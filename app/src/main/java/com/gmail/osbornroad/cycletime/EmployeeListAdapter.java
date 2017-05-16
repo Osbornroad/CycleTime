@@ -8,7 +8,8 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
-import com.gmail.osbornroad.cycletime.dao.StopWatchContract.*;
+import com.gmail.osbornroad.cycletime.dao.StopWatchContract.EmployeeEntry;
+import com.gmail.osbornroad.cycletime.model.Employee;
 
 /**
  * Created by User on 25.04.2017.
@@ -16,28 +17,19 @@ import com.gmail.osbornroad.cycletime.dao.StopWatchContract.*;
 
 public class EmployeeListAdapter extends RecyclerView.Adapter<EmployeeListAdapter.EmployeeViewHolder> {
 
-/*    private EmployeeService employeeService;
-    private Employee[] employees;*/
     final private ListItemClickListener mOnClickListener;
     private Cursor mCursor;
-
-/*    public EmployeeListAdapter(EmployeeService employeeService, ListItemClickListener mOnClickListener) {
-        this.employeeService = employeeService;
-        this.employees = employeeService.getEmployeesArray();
-        this.mOnClickListener = mOnClickListener;
-    }*/
 
     public EmployeeListAdapter(ListItemClickListener mOnClickListener, Cursor cursor) {
         this.mOnClickListener = mOnClickListener;
         this.mCursor = cursor;
     }
 
-
     /**
      * Interface ListItemClickListener for clickable of list items
      */
     interface ListItemClickListener {
-        void onListItemClick(int clickedEmployeeId);
+        void onListItemClick(Employee employee);
     }
 
     @Override
@@ -54,16 +46,11 @@ public class EmployeeListAdapter extends RecyclerView.Adapter<EmployeeListAdapte
         if (!mCursor.moveToPosition(position)) {
             return;
         }
+        int id = mCursor.getInt(mCursor.getColumnIndex(EmployeeEntry._ID));
         String name = mCursor.getString(mCursor.getColumnIndex(EmployeeEntry.COLUMN_EMPLOYEE_NAME));
-        int enable = mCursor.getInt(mCursor.getColumnIndex(EmployeeEntry.COLUMN_EMPLOYEE_ENABLE));
-//        holder.bind(employees[position].getId(), employees[position].getEmployeeName());
-        holder.bind(0, name);
+        boolean enable = mCursor.getInt(mCursor.getColumnIndex(EmployeeEntry.COLUMN_EMPLOYEE_ENABLE)) == 1;
+        holder.bind(id, name, enable);
     }
-
-/*    @Override
-    public int getItemCount() {
-        return employees.length;
-    }*/
 
     @Override
     public int getItemCount() {
@@ -73,7 +60,7 @@ public class EmployeeListAdapter extends RecyclerView.Adapter<EmployeeListAdapte
     class EmployeeViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener{
 
         TextView listItemEmployeeName;
-        int id;
+        Employee employee;
 
         public EmployeeViewHolder(View itemView) {
             super(itemView);
@@ -83,11 +70,11 @@ public class EmployeeListAdapter extends RecyclerView.Adapter<EmployeeListAdapte
 
         @Override
         public void onClick(View v) {
-            mOnClickListener.onListItemClick(id);
+            mOnClickListener.onListItemClick(employee);
         }
 
-        public void bind(int employeeId, String employeeName) {
-            id = employeeId;
+        public void bind(int employeeId, String employeeName, boolean employeeEnable) {
+            employee = new Employee(employeeId, employeeName, employeeEnable);
             listItemEmployeeName.setText(employeeName);
         }
     }

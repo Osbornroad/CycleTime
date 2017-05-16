@@ -13,6 +13,9 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
+import android.widget.Toast;
+
+import com.gmail.osbornroad.cycletime.model.Employee;
 
 
 /**
@@ -77,9 +80,9 @@ public class StopWatchFragment extends Fragment implements NavigationFragment {
         employeeInfo.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-//                mainActivity.switchFragment(EmployeesFragment.class, getResources().getString(R.string.employees_fragment_title));
-                Intent intent = new Intent(v.getContext(), EmployeeChooseActivity.class);
-                startActivityForResult(intent, 0);
+                mainActivity.switchFragment(EmployeesFragment.class, getResources().getString(R.string.employees_fragment_title));
+/*                Intent intent = new Intent(v.getContext(), EmployeeChooseActivity.class);
+                startActivityForResult(intent, 0);*/
             }
         });
         /**
@@ -117,6 +120,19 @@ public class StopWatchFragment extends Fragment implements NavigationFragment {
         });
 
         partQuantity = (EditText) rootView.findViewById(R.id.part_qty_data);
+        partQuantity.setOnFocusChangeListener(new View.OnFocusChangeListener() {
+            @Override
+            public void onFocusChange(View v, boolean hasFocus) {
+                if (!hasFocus) {
+                    try {
+                        mainActivity.partQuantity = Integer.parseInt(partQuantity.getText().toString());
+                    } catch (NumberFormatException e) {
+                        Toast.makeText(mainActivity.getApplicationContext(), "Please input correct quantity", Toast.LENGTH_SHORT).show();
+                        partQuantity.setText("");
+                    }
+                }
+            }
+        });
 
         mainActivity = (MainActivity) getActivity();
         /**
@@ -219,9 +235,8 @@ public class StopWatchFragment extends Fragment implements NavigationFragment {
         if (data == null) {
             return;
         }
-        if (data.hasExtra("employeeId")) {
-            int employeeId = data.getExtras().getInt("employeeId");
-            mainActivity.selectedEmployee = mainActivity.employeeService.get(employeeId);
+        if (data.hasExtra("employee")) {
+            mainActivity.selectedEmployee = (Employee) data.getSerializableExtra("employee");
             employeeInfo.setText(mainActivity.selectedEmployee.getEmployeeName());
             employeeInfo.setTextColor(getResources().getColor(R.color.result_exists_data));
         }

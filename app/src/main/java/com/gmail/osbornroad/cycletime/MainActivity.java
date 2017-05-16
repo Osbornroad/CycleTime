@@ -1,6 +1,7 @@
 package com.gmail.osbornroad.cycletime;
 
 import android.content.Intent;
+import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
 import android.support.design.widget.NavigationView;
 import android.support.v4.app.Fragment;
@@ -17,11 +18,11 @@ import android.view.SubMenu;
 import android.view.View;
 import android.widget.Toast;
 
+import com.gmail.osbornroad.cycletime.dao.StopWatchDbHelper;
 import com.gmail.osbornroad.cycletime.model.Employee;
 import com.gmail.osbornroad.cycletime.model.Machine;
 import com.gmail.osbornroad.cycletime.model.Part;
 import com.gmail.osbornroad.cycletime.model.Process;
-import com.gmail.osbornroad.cycletime.service.EmployeeService;
 import com.gmail.osbornroad.cycletime.service.MachineService;
 import com.gmail.osbornroad.cycletime.service.PartService;
 import com.gmail.osbornroad.cycletime.service.ProcessService;
@@ -35,7 +36,7 @@ public class MainActivity extends AppCompatActivity
     private FragmentManager fragMan;
 //    FragmentManager fm;
 
-    protected EmployeeService employeeService;
+//    protected EmployeeService employeeService;
     protected ProcessService processService;
     protected MachineService machineService;
     protected PartService partService;
@@ -59,6 +60,10 @@ public class MainActivity extends AppCompatActivity
      */
     private StopWatch stopWatch;
 
+    protected SQLiteDatabase mDb;
+
+    protected boolean notAddToBackStack = false;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -69,7 +74,7 @@ public class MainActivity extends AppCompatActivity
 
         stopWatch = StopWatch.getStopWatch();
 
-        employeeService = Utility.getEmployeeService();
+//        employeeService = Utility.getEmployeeService();
         processService = Utility.getProcessService();
         machineService = Utility.getMachineService();
         partService = Utility.getPartService();
@@ -133,6 +138,10 @@ public class MainActivity extends AppCompatActivity
 //        if (fragment.getClass() == StopWatchFragment.class) {
             setSavedInfo(savedInstanceState);
 //        }
+
+        StopWatchDbHelper helper = new StopWatchDbHelper(this);
+        mDb = helper.getWritableDatabase();
+        Utility.insertFakeEmployeeData(mDb);
 
     }
 
@@ -206,7 +215,9 @@ public class MainActivity extends AppCompatActivity
                 fragMan.popBackStack();
             }
         }
-        transaction.addToBackStack(null);
+        if (!notAddToBackStack) {
+            transaction.addToBackStack(null);
+        }
         transaction.commit();
         invalidateOptionsMenu();
         setActionBarTitle();
@@ -221,9 +232,12 @@ public class MainActivity extends AppCompatActivity
             if (savedInstanceState.containsKey("mInProgress")) {
                 mInProgress = savedInstanceState.getBoolean("mInProgress");
             }
-            if (savedInstanceState.containsKey("employeeId")) {
+/*            if (savedInstanceState.containsKey("employeeId")) {
                 int employeeId = savedInstanceState.getInt("employeeId");
                 selectedEmployee = employeeService.get(employeeId);
+            }*/
+            if (savedInstanceState.containsKey("selectedEmployee")) {
+                selectedEmployee = savedInstanceState.getParcelable("selectedEmployee");
             }
             if (savedInstanceState.containsKey("processId")) {
                 int processId = savedInstanceState.getInt("processId");
@@ -252,7 +266,8 @@ public class MainActivity extends AppCompatActivity
             outState.putString("fragmentName", fragment.getClass().getName());
         }
         if (selectedEmployee != null) {
-            outState.putInt("employeeId", selectedEmployee.getId());
+//            outState.putInt("employeeId", selectedEmployee.getId());
+            outState.putParcelable("selectedEmployee", selectedEmployee);
         }
         if (selectedProcess != null) {
             outState.putInt("processId", selectedProcess.getId());
@@ -339,7 +354,7 @@ public class MainActivity extends AppCompatActivity
 
                 Intent intent = new Intent(this, ResultMeasurementActivity.class);
                 if (selectedEmployee != null) {
-                    intent.putExtra("employeeId", selectedEmployee.getId());
+                    intent.putExtra("selectedEmployee", selectedEmployee);
                 }
                 if (selectedProcess != null) {
                     intent.putExtra("processId", selectedProcess.getId());

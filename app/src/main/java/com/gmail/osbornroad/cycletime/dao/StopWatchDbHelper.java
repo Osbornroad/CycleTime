@@ -24,6 +24,8 @@ public class StopWatchDbHelper extends SQLiteOpenHelper {
     @Override
     public void onCreate(SQLiteDatabase db) {
         //create Employee database
+        db.execSQL("DROP TABLE IF EXISTS " + EmployeeEntry.TABLE_NAME);
+        onCreate(db);
         final String SQL_CREATE_EMPLOYEE_TABLE = "CREATE TABLE " + EmployeeEntry.TABLE_NAME + " (" +
                 EmployeeEntry._ID + " INTEGER PRIMARY KEY AUTOINCREMENT," +
                 EmployeeEntry.COLUMN_EMPLOYEE_NAME + " TEXT NOT NULL, " +

@@ -13,7 +13,6 @@ import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.gmail.osbornroad.cycletime.dao.FakeEmployeeDaoImpl;
 import com.gmail.osbornroad.cycletime.dao.FakeMachineDaoImpl;
 import com.gmail.osbornroad.cycletime.dao.FakePartDaoImpl;
 import com.gmail.osbornroad.cycletime.dao.FakeProcessDaoImpl;
@@ -21,8 +20,6 @@ import com.gmail.osbornroad.cycletime.model.Employee;
 import com.gmail.osbornroad.cycletime.model.Machine;
 import com.gmail.osbornroad.cycletime.model.Part;
 import com.gmail.osbornroad.cycletime.model.Process;
-import com.gmail.osbornroad.cycletime.service.EmployeeService;
-import com.gmail.osbornroad.cycletime.service.EmployeeServiceImpl;
 import com.gmail.osbornroad.cycletime.service.FakeMachineServiceImpl;
 import com.gmail.osbornroad.cycletime.service.FakePartServiceImpl;
 import com.gmail.osbornroad.cycletime.service.FakeProcessServiceImpl;
@@ -63,7 +60,7 @@ public class StopWatchActivity extends AppCompatActivity {
      * Employee setting interface
      * lineEmployee contains employeeInfo
      */
-    private EmployeeService employeeService;
+//    private EmployeeService employeeService;
 //    private LinearLayout lineEmployee;
     private TextView employeeInfo;
     private Employee selectedEmployee;
@@ -102,7 +99,7 @@ public class StopWatchActivity extends AppCompatActivity {
         /**
          * Employee setting interface creating
          */
-        employeeService = new EmployeeServiceImpl(new FakeEmployeeDaoImpl());
+//        employeeService = new EmployeeServiceImpl(new FakeEmployeeDaoImpl());
 //        lineEmployee = (LinearLayout) findViewById(R.id.line_employee);
         employeeInfo = (TextView) findViewById(R.id.employee_name_data);
         employeeInfo.setOnClickListener(new View.OnClickListener() {
@@ -171,11 +168,11 @@ public class StopWatchActivity extends AppCompatActivity {
             if (savedInstanceState.containsKey("mInProgress")) {
                 mInProgress = savedInstanceState.getBoolean("mInProgress");
             }
-            if (savedInstanceState.containsKey("employeeId")) {
+/*            if (savedInstanceState.containsKey("employeeId")) {
                 int employeeId = savedInstanceState.getInt("employeeId");
                 selectedEmployee = employeeService.get(employeeId);
                 employeeInfo.setText(selectedEmployee.getEmployeeName());
-            }
+            }*/
             if (savedInstanceState.containsKey("processId")) {
                 int processId = savedInstanceState.getInt("processId");
                 selectedProcess = processService.get(processId);
@@ -235,11 +232,11 @@ public class StopWatchActivity extends AppCompatActivity {
         if (data == null) {
             return;
         }
-        if (data.hasExtra("employeeId")) {
+/*        if (data.hasExtra("employeeId")) {
             int employeeId = data.getExtras().getInt("employeeId");
             selectedEmployee = employeeService.get(employeeId);
             employeeInfo.setText(selectedEmployee.getEmployeeName());
-        }
+        }*/
         if (data.hasExtra("processId")) {
             int processId = data.getExtras().getInt("processId");
             selectedProcess = processService.get(processId);

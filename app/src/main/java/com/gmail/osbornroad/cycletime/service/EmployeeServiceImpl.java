@@ -1,7 +1,6 @@
 package com.gmail.osbornroad.cycletime.service;
 
 import com.gmail.osbornroad.cycletime.dao.EmployeeDao;
-import com.gmail.osbornroad.cycletime.dao.FakeEmployeeDaoImpl;
 import com.gmail.osbornroad.cycletime.model.Employee;
 
 import java.util.Collections;
@@ -59,25 +58,4 @@ public class EmployeeServiceImpl implements EmployeeService {
         return employees;
     }
 
-    public static void main(String[] args) {
-        EmployeeService employeeService = new EmployeeServiceImpl(new FakeEmployeeDaoImpl());
-
-        employeeService .printAll();
-
-        Employee employee = new Employee("Сидоров");
-        employeeService.save(employee);
-        employeeService.printAll();
-
-        Employee employee1 = employeeService.get(3);
-
-        System.out.println();
-        System.out.println(employee1);
-        System.out.println();
-
-        Employee employee2 = new Employee(employee1.getId(), "Жихарев", false);
-
-        employeeService.save(employee2);
-
-        employeeService.printAll();
-    }
 }

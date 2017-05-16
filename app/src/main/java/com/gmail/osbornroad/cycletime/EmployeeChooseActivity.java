@@ -12,6 +12,7 @@ import android.support.v7.widget.RecyclerView;
 
 import com.gmail.osbornroad.cycletime.dao.StopWatchContract;
 import com.gmail.osbornroad.cycletime.dao.StopWatchDbHelper;
+import com.gmail.osbornroad.cycletime.model.Employee;
 import com.gmail.osbornroad.cycletime.utility.Utility;
 
 /**
@@ -23,7 +24,7 @@ public class EmployeeChooseActivity extends AppCompatActivity implements Employe
     private static final int NUM_LIST_ITEMS = 100;
     private EmployeeListAdapter employeeListAdapter;
     private RecyclerView recyclerView;
-    private SQLiteDatabase mDb;
+    protected SQLiteDatabase mDb;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -50,17 +51,16 @@ public class EmployeeChooseActivity extends AppCompatActivity implements Employe
          */
         Cursor cursor = getAllEmployees();
         employeeListAdapter = new EmployeeListAdapter(this, cursor);
-//        employeeListAdapter = new EmployeeListAdapter(new EmployeeServiceImpl(new FakeEmployeeDaoImpl()), this);
         recyclerView.setAdapter(employeeListAdapter);
     }
     /**
-     * Send result to StopWatchActivity of clicked employee list item
-     * @param clickedEmployeeId Id of clicked employee list item
+     * Send result to StopWatchActivity of clicked employee
      */
+
     @Override
-    public void onListItemClick(int clickedEmployeeId) {
+    public void onListItemClick(Employee employee) {
         Intent intent = new Intent();
-        intent. putExtra("employeeId", clickedEmployeeId);
+        intent. putExtra("employee", employee);
         setResult(RESULT_OK, intent);
         finish();
     }
