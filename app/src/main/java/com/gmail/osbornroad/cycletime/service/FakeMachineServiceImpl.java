@@ -1,3 +1,4 @@
+/*
 package com.gmail.osbornroad.cycletime.service;
 
 import com.gmail.osbornroad.cycletime.dao.FakeMachineDaoImpl;
@@ -8,9 +9,11 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 
+*/
 /**
  * Created by User on 27.04.2017.
- */
+ *//*
+
 
 public class FakeMachineServiceImpl implements MachineService {
 
@@ -70,3 +73,4 @@ public class FakeMachineServiceImpl implements MachineService {
 
     }
 }
+*/

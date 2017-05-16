@@ -1,3 +1,4 @@
+/*
 package com.gmail.osbornroad.cycletime;
 
 import android.content.Intent;
@@ -15,9 +16,11 @@ import com.gmail.osbornroad.cycletime.dao.StopWatchDbHelper;
 import com.gmail.osbornroad.cycletime.model.Employee;
 import com.gmail.osbornroad.cycletime.utility.Utility;
 
+*/
 /**
  * Implement EmployeeListAdapter.ListItemClickListener for clickable of list items
- */
+ *//*
+
 
 public class EmployeeChooseActivity extends AppCompatActivity implements EmployeeListAdapter.ListItemClickListener {
 
@@ -30,11 +33,13 @@ public class EmployeeChooseActivity extends AppCompatActivity implements Employe
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_employee_choose);
-        /**
+        */
+/**
          * Get RecyclerView by Id
          * Set LayoutManager
          * Set dividers
-         */
+         *//*
+
         recyclerView = (RecyclerView) findViewById(R.id.rv_employee);
         LinearLayoutManager layoutManager = new LinearLayoutManager(this);
         recyclerView.setLayoutManager(layoutManager);
@@ -46,16 +51,20 @@ public class EmployeeChooseActivity extends AppCompatActivity implements Employe
         StopWatchDbHelper helper = new StopWatchDbHelper(this);
         mDb = helper.getWritableDatabase();
         Utility.insertFakeEmployeeData(mDb);
-        /**
+        */
+/**
          * Get adapter, set to RecyclerView
-         */
+         *//*
+
         Cursor cursor = getAllEmployees();
         employeeListAdapter = new EmployeeListAdapter(this, cursor);
         recyclerView.setAdapter(employeeListAdapter);
     }
-    /**
+    */
+/**
      * Send result to StopWatchActivity of clicked employee
-     */
+     *//*
+
 
     @Override
     public void onListItemClick(Employee employee) {
@@ -77,3 +86,4 @@ public class EmployeeChooseActivity extends AppCompatActivity implements Employe
         );
     }
 }
+*/

@@ -1,3 +1,4 @@
+/*
 package com.gmail.osbornroad.cycletime;
 
 import android.content.Intent;
@@ -41,3 +42,4 @@ public class MachineChooseActivity extends AppCompatActivity implements MachineL
         finish();
     }
 }
+*/

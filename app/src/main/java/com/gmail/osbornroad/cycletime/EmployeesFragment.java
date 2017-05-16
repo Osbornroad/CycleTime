@@ -51,8 +51,6 @@ public class EmployeesFragment extends Fragment implements EmployeeListAdapter.L
         /**
          * Get adapter, set to RecyclerView
          */
-//        employeeListAdapter = new EmployeeListAdapter(new EmployeeServiceImpl(new FakeEmployeeDaoImpl()), this);
-//        recyclerView.setAdapter(employeeListAdapter);
 
         mainActivity = (MainActivity) getActivity();
 
@@ -69,11 +67,6 @@ public class EmployeesFragment extends Fragment implements EmployeeListAdapter.L
         mainActivity.notAddToBackStack = true;
         mainActivity.switchFragment(StopWatchFragment.class, getResources().getString(R.string.stopwatch_fragment_title));
     }
-
-    /*    @Override
-    public void onListItemClick(int clickedEmployeeId) {
-        mainActivity.setSelectedEmployee(clickedEmployeeId);
-    }*/
 
     @Override
     public int getMenuId() {

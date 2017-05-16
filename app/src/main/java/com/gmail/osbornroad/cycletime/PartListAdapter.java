@@ -1,14 +1,15 @@
 package com.gmail.osbornroad.cycletime;
 
 import android.content.Context;
+import android.database.Cursor;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
+import com.gmail.osbornroad.cycletime.dao.StopWatchContract.MachineEntry;
 import com.gmail.osbornroad.cycletime.model.Part;
-import com.gmail.osbornroad.cycletime.service.PartService;
 
 
 /**
@@ -17,18 +18,16 @@ import com.gmail.osbornroad.cycletime.service.PartService;
 
 public class PartListAdapter extends RecyclerView.Adapter<PartListAdapter.PartViewHolder> {
 
-    private PartService partService;
-    private Part[] parts;
     final private ListItemClickListener mOnClickListener;
+    private Cursor mCursor;
 
-    public PartListAdapter(PartService partService, ListItemClickListener mOnClickListener) {
-        this.partService = partService;
-        this.parts = this.partService.getPartArray();
+    public PartListAdapter(ListItemClickListener mOnClickListener, Cursor cursor) {
         this.mOnClickListener = mOnClickListener;
+        this.mCursor = cursor;
     }
 
     interface ListItemClickListener {
-        void onListItemClick(int clickedPartId);
+        void onListItemClick(Part part);
     }
 
     @Override
@@ -42,18 +41,23 @@ public class PartListAdapter extends RecyclerView.Adapter<PartListAdapter.PartVi
 
     @Override
     public void onBindViewHolder(PartViewHolder holder, int position) {
-        holder.bind(parts[position].getId(), parts[position].getPartName());
-    }
+        if (!mCursor.moveToPosition(position)) {
+            return;
+        }
+        int id = mCursor.getInt(mCursor.getColumnIndex(MachineEntry._ID));
+        String name = mCursor.getString(mCursor.getColumnIndex(MachineEntry.COLUMN_MACHINE_NAME));
+        boolean enable = mCursor.getInt(mCursor.getColumnIndex(MachineEntry.COLUMN_MACHINE_ENABLE)) == 1;
+        holder.bind(id, name, enable);    }
 
     @Override
     public int getItemCount() {
-        return parts.length;
+        return mCursor.getCount();
     }
 
     class PartViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
 
         TextView listItemPartView;
-        int id;
+        Part part;
 
         public PartViewHolder(View itemView) {
             super(itemView);
@@ -63,11 +67,11 @@ public class PartListAdapter extends RecyclerView.Adapter<PartListAdapter.PartVi
 
         @Override
         public void onClick(View v) {
-            mOnClickListener.onListItemClick(id);
+            mOnClickListener.onListItemClick(part);
         }
 
-        public void bind(int partId, String partName) {
-            id = partId;
+        public void bind(int partId, String partName, boolean partEnable) {
+            part = new Part(partId, partName, partEnable);
             listItemPartView.setText(partName);
         }
     }

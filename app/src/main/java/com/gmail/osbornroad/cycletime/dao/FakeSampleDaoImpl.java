@@ -1,18 +1,10 @@
 package com.gmail.osbornroad.cycletime.dao;
 
-import android.content.res.Resources;
-
-import com.gmail.osbornroad.cycletime.model.Sample;
-
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.GregorianCalendar;
-import java.util.List;
-
 /**
  * Created by User on 24.04.2017.
  */
 
+/*
 public class FakeSampleDaoImpl implements SampleDao {
 
     private List<Sample> sampleList;
@@ -56,3 +48,4 @@ public class FakeSampleDaoImpl implements SampleDao {
         return null;
     }
 }
+*/

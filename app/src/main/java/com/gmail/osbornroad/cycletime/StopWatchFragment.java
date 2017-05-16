@@ -1,7 +1,6 @@
 package com.gmail.osbornroad.cycletime;
 
 
-import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
@@ -14,8 +13,6 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
-
-import com.gmail.osbornroad.cycletime.model.Employee;
 
 
 /**
@@ -92,8 +89,9 @@ public class StopWatchFragment extends Fragment implements NavigationFragment {
         processInfo.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent = new Intent(v.getContext(), ProcessChooseActivity.class);
-                startActivityForResult(intent, 0);
+                mainActivity.switchFragment(ProcessesFragment.class, getResources().getString(R.string.processes_fragment_title));
+/*                Intent intent = new Intent(v.getContext(), ProcessChooseActivity.class);
+                startActivityForResult(intent, 0);*/
             }
         });
         /**
@@ -103,8 +101,9 @@ public class StopWatchFragment extends Fragment implements NavigationFragment {
         machineInfo.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent = new Intent(v.getContext(), MachineChooseActivity.class);
-                startActivityForResult(intent, 0);
+                mainActivity.switchFragment(MachinesFragment.class, getResources().getString(R.string.machines_fragment_title));
+/*                Intent intent = new Intent(v.getContext(), MachineChooseActivity.class);
+                startActivityForResult(intent, 0);*/
             }
         });
         /**
@@ -114,8 +113,9 @@ public class StopWatchFragment extends Fragment implements NavigationFragment {
         partInfo.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent = new Intent(v.getContext(), PartChooseActivity.class);
-                startActivityForResult(intent, 0);
+                mainActivity.switchFragment(PartsFragment.class, getResources().getString(R.string.parts_fragment_title));
+/*                Intent intent = new Intent(v.getContext(), PartChooseActivity.class);
+                startActivityForResult(intent, 0);*/
             }
         });
 
@@ -230,7 +230,7 @@ public class StopWatchFragment extends Fragment implements NavigationFragment {
      * ProcessChooseActivity
      * MachineChooseActivity
      */
-    @Override
+/*    @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         if (data == null) {
             return;
@@ -258,7 +258,7 @@ public class StopWatchFragment extends Fragment implements NavigationFragment {
             partInfo.setText(mainActivity.selectedPart.getPartName());
             partInfo.setTextColor(getResources().getColor(R.color.result_exists_data));
         }
-    }
+    }*/
     /**
      * Handler managing of Stopwatch displaying
      */

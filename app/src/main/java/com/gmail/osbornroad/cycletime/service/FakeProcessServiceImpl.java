@@ -1,3 +1,4 @@
+/*
 package com.gmail.osbornroad.cycletime.service;
 
 import com.gmail.osbornroad.cycletime.dao.FakeProcessDaoImpl;
@@ -8,9 +9,11 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 
+*/
 /**
  * Created by User on 27.04.2017.
- */
+ *//*
+
 
 public class FakeProcessServiceImpl implements ProcessService {
 
@@ -69,3 +72,4 @@ public class FakeProcessServiceImpl implements ProcessService {
         System.out.println(processService.get(202));
     }
 }
+*/

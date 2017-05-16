@@ -1,14 +1,15 @@
 package com.gmail.osbornroad.cycletime;
 
 import android.content.Context;
+import android.database.Cursor;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
+import com.gmail.osbornroad.cycletime.dao.StopWatchContract.MachineEntry;
 import com.gmail.osbornroad.cycletime.model.Machine;
-import com.gmail.osbornroad.cycletime.service.MachineService;
 
 
 /**
@@ -17,18 +18,16 @@ import com.gmail.osbornroad.cycletime.service.MachineService;
 
 public class MachineListAdapter extends RecyclerView.Adapter<MachineListAdapter.MachineViewHolder> {
 
-    private MachineService machineService;
-    private Machine[] machines;
     final private ListItemClickListener mOnClickListener;
+    private Cursor mCursor;
 
-    public MachineListAdapter(MachineService machineService, ListItemClickListener mOnClickListener) {
-        this.machineService = machineService;
-        this.machines = this.machineService.getMachineArray();
+    public MachineListAdapter(ListItemClickListener mOnClickListener, Cursor cursor) {
         this.mOnClickListener = mOnClickListener;
+        this.mCursor = cursor;
     }
 
     interface ListItemClickListener {
-        void onListItemClick(int clickedMachineId);
+        void onListItemClick(Machine machine);
     }
 
     @Override
@@ -42,18 +41,24 @@ public class MachineListAdapter extends RecyclerView.Adapter<MachineListAdapter.
 
     @Override
     public void onBindViewHolder(MachineViewHolder holder, int position) {
-        holder.bind(machines[position].getId(), machines[position].getMachineName());
-    }
+        if (!mCursor.moveToPosition(position)) {
+            return;
+        }
+        int id = mCursor.getInt(mCursor.getColumnIndex(MachineEntry._ID));
+        String name = mCursor.getString(mCursor.getColumnIndex(MachineEntry.COLUMN_MACHINE_NAME));
+        int parentProcessId = mCursor.getInt(mCursor.getColumnIndex(MachineEntry.COLUMN_PARENT_PROCESS_ID));
+        boolean enable = mCursor.getInt(mCursor.getColumnIndex(MachineEntry.COLUMN_MACHINE_ENABLE)) == 1;
+        holder.bind(id, name, parentProcessId, enable);    }
 
     @Override
     public int getItemCount() {
-        return machines.length;
+        return mCursor.getCount();
     }
 
     class MachineViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
 
         TextView listItemMachineName;
-        int id;
+        Machine machine;
 
         public MachineViewHolder(View itemView) {
             super(itemView);
@@ -63,11 +68,11 @@ public class MachineListAdapter extends RecyclerView.Adapter<MachineListAdapter.
 
         @Override
         public void onClick(View v) {
-            mOnClickListener.onListItemClick(id);
+            mOnClickListener.onListItemClick(machine);
         }
 
-        public void bind(int machineId, String machineName) {
-            id = machineId;
+        public void bind(int machineId, String machineName, int parentProcessId, boolean enable) {
+            machine = new Machine(machineId, machineName, parentProcessId, enable);
             listItemMachineName.setText(machineName);
         }
     }

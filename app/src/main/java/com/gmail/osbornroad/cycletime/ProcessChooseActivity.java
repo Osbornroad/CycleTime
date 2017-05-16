@@ -1,4 +1,4 @@
-package com.gmail.osbornroad.cycletime;
+/*package com.gmail.osbornroad.cycletime;
 
 import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
@@ -41,4 +41,4 @@ public class ProcessChooseActivity extends AppCompatActivity implements ProcessL
         setResult(RESULT_OK, intent);
         finish();
     }
-}
+}*/

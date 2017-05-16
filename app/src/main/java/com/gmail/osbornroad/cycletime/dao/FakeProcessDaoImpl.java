@@ -1,15 +1,10 @@
 package com.gmail.osbornroad.cycletime.dao;
 
-import com.gmail.osbornroad.cycletime.model.Process;
-
-import java.util.ArrayList;
-import java.util.List;
-import java.util.concurrent.atomic.AtomicInteger;
-
 /**
  * Created by User on 27.04.2017.
  */
 
+/*
 public class FakeProcessDaoImpl implements ProcessDao {
 
     private List<Process> processList;
@@ -70,3 +65,4 @@ public class FakeProcessDaoImpl implements ProcessDao {
 
     }
 }
+*/

@@ -1,18 +1,39 @@
 package com.gmail.osbornroad.cycletime;
 
 
+import android.database.Cursor;
 import android.os.Bundle;
+import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.support.v7.widget.DefaultItemAnimator;
+import android.support.v7.widget.DividerItemDecoration;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+
+import com.gmail.osbornroad.cycletime.dao.StopWatchContract;
+import com.gmail.osbornroad.cycletime.model.Process;
 
 
 /**
  * A simple {@link Fragment} subclass.
  */
-public class ProcessesFragment extends Fragment {
+public class ProcessesFragment extends Fragment implements ProcessListAdapter.ListItemClickListener, NavigationFragment {
 
+    private static final int NUM_LIST_ITEMS = 100;
+    private ProcessListAdapter processListAdapter;
+    private RecyclerView recyclerView;
+    private MainActivity mainActivity;
+
+    private final int FRAGMENT_ID = 2;
+
+    @Override
+    public void onCreate(@Nullable Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setRetainInstance(true);
+    }
 
     public ProcessesFragment() {
         // Required empty public constructor
@@ -23,7 +44,50 @@ public class ProcessesFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_processes, container, false);
+        View rootView = inflater.inflate(R.layout.activity_process_choose, container, false);
+
+        recyclerView = (RecyclerView) rootView.findViewById(R.id.rv_process);
+        LinearLayoutManager layoutManager = new LinearLayoutManager(getActivity().getApplicationContext());
+        recyclerView.setLayoutManager(layoutManager);
+        recyclerView.addItemDecoration(new DividerItemDecoration(recyclerView.getContext(),
+                layoutManager.getOrientation()));
+        recyclerView.setHasFixedSize(true);
+        recyclerView.setItemAnimator(new DefaultItemAnimator());
+        /**
+         * Get adapter, set to RecyclerView
+         */
+
+        mainActivity = (MainActivity) getActivity();
+
+        Cursor cursor = getAllProcesses();
+        processListAdapter = new ProcessListAdapter(this, cursor);
+        recyclerView.setAdapter(processListAdapter);
+
+        return rootView;
+    }
+
+    @Override
+    public void onListItemClick(Process process) {
+        mainActivity.selectedProcess = process;
+        mainActivity.notAddToBackStack = true;
+        mainActivity.switchFragment(StopWatchFragment.class, getResources().getString(R.string.stopwatch_fragment_title));
+    }
+
+    @Override
+    public int getMenuId() {
+        return FRAGMENT_ID;
+    }
+
+    private Cursor getAllProcesses() {
+        return mainActivity.mDb.query(
+                StopWatchContract.ProcessEntry.TABLE_NAME,
+                null,
+                null,
+                null,
+                null,
+                null,
+                StopWatchContract.ProcessEntry.COLUMN_PROCESS_NAME
+        );
     }
 
 }

@@ -1,3 +1,4 @@
+/*
 package com.gmail.osbornroad.cycletime.service;
 
 import android.content.res.Resources;
@@ -7,9 +8,11 @@ import com.gmail.osbornroad.cycletime.model.Sample;
 import java.util.Collection;
 import java.util.GregorianCalendar;
 
+*/
 /**
  * Created by User on 24.04.2017.
- */
+ *//*
+
 
 public class SampleServiceImpl implements SampleService {
     @Override
@@ -37,3 +40,4 @@ public class SampleServiceImpl implements SampleService {
         return null;
     }
 }
+*/

@@ -1,3 +1,4 @@
+/*
 package com.gmail.osbornroad.cycletime.service;
 
 import com.gmail.osbornroad.cycletime.dao.PartDao;
@@ -5,9 +6,11 @@ import com.gmail.osbornroad.cycletime.model.Part;
 
 import java.util.List;
 
+*/
 /**
  * Created by User on 27.04.2017.
- */
+ *//*
+
 
 public class FakePartServiceImpl implements PartService {
 
@@ -47,3 +50,4 @@ public class FakePartServiceImpl implements PartService {
         return getAll().toArray(new Part[getAll().size()]);
     }
 }
+*/

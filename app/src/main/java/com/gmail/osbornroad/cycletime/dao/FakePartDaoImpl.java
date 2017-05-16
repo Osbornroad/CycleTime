@@ -1,15 +1,10 @@
 package com.gmail.osbornroad.cycletime.dao;
 
-import com.gmail.osbornroad.cycletime.model.Part;
-
-import java.util.ArrayList;
-import java.util.List;
-import java.util.concurrent.atomic.AtomicInteger;
-
 /**
  * Created by User on 27.04.2017.
  */
 
+/*
 public class FakePartDaoImpl implements PartDao {
 
     private List<Part> partList;
@@ -105,3 +100,4 @@ public class FakePartDaoImpl implements PartDao {
 
     }
 }
+*/

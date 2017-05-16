@@ -23,9 +23,9 @@ import com.gmail.osbornroad.cycletime.model.Employee;
 import com.gmail.osbornroad.cycletime.model.Machine;
 import com.gmail.osbornroad.cycletime.model.Part;
 import com.gmail.osbornroad.cycletime.model.Process;
-import com.gmail.osbornroad.cycletime.service.MachineService;
-import com.gmail.osbornroad.cycletime.service.PartService;
-import com.gmail.osbornroad.cycletime.service.ProcessService;
+//import com.gmail.osbornroad.cycletime.service.MachineService;
+//import com.gmail.osbornroad.cycletime.service.PartService;
+//import com.gmail.osbornroad.cycletime.service.ProcessService;
 import com.gmail.osbornroad.cycletime.utility.Utility;
 
 public class MainActivity extends AppCompatActivity
@@ -36,10 +36,9 @@ public class MainActivity extends AppCompatActivity
     private FragmentManager fragMan;
 //    FragmentManager fm;
 
-//    protected EmployeeService employeeService;
-    protected ProcessService processService;
-    protected MachineService machineService;
-    protected PartService partService;
+//    protected ProcessService processService;
+//    protected MachineService machineService;
+//    protected PartService partService;
 
     /**
      * mStarted == true after Start button pressed until Stop pressed
@@ -75,9 +74,9 @@ public class MainActivity extends AppCompatActivity
         stopWatch = StopWatch.getStopWatch();
 
 //        employeeService = Utility.getEmployeeService();
-        processService = Utility.getProcessService();
-        machineService = Utility.getMachineService();
-        partService = Utility.getPartService();
+//        processService = Utility.getProcessService();
+//        machineService = Utility.getMachineService();
+//        partService = Utility.getPartService();
 
         navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
@@ -141,8 +140,11 @@ public class MainActivity extends AppCompatActivity
 
         StopWatchDbHelper helper = new StopWatchDbHelper(this);
         mDb = helper.getWritableDatabase();
-        Utility.insertFakeEmployeeData(mDb);
 
+        Utility.insertFakeEmployeeData(mDb);
+        Utility.insertFakeProcessData(mDb);
+        Utility.insertFakeMachineData(mDb);
+        Utility.insertFakePartsData(mDb);
     }
 
     private void setSavedFragment(Bundle savedInstanceState) {
@@ -239,7 +241,16 @@ public class MainActivity extends AppCompatActivity
             if (savedInstanceState.containsKey("selectedEmployee")) {
                 selectedEmployee = savedInstanceState.getParcelable("selectedEmployee");
             }
-            if (savedInstanceState.containsKey("processId")) {
+            if (savedInstanceState.containsKey("selectedProcess")) {
+                selectedProcess = savedInstanceState.getParcelable("selectedProcess");
+            }
+            if (savedInstanceState.containsKey("selectedMachine")) {
+                selectedMachine = savedInstanceState.getParcelable("selectedMachine");
+            }
+            if (savedInstanceState.containsKey("selectedPart")) {
+                selectedPart = savedInstanceState.getParcelable("selectedPart");
+            }
+/*            if (savedInstanceState.containsKey("processId")) {
                 int processId = savedInstanceState.getInt("processId");
                 selectedProcess = processService.get(processId);
             }
@@ -250,7 +261,7 @@ public class MainActivity extends AppCompatActivity
             if (savedInstanceState.containsKey("partId")) {
                 int partId = savedInstanceState.getInt("partId");
                 selectedPart = partService.get(partId);
-            }
+            }*/
             if (savedInstanceState.containsKey("partQuantity")) {
                 partQuantity = savedInstanceState.getInt("partQuantity");
             }
@@ -270,13 +281,16 @@ public class MainActivity extends AppCompatActivity
             outState.putParcelable("selectedEmployee", selectedEmployee);
         }
         if (selectedProcess != null) {
-            outState.putInt("processId", selectedProcess.getId());
+//            outState.putInt("processId", selectedProcess.getId());
+            outState.putParcelable("selectedProcess", selectedProcess);
         }
         if (selectedMachine != null) {
-            outState.putInt("machineId", selectedMachine.getId());
+//            outState.putInt("machineId", selectedMachine.getId());
+            outState.putParcelable("selectedMachine", selectedMachine);
         }
         if (selectedPart != null) {
-            outState.putInt("partId", selectedPart.getId());
+//            outState.putInt("partId", selectedPart.getId());
+            outState.putParcelable("selectedPart", selectedPart);
         }
         if (partQuantity > 0) {
             outState.putInt("partQuantity", partQuantity);

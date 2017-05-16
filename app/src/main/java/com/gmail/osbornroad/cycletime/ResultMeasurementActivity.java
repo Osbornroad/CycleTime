@@ -11,16 +11,16 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.gmail.osbornroad.cycletime.model.Employee;
-import com.gmail.osbornroad.cycletime.service.MachineService;
+/*import com.gmail.osbornroad.cycletime.service.MachineService;
 import com.gmail.osbornroad.cycletime.service.PartService;
-import com.gmail.osbornroad.cycletime.service.ProcessService;
+import com.gmail.osbornroad.cycletime.service.ProcessService;*/
 import com.gmail.osbornroad.cycletime.utility.Utility;
 
 public class ResultMeasurementActivity extends AppCompatActivity {
 
-    private ProcessService processService = Utility.getProcessService();
+/*    private ProcessService processService = Utility.getProcessService();
     private MachineService machineService = Utility.getMachineService();
-    private PartService partService = Utility.getPartService();
+    private PartService partService = Utility.getPartService();*/
 
     private Employee employee;
     private int processId;
@@ -109,7 +109,7 @@ public class ResultMeasurementActivity extends AppCompatActivity {
             employeeNameDisplay.setText(employee.getEmployeeName());
             employeeNameDisplay.setTextColor(getResources().getColor(R.color.result_exists_data));
         }
-        if (intent.hasExtra("processId")) {
+        /*if (intent.hasExtra("processId")) {
             processId = intent.getIntExtra("processId", 0);
             processNameDisplay.setText(processService.get(this.processId).getProcessName());
             processNameDisplay.setTextColor(getResources().getColor(R.color.result_exists_data));
@@ -123,7 +123,7 @@ public class ResultMeasurementActivity extends AppCompatActivity {
             partId = intent.getIntExtra("partId", 0);
             partNameDisplay.setText(partService.get(this.partId).getPartName());
             partNameDisplay.setTextColor(getResources().getColor(R.color.result_exists_data));
-        }
+        }*/
         if (intent.hasExtra("partQuantity")) {
             partQuantity = intent.getIntExtra("partQuantity", 0);
             partQuantityDisplay.setText(String.valueOf(partQuantity));

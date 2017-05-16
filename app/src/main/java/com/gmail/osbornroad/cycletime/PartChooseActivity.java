@@ -1,4 +1,4 @@
-package com.gmail.osbornroad.cycletime;
+/*package com.gmail.osbornroad.cycletime;
 
 import android.content.Intent;
 import android.os.Bundle;
@@ -40,4 +40,4 @@ public class PartChooseActivity extends AppCompatActivity implements PartListAda
         setResult(RESULT_OK, intent);
         finish();
     }
-}
+}*/

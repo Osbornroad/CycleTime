@@ -57,15 +57,15 @@ public class Employee implements Parcelable {
                 ", enable=" + enable +
                 '}';
     }
-
+    /**
+     * Parcelable part
+     */
     @Override
     public int describeContents() {
         return 0;
     }
 
-    /**
-     * Parcelable part
-     */
+
     @Override
     public void writeToParcel(Parcel dest, int flags) {
         dest.writeInt(id);
@@ -73,7 +73,7 @@ public class Employee implements Parcelable {
         dest.writeInt(enable ? 1 : 0);
     }
 
-    public static final Parcelable.Creator<Employee> CREATOR = new Parcelable.Creator<Employee>() {
+    public static final Creator<Employee> CREATOR = new Creator<Employee>() {
 
         @Override
         public Employee createFromParcel(Parcel source) {

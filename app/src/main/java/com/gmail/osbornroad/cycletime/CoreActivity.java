@@ -1,3 +1,4 @@
+/*
 package com.gmail.osbornroad.cycletime;
 
 import android.content.res.Configuration;
@@ -187,3 +188,4 @@ public class CoreActivity extends AppCompatActivity {
         getSupportActionBar().setTitle(title);
     }
 }
+*/
