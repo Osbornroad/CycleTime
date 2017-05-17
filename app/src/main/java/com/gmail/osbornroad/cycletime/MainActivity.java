@@ -54,6 +54,8 @@ public class MainActivity extends AppCompatActivity
     protected int partQuantity;
 
     private NavigationView navigationView = null;
+    private DrawerLayout drawer;
+    private ActionBarDrawerToggle toggle;
     /**
      * StopWatch is singletone
      */
@@ -76,12 +78,11 @@ public class MainActivity extends AppCompatActivity
         navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
 
-        DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
-        ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
+        drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
+        toggle = new ActionBarDrawerToggle(
                 this, drawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close) {
             @Override
             public void onDrawerOpened(View drawerView) {
-
                 super.onDrawerOpened(drawerView);
             }
 
@@ -91,7 +92,11 @@ public class MainActivity extends AppCompatActivity
             }
         };
         drawer.addDrawerListener(toggle);
+
+
+
         toggle.syncState();
+
 
 
         fragMan = getSupportFragmentManager();
@@ -102,6 +107,7 @@ public class MainActivity extends AppCompatActivity
                 if ((fragMan.getBackStackEntryCount() > 1) && (fragment.getClass() == StopWatchFragment.class)) {
                     fragMan.popBackStack();
                 }
+
             }
         });
 
@@ -116,6 +122,27 @@ public class MainActivity extends AppCompatActivity
         Utility.insertFakeProcessData(mDb);
         Utility.insertFakeMachineData(mDb);
         Utility.insertFakePartsData(mDb);
+    }
+
+    private void setDrawerAccess() {
+        if (fragment != null) {
+            if (fragment.getClass() == StopWatchFragment.class) {
+                drawer.setDrawerLockMode(DrawerLayout.LOCK_MODE_UNLOCKED);
+
+//                toggle.syncState();
+//                getSupportActionBar().setDisplayHomeAsUpEnabled(false);
+//                getSupportActionBar().setHomeButtonEnabled(false);
+                toggle.setDrawerIndicatorEnabled(true);
+//                toggle.setHomeAsUpIndicator();
+            }
+            else {
+                drawer.setDrawerLockMode(DrawerLayout.LOCK_MODE_LOCKED_CLOSED);
+                toggle.setDrawerIndicatorEnabled(false);
+//
+//                getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+//                getSupportActionBar().setHomeButtonEnabled(true);
+            }
+        }
     }
 
     private void setSavedFragment(Bundle savedInstanceState) {
@@ -140,6 +167,12 @@ public class MainActivity extends AppCompatActivity
             title = getResources().getString(R.string.stopwatch_fragment_title);
         } else if (fragment instanceof EmployeesFragment) {
             title = getResources().getString(R.string.employees_fragment_title);
+        } else if (fragment instanceof ProcessesFragment) {
+            title = getResources().getString(R.string.processes_fragment_title);
+        } else if (fragment instanceof MachinesFragment) {
+            title = getResources().getString(R.string.machines_fragment_title);
+        } else if (fragment instanceof PartsFragment) {
+            title = getResources().getString(R.string.parts_fragment_title);
         }
         setTitle(title);
     }
@@ -171,6 +204,8 @@ public class MainActivity extends AppCompatActivity
         transaction.commit();
         invalidateOptionsMenu();
         setActionBarTitle();
+
+        setDrawerAccess();
     }
 
     private void setSavedInfo(Bundle savedInstanceState) {
@@ -238,6 +273,8 @@ public class MainActivity extends AppCompatActivity
         }
         fragment = fragMan.findFragmentByTag("visible_fragment");
         setActionBarTitle();
+
+        setDrawerAccess();
         /**
          * TODO: Add interface NavigationFragment to all fragments
          */
@@ -274,12 +311,17 @@ public class MainActivity extends AppCompatActivity
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
+
+        if (toggle.onOptionsItemSelected(item)) {
+            return true;
+        }
+
         int id = item.getItemId();
 
         if (id == android.R.id.home) {
-            FragmentManager fm = getSupportFragmentManager();
-            if (fm.getBackStackEntryCount() > 0) {
-                fm.popBackStack();
+//            FragmentManager fm = getSupportFragmentManager();
+            if (fragMan.getBackStackEntryCount() > 0) {
+                fragMan.popBackStack();
             }
             return true;
         }
