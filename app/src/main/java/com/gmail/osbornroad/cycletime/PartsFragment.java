@@ -70,7 +70,6 @@ public class PartsFragment extends Fragment implements PartListAdapter.ListItemC
     @Override
     public void onListItemClick(Part part) {
         mainActivity.selectedPart = part;
-        mainActivity.notAddToBackStack = true;
         mainActivity.switchFragment(StopWatchFragment.class, getResources().getString(R.string.stopwatch_fragment_title));
     }
 

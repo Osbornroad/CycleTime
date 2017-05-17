@@ -73,11 +73,6 @@ public class MainActivity extends AppCompatActivity
 
         stopWatch = StopWatch.getStopWatch();
 
-//        employeeService = Utility.getEmployeeService();
-//        processService = Utility.getProcessService();
-//        machineService = Utility.getMachineService();
-//        partService = Utility.getPartService();
-
         navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
 
@@ -92,19 +87,6 @@ public class MainActivity extends AppCompatActivity
 
             @Override
             public void onDrawerClosed(View drawerView) {
-                /*final Menu menu = navigationView.getMenu();
-                for (int i = 0; i < menu.size(); i++) {
-                    MenuItem item = menu.getItem(i);
-                    if (item.hasSubMenu()) {
-                        SubMenu subMenu = item.getSubMenu();
-                        for (int j = 0; j < subMenu.size(); j++) {
-                            MenuItem subMenuItem = subMenu.getItem(j);
-                            subMenuItem.setChecked(false);
-                        }
-                    } else {
-                        item.setChecked(false);
-                    }
-                }*/
                 super.onDrawerClosed(drawerView);
             }
         };
@@ -125,21 +107,7 @@ public class MainActivity extends AppCompatActivity
 
         setSavedFragment(savedInstanceState);
 
-/*        if (fragment == null) {
-            try {
-                fragment = StopWatchFragment.class.newInstance();
-            } catch (InstantiationException e) {
-                e.printStackTrace();
-            } catch (IllegalAccessException e) {
-                e.printStackTrace();
-            }
-            fragMan.beginTransaction().replace(R.id.content_main, fragment, "visible_fragment").commit();
-            setTitle(getResources().getString(R.string.stopwatch_fragment_title));
-        }*/
-
-//        if (fragment.getClass() == StopWatchFragment.class) {
-            setSavedInfo(savedInstanceState);
-//        }
+        setSavedInfo(savedInstanceState);
 
         StopWatchDbHelper helper = new StopWatchDbHelper(this);
         mDb = helper.getWritableDatabase();
@@ -176,24 +144,6 @@ public class MainActivity extends AppCompatActivity
         setTitle(title);
     }
 
-/*    protected void switchFragmentWithoutBackStack(Class fragmentClass, String title) {
-        try {
-            fragment= (Fragment) fragmentClass.newInstance();
-        } catch (InstantiationException e) {
-            e.printStackTrace();
-        } catch (IllegalAccessException e) {
-            e.printStackTrace();
-        }
-        FragmentTransaction transaction = fragMan.beginTransaction();
-        transaction.replace(R.id.content_main, fragment, "visible_fragment");
-//        transaction.setTransition(TRANSIT_FRAGMENT_FADE);
-//        transaction.addToBackStack(null);
-        transaction.commit();
-        invalidateOptionsMenu();
-        setActionBarTitle();
-//        setTitle(title);
-    }*/
-
     protected void switchFragment(Class fragmentClass, String title) {
         Fragment currentFragment = fragMan.findFragmentByTag("visible_fragment");
         try {
@@ -211,31 +161,16 @@ public class MainActivity extends AppCompatActivity
         }
         transaction.add(R.id.content_main, fragment, "visible_fragment");
 
-
-
-/*//        transaction.setTransition(TRANSIT_FRAGMENT_FADE);
-        if (currentFragment != null) {
-            transaction.remove(currentFragment);
-*//*            if (fragment.getClass() != currentFragment.getClass()) {
-                transaction.addToBackStack(null);
-            }*//*
-        }
-        */
-
-//        transaction.add(R.id.content_main, fragment, "visible_fragment");
-
         if (currentFragment != null) {
             if (fragment.getClass() == currentFragment.getClass()) {
                 fragMan.popBackStack();
             }
         }
-//        if (!notAddToBackStack) {
-            transaction.addToBackStack(null);
-//        }
+        transaction.addToBackStack(null);
+
         transaction.commit();
         invalidateOptionsMenu();
         setActionBarTitle();
-//        setTitle(title);
     }
 
     private void setSavedInfo(Bundle savedInstanceState) {
@@ -246,10 +181,6 @@ public class MainActivity extends AppCompatActivity
             if (savedInstanceState.containsKey("mInProgress")) {
                 mInProgress = savedInstanceState.getBoolean("mInProgress");
             }
-/*            if (savedInstanceState.containsKey("employeeId")) {
-                int employeeId = savedInstanceState.getInt("employeeId");
-                selectedEmployee = employeeService.get(employeeId);
-            }*/
             if (savedInstanceState.containsKey("selectedEmployee")) {
                 selectedEmployee = savedInstanceState.getParcelable("selectedEmployee");
             }
@@ -262,18 +193,6 @@ public class MainActivity extends AppCompatActivity
             if (savedInstanceState.containsKey("selectedPart")) {
                 selectedPart = savedInstanceState.getParcelable("selectedPart");
             }
-/*            if (savedInstanceState.containsKey("processId")) {
-                int processId = savedInstanceState.getInt("processId");
-                selectedProcess = processService.get(processId);
-            }
-            if (savedInstanceState.containsKey("machineId")) {
-                int machineId = savedInstanceState.getInt("machineId");
-                selectedMachine = machineService.get(machineId);
-            }
-            if (savedInstanceState.containsKey("partId")) {
-                int partId = savedInstanceState.getInt("partId");
-                selectedPart = partService.get(partId);
-            }*/
             if (savedInstanceState.containsKey("partQuantity")) {
                 partQuantity = savedInstanceState.getInt("partQuantity");
             }
@@ -289,19 +208,15 @@ public class MainActivity extends AppCompatActivity
             outState.putString("fragmentName", fragment.getClass().getName());
         }
         if (selectedEmployee != null) {
-//            outState.putInt("employeeId", selectedEmployee.getId());
             outState.putParcelable("selectedEmployee", selectedEmployee);
         }
         if (selectedProcess != null) {
-//            outState.putInt("processId", selectedProcess.getId());
             outState.putParcelable("selectedProcess", selectedProcess);
         }
         if (selectedMachine != null) {
-//            outState.putInt("machineId", selectedMachine.getId());
             outState.putParcelable("selectedMachine", selectedMachine);
         }
         if (selectedPart != null) {
-//            outState.putInt("partId", selectedPart.getId());
             outState.putParcelable("selectedPart", selectedPart);
         }
         if (partQuantity > 0) {
@@ -323,13 +238,6 @@ public class MainActivity extends AppCompatActivity
         }
         fragment = fragMan.findFragmentByTag("visible_fragment");
         setActionBarTitle();
-
-/*        if (fragment.getClass() == StopWatchFragment.class) {
-            while (fragMan.getBackStackEntryCount() > 0) {
-                fragMan.popBackStack();
-            }
-        }*/
-
         /**
          * TODO: Add interface NavigationFragment to all fragments
          */
@@ -410,19 +318,6 @@ public class MainActivity extends AppCompatActivity
                     Toast.makeText(this, "Please input correct quantity", Toast.LENGTH_SHORT).show();
                     return true;
                 }
-/*                if (partQuantity > 0) {
-                    int quantity;
-                    try {
-                        quantity = Integer.parseInt(String.valueOf(partQuantity));
-                    } catch (NumberFormatException e) {
-                        Toast.makeText(this, "Please input correct quantity", Toast.LENGTH_SHORT).show();
-                        return true;
-                    }
-                    intent.putExtra("partQuantity", quantity);
-                } else {
-                    Toast.makeText(this, "Please input correct quantity", Toast.LENGTH_SHORT).show();
-                    return true;
-                }*/
                 if (mInProgress) {
                     if (!mStarted) {
                         int resultStopWatch = (int) stopWatch.getElapsedTimeInSec();
@@ -472,18 +367,8 @@ public class MainActivity extends AppCompatActivity
         } else if (id == R.id.nav_parts) {
             fragmentClass = PartsFragment.class;
         }
-
-/*        try {
-            fragment = (Fragment) fragmentClass.newInstance();
-        } catch (Exception e) {
-            e.printStackTrace();
-        }*/
-
-//        FragmentManager fm = getSupportFragmentManager();
         switchFragment(fragmentClass, "");
-//        fragMan.beginTransaction().replace(R.id.content_main, fragment, "visible_fragment").commit();
         item.setChecked(true);
-//        setTitle(item.getTitle());
 
         drawer.closeDrawer(GravityCompat.START);
         return true;

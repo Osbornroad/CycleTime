@@ -69,7 +69,6 @@ public class ProcessesFragment extends Fragment implements ProcessListAdapter.Li
     @Override
     public void onListItemClick(Process process) {
         mainActivity.selectedProcess = process;
-        mainActivity.notAddToBackStack = true;
         mainActivity.switchFragment(StopWatchFragment.class, getResources().getString(R.string.stopwatch_fragment_title));
     }
 
