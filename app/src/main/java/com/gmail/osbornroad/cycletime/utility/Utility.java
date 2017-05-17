@@ -77,7 +77,7 @@ public class Utility {
             }
             db.setTransactionSuccessful();
         } catch (SQLException e) {
-
+            System.out.println(e.toString());
         } finally {
             db.endTransaction();
         }
@@ -123,7 +123,7 @@ public class Utility {
             }
             db.setTransactionSuccessful();
         } catch (SQLException e) {
-
+            System.out.println(e.toString());
         } finally {
             db.endTransaction();
         }

@@ -33,7 +33,7 @@ public class MainActivity extends AppCompatActivity
 
     private Fragment fragment;
     private Class fragmentClass;
-    private FragmentManager fragMan;
+    protected FragmentManager fragMan;
 //    FragmentManager fm;
 
 //    protected ProcessService processService;
@@ -117,6 +117,9 @@ public class MainActivity extends AppCompatActivity
             @Override
             public void onBackStackChanged() {
                 setActionBarTitle();
+                if ((fragMan.getBackStackEntryCount() > 1) && (fragment.getClass() == StopWatchFragment.class)) {
+                    fragMan.popBackStack();
+                }
             }
         });
 
@@ -201,7 +204,15 @@ public class MainActivity extends AppCompatActivity
             e.printStackTrace();
         }
         FragmentTransaction transaction = fragMan.beginTransaction();
-        transaction.replace(R.id.content_main, fragment, "visible_fragment");
+//        transaction.replace(R.id.content_main, fragment, "visible_fragment");
+
+        if (currentFragment != null) {
+            transaction.remove(currentFragment);
+        }
+        transaction.add(R.id.content_main, fragment, "visible_fragment");
+
+
+
 /*//        transaction.setTransition(TRANSIT_FRAGMENT_FADE);
         if (currentFragment != null) {
             transaction.remove(currentFragment);
@@ -212,14 +223,15 @@ public class MainActivity extends AppCompatActivity
         */
 
 //        transaction.add(R.id.content_main, fragment, "visible_fragment");
+
         if (currentFragment != null) {
             if (fragment.getClass() == currentFragment.getClass()) {
                 fragMan.popBackStack();
             }
         }
-        if (!notAddToBackStack) {
+//        if (!notAddToBackStack) {
             transaction.addToBackStack(null);
-        }
+//        }
         transaction.commit();
         invalidateOptionsMenu();
         setActionBarTitle();
@@ -307,9 +319,16 @@ public class MainActivity extends AppCompatActivity
         }
         if (fragMan.getBackStackEntryCount() == 0) {
             finish();
+            return;
         }
         fragment = fragMan.findFragmentByTag("visible_fragment");
         setActionBarTitle();
+
+/*        if (fragment.getClass() == StopWatchFragment.class) {
+            while (fragMan.getBackStackEntryCount() > 0) {
+                fragMan.popBackStack();
+            }
+        }*/
 
         /**
          * TODO: Add interface NavigationFragment to all fragments
@@ -379,7 +398,19 @@ public class MainActivity extends AppCompatActivity
                 if (selectedPart != null) {
                     intent.putExtra("partId", selectedPart.getId());
                 }
+                try {
+                    partQuantity = Integer.parseInt(((StopWatchFragment) fragment).partQuantity.getText().toString());
+                } catch (Exception e) {
+                    Toast.makeText(this, "Please input correct quantity", Toast.LENGTH_SHORT).show();
+                    return true;
+                }
                 if (partQuantity > 0) {
+                    intent.putExtra("partQuantity", partQuantity);
+                } else {
+                    Toast.makeText(this, "Please input correct quantity", Toast.LENGTH_SHORT).show();
+                    return true;
+                }
+/*                if (partQuantity > 0) {
                     int quantity;
                     try {
                         quantity = Integer.parseInt(String.valueOf(partQuantity));
@@ -391,7 +422,7 @@ public class MainActivity extends AppCompatActivity
                 } else {
                     Toast.makeText(this, "Please input correct quantity", Toast.LENGTH_SHORT).show();
                     return true;
-                }
+                }*/
                 if (mInProgress) {
                     if (!mStarted) {
                         int resultStopWatch = (int) stopWatch.getElapsedTimeInSec();

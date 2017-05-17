@@ -8,7 +8,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
-import com.gmail.osbornroad.cycletime.dao.StopWatchContract.MachineEntry;
+import com.gmail.osbornroad.cycletime.dao.StopWatchContract.PartsEntry;
 import com.gmail.osbornroad.cycletime.model.Part;
 
 
@@ -44,9 +44,9 @@ public class PartListAdapter extends RecyclerView.Adapter<PartListAdapter.PartVi
         if (!mCursor.moveToPosition(position)) {
             return;
         }
-        int id = mCursor.getInt(mCursor.getColumnIndex(MachineEntry._ID));
-        String name = mCursor.getString(mCursor.getColumnIndex(MachineEntry.COLUMN_MACHINE_NAME));
-        boolean enable = mCursor.getInt(mCursor.getColumnIndex(MachineEntry.COLUMN_MACHINE_ENABLE)) == 1;
+        int id = mCursor.getInt(mCursor.getColumnIndex(PartsEntry._ID));
+        String name = mCursor.getString(mCursor.getColumnIndex(PartsEntry.COLUMN_PARTS_NAME));
+        boolean enable = mCursor.getInt(mCursor.getColumnIndex(PartsEntry.COLUMN_PARTS_ENABLE)) == 1;
         holder.bind(id, name, enable);    }
 
     @Override
