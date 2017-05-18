@@ -3,7 +3,8 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="com.gmail.osbornroad.cycletime.StopWatchFragment">
+    tools:context="com.gmail.osbornroad.cycletime.StopWatchFragment"
+    android:background="@color/colorPrimaryLight">
 
 
     <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
@@ -33,7 +34,9 @@
             android:layout_below="@id/time_running_view"
             android:layout_marginLeft="40dp"
             android:layout_alignParentLeft="true"
-            android:layout_marginTop="20dp"/>
+            android:layout_marginTop="20dp"
+            android:padding="0dp"
+            />
 
         <Button
             android:id="@+id/reset_button"

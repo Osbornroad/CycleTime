@@ -2,17 +2,11 @@
 
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
-    android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    android:padding="16dp"
-    android:clickable="true"
-    android:focusable="true"
-    android:background="?android:attr/selectableItemBackground">
+    style="@style/FrameLayoutCardsForRecyclerView">
 
     <TextView
         android:id="@+id/tv_part_name"
         style="@style/ListForChoose"
-        android:textSize="16sp"
         tools:text="Part"
         />
 

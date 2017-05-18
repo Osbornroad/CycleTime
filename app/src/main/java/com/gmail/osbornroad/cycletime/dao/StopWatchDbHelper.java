@@ -4,6 +4,7 @@ import android.content.Context;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 import com.gmail.osbornroad.cycletime.dao.StopWatchContract.*;
+import com.gmail.osbornroad.cycletime.utility.Utility;
 
 /**
  * Created by User on 15.05.2017.
@@ -15,7 +16,7 @@ public class StopWatchDbHelper extends SQLiteOpenHelper {
     private static final String DATABASE_NAME = "stopwatch.db";
 
     // If you change the database schema, you must increment the database version
-    private static final int DATABASE_VERSION = 2;
+    private static final int DATABASE_VERSION = 5;
 
     public StopWatchDbHelper(Context context) {
         super(context, DATABASE_NAME, null, DATABASE_VERSION);
@@ -55,6 +56,11 @@ public class StopWatchDbHelper extends SQLiteOpenHelper {
                 PartsEntry.COLUMN_PARTS_ENABLE + " INTEGER NOT NULL" +
                 "); ";
         db.execSQL(SQL_CREATE_PARTS_TABLE);
+
+        Utility.insertFakeEmployeeData(db);
+        Utility.insertFakeProcessData(db);
+        Utility.insertFakeMachineData(db);
+        Utility.insertFakePartsData(db);
     }
 
     /**

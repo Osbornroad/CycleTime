@@ -23,10 +23,10 @@ import com.gmail.osbornroad.cycletime.model.Employee;
 import com.gmail.osbornroad.cycletime.model.Machine;
 import com.gmail.osbornroad.cycletime.model.Part;
 import com.gmail.osbornroad.cycletime.model.Process;
+
 //import com.gmail.osbornroad.cycletime.service.MachineService;
 //import com.gmail.osbornroad.cycletime.service.PartService;
 //import com.gmail.osbornroad.cycletime.service.ProcessService;
-import com.gmail.osbornroad.cycletime.utility.Utility;
 
 public class MainActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
@@ -63,11 +63,6 @@ public class MainActivity extends AppCompatActivity
 
     protected SQLiteDatabase mDb;
 
-//    protected boolean notAddToBackStack = false;
-
-    //Home button
-    private boolean mToolBarNavigationListenerIsRegistered = false;
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -75,8 +70,6 @@ public class MainActivity extends AppCompatActivity
 
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
-        //Home button
-//        getSupportActionBar().setDisplayShowTitleEnabled(false);
 
         stopWatch = StopWatch.getStopWatch();
 
@@ -121,10 +114,6 @@ public class MainActivity extends AppCompatActivity
         StopWatchDbHelper helper = new StopWatchDbHelper(this);
         mDb = helper.getWritableDatabase();
 
-        Utility.insertFakeEmployeeData(mDb);
-        Utility.insertFakeProcessData(mDb);
-        Utility.insertFakeMachineData(mDb);
-        Utility.insertFakePartsData(mDb);
     }
 
     /**
@@ -202,7 +191,7 @@ public class MainActivity extends AppCompatActivity
         transaction.add(R.id.content_main, fragment, "visible_fragment");
 
         if (currentFragment != null) {
-            if (fragment.getClass() == currentFragment.getClass()) {
+            if (fragment.getClass() == currentFragment.getClass() && (fragMan.getBackStackEntryCount() > 1)) {
                 fragMan.popBackStack();
             }
         }
@@ -327,7 +316,7 @@ public class MainActivity extends AppCompatActivity
 
         if (id == android.R.id.home) {
 //            FragmentManager fm = getSupportFragmentManager();
-            if (fragMan.getBackStackEntryCount() > 0) {
+            if (fragMan.getBackStackEntryCount() > 1) {
                 fragMan.popBackStack();
             }
             return true;

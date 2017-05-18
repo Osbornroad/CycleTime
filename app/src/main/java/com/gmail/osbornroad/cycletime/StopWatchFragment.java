@@ -68,7 +68,12 @@ public class StopWatchFragment extends Fragment implements NavigationFragment {
         stopWatch = StopWatch.getStopWatch();
         timeRunningView = (TextView) rootView.findViewById(R.id.time_running_view);
         startButton = (Button) rootView.findViewById(R.id.start_button);
+        startButton.setBackgroundResource(R.drawable.start_button_selector_title_start);
+
         resetButton = (Button) rootView.findViewById(R.id.reset_button);
+        resetButton.setEnabled(false);
+        resetButton.setBackgroundResource(R.drawable.reset_button_selector);
+
         /**
          * Employee setting interface creating
          */
@@ -134,6 +139,9 @@ public class StopWatchFragment extends Fragment implements NavigationFragment {
         });*/
 
         mainActivity = (MainActivity) getActivity();
+        if (mainActivity.mStarted) {
+            resetButton.setEnabled(false);
+        }
         /**
          * Setting saved data
          */
@@ -151,16 +159,21 @@ public class StopWatchFragment extends Fragment implements NavigationFragment {
                         mHandler.sendEmptyMessage(MSG_START);
                         mainActivity.mStarted = true;
                         startButton.setText(R.string.button_stop);
+                        startButton.setBackgroundResource(R.drawable.start_button_selector_title_stop);
                         mainActivity.mInProgress = true;
                     } else {
                         mHandler.sendEmptyMessage(MSG_RESUME);
                         mainActivity.mStarted = true;
                         startButton.setText(R.string.button_stop);
+                        startButton.setBackgroundResource(R.drawable.start_button_selector_title_stop);
                     }
+                    resetButton.setEnabled(false);
                 } else {
                     mHandler.sendEmptyMessage(MSG_STOP);
                     mainActivity.mStarted = false;
                     startButton.setText(R.string.button_resume);
+                    startButton.setBackgroundResource(R.drawable.start_button_selector_title_start);
+                    resetButton.setEnabled(true);
                 }
             }
         });
@@ -172,6 +185,8 @@ public class StopWatchFragment extends Fragment implements NavigationFragment {
                     mainActivity.mInProgress = false;
                     timeRunningView.setText("00:00:00");
                     startButton.setText(R.string.button_start);
+                    startButton.setBackgroundResource(R.drawable.start_button_selector_title_start);
+                    resetButton.setEnabled(false);
                 }
             }
         });
@@ -301,8 +316,12 @@ public class StopWatchFragment extends Fragment implements NavigationFragment {
             if (mainActivity.mStarted) {
                 mHandler.sendEmptyMessage(MSG_UPDATE);
                 startButton.setText(R.string.button_stop);
+                startButton.setBackgroundResource(R.drawable.start_button_selector_title_stop);
+                resetButton.setEnabled(false);
             } else {
                 startButton.setText(R.string.button_resume);
+                startButton.setBackgroundResource(R.drawable.start_button_selector_title_start);
+                resetButton.setEnabled(true);
             }
         }
     }
