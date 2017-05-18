@@ -63,7 +63,10 @@ public class MainActivity extends AppCompatActivity
 
     protected SQLiteDatabase mDb;
 
-    protected boolean notAddToBackStack = false;
+//    protected boolean notAddToBackStack = false;
+
+    //Home button
+    private boolean mToolBarNavigationListenerIsRegistered = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -72,6 +75,8 @@ public class MainActivity extends AppCompatActivity
 
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
+        //Home button
+//        getSupportActionBar().setDisplayShowTitleEnabled(false);
 
         stopWatch = StopWatch.getStopWatch();
 
@@ -96,8 +101,6 @@ public class MainActivity extends AppCompatActivity
 
 
         toggle.syncState();
-
-
 
         fragMan = getSupportFragmentManager();
         fragMan.addOnBackStackChangedListener(new FragmentManager.OnBackStackChangedListener() {
@@ -124,23 +127,27 @@ public class MainActivity extends AppCompatActivity
         Utility.insertFakePartsData(mDb);
     }
 
+    /**
+     * Switch hamburger to back button and revert back
+     */
     private void setDrawerAccess() {
         if (fragment != null) {
             if (fragment.getClass() == StopWatchFragment.class) {
                 drawer.setDrawerLockMode(DrawerLayout.LOCK_MODE_UNLOCKED);
-
-//                toggle.syncState();
-//                getSupportActionBar().setDisplayHomeAsUpEnabled(false);
-//                getSupportActionBar().setHomeButtonEnabled(false);
+                getSupportActionBar().setDisplayHomeAsUpEnabled(false);
                 toggle.setDrawerIndicatorEnabled(true);
-//                toggle.setHomeAsUpIndicator();
+                toggle.setToolbarNavigationClickListener(null);
             }
             else {
                 drawer.setDrawerLockMode(DrawerLayout.LOCK_MODE_LOCKED_CLOSED);
                 toggle.setDrawerIndicatorEnabled(false);
-//
-//                getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-//                getSupportActionBar().setHomeButtonEnabled(true);
+                getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+                toggle.setToolbarNavigationClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        onBackPressed();
+                    }
+                });
             }
         }
     }
