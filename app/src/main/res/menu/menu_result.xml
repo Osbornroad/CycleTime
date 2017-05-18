@@ -6,5 +6,6 @@
     <item
         android:id="@+id/action_mail"
         android:title="@string/action_mail_send"
+        android:icon="@drawable/sent_white"
         app:showAsAction="ifRoom"/>
 </menu>

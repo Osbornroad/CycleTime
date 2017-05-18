@@ -275,6 +275,8 @@ public class MainActivity extends AppCompatActivity
          * TODO: Add interface NavigationFragment to all fragments
          */
 
+        invalidateOptionsMenu();
+
         final Menu menu = navigationView.getMenu();
                 for (int i = 0; i < menu.size(); i++) {
                     MenuItem item = menu.getItem(i);
@@ -314,6 +316,7 @@ public class MainActivity extends AppCompatActivity
 
         int id = item.getItemId();
 
+/*
         if (id == android.R.id.home) {
 //            FragmentManager fm = getSupportFragmentManager();
             if (fragMan.getBackStackEntryCount() > 1) {
@@ -321,6 +324,7 @@ public class MainActivity extends AppCompatActivity
             }
             return true;
         }
+*/
 
         if (id == R.id.main_action_calc) {
 
