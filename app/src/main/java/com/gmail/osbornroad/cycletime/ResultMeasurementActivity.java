@@ -11,21 +11,18 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.gmail.osbornroad.cycletime.model.Employee;
-/*import com.gmail.osbornroad.cycletime.service.MachineService;
-import com.gmail.osbornroad.cycletime.service.PartService;
-import com.gmail.osbornroad.cycletime.service.ProcessService;*/
+import com.gmail.osbornroad.cycletime.model.Machine;
+import com.gmail.osbornroad.cycletime.model.Part;
+import com.gmail.osbornroad.cycletime.model.Process;
 import com.gmail.osbornroad.cycletime.utility.Utility;
 
 public class ResultMeasurementActivity extends AppCompatActivity {
 
-/*    private ProcessService processService = Utility.getProcessService();
-    private MachineService machineService = Utility.getMachineService();
-    private PartService partService = Utility.getPartService();*/
 
     private Employee employee;
-    private int processId;
-    private int machineId;
-    private int partId;
+    private Process process;
+    private Machine machine;
+    private Part part;
     private int partQuantity;
     private int resultStopWatch;
     private int cycleTime;
@@ -109,21 +106,21 @@ public class ResultMeasurementActivity extends AppCompatActivity {
             employeeNameDisplay.setText(employee.getEmployeeName());
             employeeNameDisplay.setTextColor(getResources().getColor(R.color.result_exists_data));
         }
-        /*if (intent.hasExtra("processId")) {
-            processId = intent.getIntExtra("processId", 0);
-            processNameDisplay.setText(processService.get(this.processId).getProcessName());
+        if (intent.hasExtra("selectedProcess")) {
+            process = intent.getParcelableExtra("selectedProcess");
+            processNameDisplay.setText(process.getProcessName());
             processNameDisplay.setTextColor(getResources().getColor(R.color.result_exists_data));
         }
-        if (intent.hasExtra("machineId")) {
-            machineId = intent.getIntExtra("machineId", 0);
-            machineNameDisplay.setText(machineService.get(this.machineId).getMachineName());
+        if (intent.hasExtra("selectedMachine")) {
+            machine = intent.getParcelableExtra("selectedMachine");
+            machineNameDisplay.setText(machine.getMachineName());
             machineNameDisplay.setTextColor(getResources().getColor(R.color.result_exists_data));
         }
-        if (intent.hasExtra("partId")) {
-            partId = intent.getIntExtra("partId", 0);
-            partNameDisplay.setText(partService.get(this.partId).getPartName());
+        if (intent.hasExtra("selectedPart")) {
+            part = intent.getParcelableExtra("selectedPart");
+            partNameDisplay.setText(part.getPartName());
             partNameDisplay.setTextColor(getResources().getColor(R.color.result_exists_data));
-        }*/
+        }
         if (intent.hasExtra("partQuantity")) {
             partQuantity = intent.getIntExtra("partQuantity", 0);
             partQuantityDisplay.setText(String.valueOf(partQuantity));

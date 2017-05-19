@@ -340,13 +340,13 @@ public class MainActivity extends AppCompatActivity
                     intent.putExtra("selectedEmployee", selectedEmployee);
                 }
                 if (selectedProcess != null) {
-                    intent.putExtra("processId", selectedProcess.getId());
+                    intent.putExtra("selectedProcess", selectedProcess);
                 }
                 if (selectedMachine != null) {
-                    intent.putExtra("machineId", selectedMachine.getId());
+                    intent.putExtra("selectedMachine", selectedMachine);
                 }
                 if (selectedPart != null) {
-                    intent.putExtra("partId", selectedPart.getId());
+                    intent.putExtra("selectedPart", selectedPart);
                 }
                 try {
                     partQuantity = Integer.parseInt(((StopWatchFragment) fragment).partQuantity.getText().toString());
