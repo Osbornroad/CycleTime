@@ -412,6 +412,8 @@ public class MainActivity extends AppCompatActivity
         switchFragment(StopWatchFragment.class, getResources().getString(R.string.stopwatch_fragment_title));*/
     }
 
+    //https://developer.android.com/guide/topics/ui/dialogs.html?hl=ru
+
     @Override
     public void onDialogPositiveCheck(DialogFragment dialog) {
         Toast.makeText(this, "Pressed Ok button", Toast.LENGTH_SHORT).show();
