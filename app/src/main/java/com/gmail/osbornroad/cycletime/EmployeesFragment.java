@@ -11,11 +11,12 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Toast;
 
 import com.gmail.osbornroad.cycletime.dao.StopWatchContract;
 import com.gmail.osbornroad.cycletime.model.Employee;
 
-public class EmployeesFragment extends Fragment implements EmployeeListAdapter.ListItemClickListener, NavigationFragment {
+public class EmployeesFragment extends Fragment implements EmployeeListAdapter.ListItemClickListener, EmployeeListAdapter.ListItemLongClickListener, NavigationFragment {
 
     private static final int NUM_LIST_ITEMS = 100;
     private EmployeeListAdapter employeeListAdapter;
@@ -55,7 +56,7 @@ public class EmployeesFragment extends Fragment implements EmployeeListAdapter.L
         mainActivity = (MainActivity) getActivity();
 
         Cursor cursor = getAllEmployees();
-        employeeListAdapter = new EmployeeListAdapter(this, cursor);
+        employeeListAdapter = new EmployeeListAdapter(this, this, cursor);
         recyclerView.setAdapter(employeeListAdapter);
 
         return rootView;
@@ -65,6 +66,11 @@ public class EmployeesFragment extends Fragment implements EmployeeListAdapter.L
     public void onListItemClick(Employee employee) {
         mainActivity.selectedEmployee = employee;
         mainActivity.switchFragment(StopWatchFragment.class, getResources().getString(R.string.stopwatch_fragment_title));
+    }
+
+    @Override
+    public void onListItemLongClick(Employee employee) {
+        Toast.makeText(mainActivity.getApplicationContext(), employee.getEmployeeName(), Toast.LENGTH_SHORT).show();
     }
 
     @Override

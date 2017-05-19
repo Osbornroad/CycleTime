@@ -18,10 +18,12 @@ import com.gmail.osbornroad.cycletime.model.Employee;
 public class EmployeeListAdapter extends RecyclerView.Adapter<EmployeeListAdapter.EmployeeViewHolder> {
 
     final private ListItemClickListener mOnClickListener;
+    final private ListItemLongClickListener mOnLongClickListener;
     private Cursor mCursor;
 
-    public EmployeeListAdapter(ListItemClickListener mOnClickListener, Cursor cursor) {
+    public EmployeeListAdapter(ListItemClickListener mOnClickListener, ListItemLongClickListener mOnLongClickListener, Cursor cursor) {
         this.mOnClickListener = mOnClickListener;
+        this.mOnLongClickListener = mOnLongClickListener;
         this.mCursor = cursor;
     }
 
@@ -30,6 +32,10 @@ public class EmployeeListAdapter extends RecyclerView.Adapter<EmployeeListAdapte
      */
     interface ListItemClickListener {
         void onListItemClick(Employee employee);
+    }
+
+    interface ListItemLongClickListener {
+        void onListItemLongClick(Employee employee);
     }
 
     @Override
@@ -57,7 +63,7 @@ public class EmployeeListAdapter extends RecyclerView.Adapter<EmployeeListAdapte
         return mCursor.getCount();
     }
 
-    class EmployeeViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener{
+    class EmployeeViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener, View.OnLongClickListener{
 
         TextView listItemEmployeeName;
         Employee employee;
@@ -66,6 +72,13 @@ public class EmployeeListAdapter extends RecyclerView.Adapter<EmployeeListAdapte
             super(itemView);
             listItemEmployeeName = (TextView) itemView.findViewById(R.id.tv_employee_name);
             itemView.setOnClickListener(this);
+            itemView.setOnLongClickListener(this);
+        }
+
+        @Override
+        public boolean onLongClick(View v) {
+            mOnLongClickListener.onListItemLongClick(employee);
+            return false;
         }
 
         @Override
@@ -77,5 +90,7 @@ public class EmployeeListAdapter extends RecyclerView.Adapter<EmployeeListAdapte
             employee = new Employee(employeeId, employeeName, employeeEnable);
             listItemEmployeeName.setText(employeeName);
         }
+
+
     }
 }
