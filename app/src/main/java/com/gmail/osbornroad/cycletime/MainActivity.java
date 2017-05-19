@@ -4,6 +4,7 @@ import android.content.Intent;
 import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
 import android.support.design.widget.NavigationView;
+import android.support.v4.app.DialogFragment;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
@@ -29,7 +30,8 @@ import com.gmail.osbornroad.cycletime.model.Process;
 //import com.gmail.osbornroad.cycletime.service.ProcessService;
 
 public class MainActivity extends AppCompatActivity
-        implements NavigationView.OnNavigationItemSelectedListener {
+        implements NavigationView.OnNavigationItemSelectedListener,
+                    DialogEmployeeFragment.DialogEmployeeListener{
 
     private Fragment fragment;
     private Class fragmentClass;
@@ -91,8 +93,6 @@ public class MainActivity extends AppCompatActivity
         };
         drawer.addDrawerListener(toggle);
 
-
-
         toggle.syncState();
 
         fragMan = getSupportFragmentManager();
@@ -108,9 +108,7 @@ public class MainActivity extends AppCompatActivity
         });
 
         setSavedFragment(savedInstanceState);
-
         setSavedInfo(savedInstanceState);
-
         StopWatchDbHelper helper = new StopWatchDbHelper(this);
         mDb = helper.getWritableDatabase();
 
@@ -196,11 +194,9 @@ public class MainActivity extends AppCompatActivity
             }
         }
         transaction.addToBackStack(null);
-
         transaction.commit();
         invalidateOptionsMenu();
         setActionBarTitle();
-
         setDrawerAccess();
     }
 
@@ -304,6 +300,7 @@ public class MainActivity extends AppCompatActivity
     @Override
     public boolean onPrepareOptionsMenu(Menu menu) {
         menu.findItem(R.id.main_action_calc).setVisible(fragment.getClass() == StopWatchFragment.class);
+        menu.findItem(R.id.main_action_employee_plus).setVisible(fragment.getClass() == EmployeesFragment.class);
         return super.onPrepareOptionsMenu(menu);
     }
 
@@ -313,18 +310,12 @@ public class MainActivity extends AppCompatActivity
         if (toggle.onOptionsItemSelected(item)) {
             return true;
         }
-
         int id = item.getItemId();
 
-/*
-        if (id == android.R.id.home) {
-//            FragmentManager fm = getSupportFragmentManager();
-            if (fragMan.getBackStackEntryCount() > 1) {
-                fragMan.popBackStack();
-            }
-            return true;
+        if (id == R.id.main_action_employee_plus) {
+            DialogEmployeeFragment dialogEmployeeFragment = new DialogEmployeeFragment();
+            dialogEmployeeFragment.show(fragMan, "dialogEmployeeFragment");
         }
-*/
 
         if (id == R.id.main_action_calc) {
 
@@ -419,5 +410,15 @@ public class MainActivity extends AppCompatActivity
     public void setSelectedEmployee(int clickedEmployeeId) {
 /*        selectedEmployee = employeeService.get(clickedEmployeeId);
         switchFragment(StopWatchFragment.class, getResources().getString(R.string.stopwatch_fragment_title));*/
+    }
+
+    @Override
+    public void onDialogPositiveCheck(DialogFragment dialog) {
+        Toast.makeText(this, "Pressed Ok button", Toast.LENGTH_SHORT).show();
+    }
+
+    @Override
+    public void onDialogNegativeCheck(DialogFragment dialog) {
+        Toast.makeText(this, "Pressed Cancel button", Toast.LENGTH_SHORT).show();
     }
 }

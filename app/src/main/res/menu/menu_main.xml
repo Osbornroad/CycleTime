@@ -8,5 +8,11 @@
         app:showAsAction="ifRoom"
         android:icon="@drawable/calculator_white"
         />
+    <item
+        android:id="@+id/main_action_employee_plus"
+        android:title="@string/add"
+        app:showAsAction="ifRoom"
+        android:orderInCategory="100"
+        android:icon="@drawable/plus"/>
 
 </menu>
