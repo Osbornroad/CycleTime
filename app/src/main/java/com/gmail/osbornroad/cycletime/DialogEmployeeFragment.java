@@ -29,7 +29,7 @@ public class DialogEmployeeFragment extends DialogFragment {
     }
 
     public interface DialogEmployeeListener {
-        public void onEmployeeDialogPositiveCheck(DialogFragment dialog);
+        public void onEmployeeDialogPositiveCheck(DialogFragment dialog, Employee employee);
         public void onEmployeeDialogNegativeCheck(DialogFragment dialog);
     }
 
@@ -67,13 +67,17 @@ public class DialogEmployeeFragment extends DialogFragment {
 
         employeeName = (EditText) rootView.findViewById(R.id.edit_text_add_employee);
 
+        if (longClickEmployeeSelected != null) {
+            employeeName.setText(longClickEmployeeSelected.getEmployeeName());
+        }
+
         builder.setView(rootView)
 //                .setTitle(R.string.add_employee)
                 .setCancelable(false)
                 .setPositiveButton(R.string.dialog_button_ok, new DialogInterface.OnClickListener(){
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
-                        mListener.onEmployeeDialogPositiveCheck(DialogEmployeeFragment.this);
+                        mListener.onEmployeeDialogPositiveCheck(DialogEmployeeFragment.this, longClickEmployeeSelected);
                     }
                 })
                 .setNegativeButton(R.string.dialog_button_cancel, new DialogInterface.OnClickListener() {

@@ -421,7 +421,7 @@ public class MainActivity extends AppCompatActivity
     //https://developer.android.com/guide/topics/ui/dialogs.html?hl=ru
 
     @Override
-    public void onEmployeeDialogPositiveCheck(DialogFragment dialog) {
+    public void onEmployeeDialogPositiveCheck(DialogFragment dialog, Employee longClickEmployeeSelected) {
         String newEmployeeName = ((DialogEmployeeFragment) dialog).getEmployeeName().getText().toString();
         if ("".equals(newEmployeeName)) {
             Toast.makeText(getApplicationContext(), R.string.dialog_no_data, Toast.LENGTH_SHORT).show();
@@ -431,7 +431,12 @@ public class MainActivity extends AppCompatActivity
         cv.put(StopWatchContract.EmployeeEntry.COLUMN_EMPLOYEE_NAME, newEmployeeName);
         cv.put(StopWatchContract.EmployeeEntry.COLUMN_EMPLOYEE_ENABLE, true);
 //        Toast.makeText(this, "Pressed Ok button", Toast.LENGTH_SHORT).show();
-        mDb.insert(StopWatchContract.EmployeeEntry.TABLE_NAME, null, cv);
+        if (longClickEmployeeSelected == null) {
+            mDb.insert(StopWatchContract.EmployeeEntry.TABLE_NAME, null, cv);
+        } else {
+            mDb.update(StopWatchContract.EmployeeEntry.TABLE_NAME, cv,
+                    StopWatchContract.EmployeeEntry._ID + " = ?", new String[]{String.valueOf(longClickEmployeeSelected.getId())});
+        }
         ((EmployeesFragment) fragment).employeeListAdapter.swapCursor(((EmployeesFragment) fragment).getAllEmployees());
     }
 
