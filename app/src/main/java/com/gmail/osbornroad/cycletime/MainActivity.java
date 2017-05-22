@@ -1,5 +1,7 @@
 package com.gmail.osbornroad.cycletime;
 
+import android.content.ContentValues;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
@@ -11,14 +13,18 @@ import android.support.v4.app.FragmentTransaction;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.view.ActionMode;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
+import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.SubMenu;
 import android.view.View;
 import android.widget.Toast;
 
+import com.gmail.osbornroad.cycletime.dao.StopWatchContract;
 import com.gmail.osbornroad.cycletime.dao.StopWatchDbHelper;
 import com.gmail.osbornroad.cycletime.model.Employee;
 import com.gmail.osbornroad.cycletime.model.Machine;
@@ -415,12 +421,89 @@ public class MainActivity extends AppCompatActivity
     //https://developer.android.com/guide/topics/ui/dialogs.html?hl=ru
 
     @Override
-    public void onDialogPositiveCheck(DialogFragment dialog) {
-        Toast.makeText(this, "Pressed Ok button", Toast.LENGTH_SHORT).show();
+    public void onEmployeeDialogPositiveCheck(DialogFragment dialog) {
+        String newEmployeeName = ((DialogEmployeeFragment) dialog).getEmployeeName().getText().toString();
+        if ("".equals(newEmployeeName)) {
+            Toast.makeText(getApplicationContext(), R.string.dialog_no_data, Toast.LENGTH_SHORT).show();
+            return;
+        }
+        ContentValues cv = new ContentValues();
+        cv.put(StopWatchContract.EmployeeEntry.COLUMN_EMPLOYEE_NAME, newEmployeeName);
+        cv.put(StopWatchContract.EmployeeEntry.COLUMN_EMPLOYEE_ENABLE, true);
+//        Toast.makeText(this, "Pressed Ok button", Toast.LENGTH_SHORT).show();
+        mDb.insert(StopWatchContract.EmployeeEntry.TABLE_NAME, null, cv);
+        ((EmployeesFragment) fragment).employeeListAdapter.swapCursor(((EmployeesFragment) fragment).getAllEmployees());
     }
 
     @Override
-    public void onDialogNegativeCheck(DialogFragment dialog) {
+    public void onEmployeeDialogNegativeCheck(DialogFragment dialog) {
         Toast.makeText(this, "Pressed Cancel button", Toast.LENGTH_SHORT).show();
+    }
+
+
+    protected ActionMode mActionMode;
+    protected Employee longClickEmployeeSelected;
+
+    protected ActionMode.Callback mActionModeCallBack = new ActionMode.Callback() {
+        @Override
+        public boolean onCreateActionMode(ActionMode mode, Menu menu) {
+            MenuInflater inflater = mode.getMenuInflater();
+            inflater.inflate(R.menu.context_menu_employee, menu);
+            return true;
+        }
+
+        @Override
+        public boolean onPrepareActionMode(ActionMode mode, Menu menu) {
+            return false;
+        }
+
+        @Override
+        public boolean onActionItemClicked(ActionMode mode, MenuItem item) {
+            switch (item.getItemId()) {
+                case R.id.context_edit_employee:
+                    if (longClickEmployeeSelected != null) {
+                        DialogEmployeeFragment dialogEmployeeFragment = new DialogEmployeeFragment();
+                        Bundle bundle = new Bundle();
+                        bundle.putParcelable("longClickEmployeeSelected", longClickEmployeeSelected);
+                        dialogEmployeeFragment.setArguments(bundle);
+                        dialogEmployeeFragment.show(fragMan, "dialogEmployeeFragment");
+                    }
+                    mode.finish();
+                    return true;
+                default:
+                    return false;
+            }
+        }
+
+        @Override
+        public void onDestroyActionMode(ActionMode mode) {
+            mActionMode = null;
+        }
+    };
+
+
+    public void deleteEmployee(final int id) {
+        new AlertDialog.Builder(this/*, R.style.DeleteDialog*/)
+                .setMessage(getResources().getString(R.string.dialog_sure_delete_employee))
+                .setPositiveButton(R.string.dialog_delete_ok, new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        if (mDb.delete(StopWatchContract.EmployeeEntry.TABLE_NAME, StopWatchContract.EmployeeEntry._ID + " = " + id, null) < 0 )
+                        {
+                            Toast.makeText(getApplicationContext(), "Deleting unsuccessful", Toast.LENGTH_SHORT).show();
+                        }
+                        ((EmployeesFragment)fragment).employeeListAdapter.swapCursor(((EmployeesFragment)fragment).getAllEmployees());
+                    }
+                })
+                .setNegativeButton(R.string.dialog_delete_cancel, new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        dialog.cancel();
+                        ((EmployeesFragment)fragment).employeeListAdapter.swapCursor(((EmployeesFragment)fragment).getAllEmployees());
+                    }
+                })
+                .setCancelable(false)
+                .create()
+                .show();
     }
 }

@@ -8,10 +8,10 @@ import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.DividerItemDecoration;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.support.v7.widget.helper.ItemTouchHelper;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Toast;
 
 import com.gmail.osbornroad.cycletime.dao.StopWatchContract;
 import com.gmail.osbornroad.cycletime.model.Employee;
@@ -19,7 +19,7 @@ import com.gmail.osbornroad.cycletime.model.Employee;
 public class EmployeesFragment extends Fragment implements EmployeeListAdapter.ListItemClickListener, EmployeeListAdapter.ListItemLongClickListener, NavigationFragment {
 
     private static final int NUM_LIST_ITEMS = 100;
-    private EmployeeListAdapter employeeListAdapter;
+    protected EmployeeListAdapter employeeListAdapter;
     private RecyclerView recyclerView;
     private MainActivity mainActivity;
 
@@ -59,6 +59,19 @@ public class EmployeesFragment extends Fragment implements EmployeeListAdapter.L
         employeeListAdapter = new EmployeeListAdapter(this, this, cursor);
         recyclerView.setAdapter(employeeListAdapter);
 
+        new ItemTouchHelper(new ItemTouchHelper.SimpleCallback(0, ItemTouchHelper.LEFT | ItemTouchHelper.RIGHT) {
+            @Override
+            public boolean onMove(RecyclerView recyclerView, RecyclerView.ViewHolder viewHolder, RecyclerView.ViewHolder target) {
+                return false;
+            }
+
+            @Override
+            public void onSwiped(RecyclerView.ViewHolder viewHolder, int direction) {
+                int id = (int) viewHolder.itemView.getTag();
+                mainActivity.deleteEmployee(id);
+            }
+        }).attachToRecyclerView(recyclerView);
+
         return rootView;
     }
 
@@ -68,9 +81,15 @@ public class EmployeesFragment extends Fragment implements EmployeeListAdapter.L
         mainActivity.switchFragment(StopWatchFragment.class, getResources().getString(R.string.stopwatch_fragment_title));
     }
 
+
+
     @Override
     public void onListItemLongClick(Employee employee) {
-        Toast.makeText(mainActivity.getApplicationContext(), employee.getEmployeeName(), Toast.LENGTH_SHORT).show();
+        if (mainActivity.mActionMode != null) {
+            return;
+        }
+        mainActivity.longClickEmployeeSelected = employee;
+        mainActivity.mActionMode = mainActivity.startSupportActionMode(mainActivity.mActionModeCallBack);
     }
 
     @Override
@@ -78,7 +97,7 @@ public class EmployeesFragment extends Fragment implements EmployeeListAdapter.L
         return FRAGMENT_ID;
     }
 
-    private Cursor getAllEmployees() {
+    protected Cursor getAllEmployees() {
         return mainActivity.mDb.query(
                 StopWatchContract.EmployeeEntry.TABLE_NAME,
                 null,

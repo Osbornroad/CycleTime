@@ -59,4 +59,10 @@
     <string name="dialog_button_ok">Ok</string>
     <string name="dialog_button_cancel">Cancel</string>
     <string name="hint_add_employee">Input employee name</string>
+    <string name="edit">Edit</string>
+    <string name="delete">Delete</string>
+    <string name="dialog_sure_delete_employee">A you sure to delete employee?</string>
+    <string name="dialog_delete_ok">Delete</string>
+    <string name="dialog_delete_cancel">Cancel</string>
+    <string name="dialog_no_data">You didn\'t put any name</string>
 </resources>

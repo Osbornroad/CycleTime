@@ -66,5 +66,17 @@
         <item name="android:textColor">@color/result_no_data</item>
     </style>
 
+    <style name="DeleteDialog"
+        >
+        <item name = "colorAccent">@color/colorPrimary</item>
+    </style>
+
+    <style name="AddDialog"
+        parent="Theme.AppCompat.Light.Dialog">
+        <item name="android:textColor">@color/colorPrimary</item>
+        <item name="android:width">120dp</item>
+    </style>
+
+
 </resources>
 

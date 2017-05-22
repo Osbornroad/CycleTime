@@ -38,6 +38,16 @@ public class EmployeeListAdapter extends RecyclerView.Adapter<EmployeeListAdapte
         void onListItemLongClick(Employee employee);
     }
 
+    public void swapCursor(Cursor newCursor) {
+        if (mCursor != null) {
+            mCursor.close();
+        }
+        mCursor = newCursor;
+        if (newCursor != null) {
+            this.notifyDataSetChanged();
+        }
+    }
+
     @Override
     public EmployeeViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         Context context = parent.getContext();
@@ -55,6 +65,7 @@ public class EmployeeListAdapter extends RecyclerView.Adapter<EmployeeListAdapte
         int id = mCursor.getInt(mCursor.getColumnIndex(EmployeeEntry._ID));
         String name = mCursor.getString(mCursor.getColumnIndex(EmployeeEntry.COLUMN_EMPLOYEE_NAME));
         boolean enable = mCursor.getInt(mCursor.getColumnIndex(EmployeeEntry.COLUMN_EMPLOYEE_ENABLE)) == 1;
+        holder.itemView.setTag(id);
         holder.bind(id, name, enable);
     }
 
@@ -78,7 +89,7 @@ public class EmployeeListAdapter extends RecyclerView.Adapter<EmployeeListAdapte
         @Override
         public boolean onLongClick(View v) {
             mOnLongClickListener.onListItemLongClick(employee);
-            return false;
+            return true;
         }
 
         @Override
