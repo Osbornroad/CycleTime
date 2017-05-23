@@ -77,6 +77,9 @@ public class EmployeesFragment extends Fragment implements EmployeeListAdapter.L
 
     @Override
     public void onListItemClick(Employee employee) {
+        if (mainActivity.longClickEmployeeSelected != null) {
+            return;
+        }
         mainActivity.selectedEmployee = employee;
         mainActivity.switchFragment(StopWatchFragment.class, getResources().getString(R.string.stopwatch_fragment_title));
     }

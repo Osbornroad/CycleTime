@@ -74,6 +74,8 @@ public class EmployeeListAdapter extends RecyclerView.Adapter<EmployeeListAdapte
         return mCursor.getCount();
     }
 
+    private int selectedPos = 0;
+
     class EmployeeViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener, View.OnLongClickListener{
 
         TextView listItemEmployeeName;
@@ -89,6 +91,7 @@ public class EmployeeListAdapter extends RecyclerView.Adapter<EmployeeListAdapte
         @Override
         public boolean onLongClick(View v) {
             mOnLongClickListener.onListItemLongClick(employee);
+            v.setBackgroundColor(R.color.colorPrimary);
             return true;
         }
 

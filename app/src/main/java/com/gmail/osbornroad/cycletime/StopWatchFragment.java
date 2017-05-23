@@ -124,19 +124,16 @@ public class StopWatchFragment extends Fragment implements NavigationFragment {
         });
 
         partQuantity = (EditText) rootView.findViewById(R.id.part_qty_data);
-        /*partQuantity.setOnFocusChangeListener(new View.OnFocusChangeListener() {
+        partQuantity.setOnFocusChangeListener(new View.OnFocusChangeListener() {
             @Override
             public void onFocusChange(View v, boolean hasFocus) {
-                if (!hasFocus) {
-                    try {
-                        mainActivity.partQuantity = Integer.parseInt(partQuantity.getText().toString());
-                    } catch (NumberFormatException e) {
-*//*                        Toast.makeText(mainActivity.getApplicationContext(), "Please input correct quantity", Toast.LENGTH_SHORT).show();
-                        partQuantity.setText("");*//*
-                    }
+                if (hasFocus) {
+                    ((EditText) v).setCursorVisible(true);
+                } else {
+                    ((EditText) v).setCursorVisible(false);
                 }
             }
-        });*/
+        });
 
         mainActivity = (MainActivity) getActivity();
         if (mainActivity.mStarted) {

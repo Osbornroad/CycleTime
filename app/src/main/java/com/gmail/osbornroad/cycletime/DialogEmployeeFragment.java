@@ -11,6 +11,7 @@ import android.support.v4.app.DialogFragment;
 import android.support.v7.app.AlertDialog;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.widget.Button;
 import android.widget.EditText;
 
 import com.gmail.osbornroad.cycletime.model.Employee;
@@ -61,7 +62,7 @@ public class DialogEmployeeFragment extends DialogFragment {
     @Override
     public Dialog onCreateDialog(Bundle savedInstanceState) {
 
-        AlertDialog.Builder builder = new AlertDialog.Builder(getActivity(), R.style.AddDialog);
+        AlertDialog.Builder builder = new AlertDialog.Builder(getActivity()/*, R.style.AddDialog*/);
         LayoutInflater inflater = getActivity().getLayoutInflater();
         View rootView = inflater.inflate(R.layout.dialog_employee_add, null);
 
@@ -72,7 +73,7 @@ public class DialogEmployeeFragment extends DialogFragment {
         }
 
         builder.setView(rootView)
-//                .setTitle(R.string.add_employee)
+                .setTitle(longClickEmployeeSelected == null ? R.string.add_employee : R.string.edit_employee)
                 .setCancelable(false)
                 .setPositiveButton(R.string.dialog_button_ok, new DialogInterface.OnClickListener(){
                     @Override
@@ -85,10 +86,16 @@ public class DialogEmployeeFragment extends DialogFragment {
                     public void onClick(DialogInterface dialog, int which) {
                         mListener.onEmployeeDialogNegativeCheck(DialogEmployeeFragment.this);
                     }
-                })
-                .create();
+                });
+
+        AlertDialog dialog = builder.create();
+        dialog.show();
+        Button positiveButton = dialog.getButton(DialogInterface.BUTTON_POSITIVE);
+        positiveButton.setTextColor(getResources().getColor(R.color.result_exists_data));
+        Button negativeButton = dialog.getButton(DialogInterface.BUTTON_NEGATIVE);
+        negativeButton.setTextColor(getResources().getColor(R.color.result_no_data));
 
 
-        return builder.create();
+        return dialog;
     }
 }

@@ -65,4 +65,5 @@
     <string name="dialog_delete_ok">Delete</string>
     <string name="dialog_delete_cancel">Cancel</string>
     <string name="dialog_no_data">You didn\'t put any name</string>
+    <string name="edit_employee">Edit employee</string>
 </resources>

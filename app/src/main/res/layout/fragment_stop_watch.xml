@@ -132,13 +132,13 @@
                     android:layout_height="wrap_content"
                     android:textSize="16sp"
                     android:maxLines="1"
-                    android:padding="0sp"
                     android:textColor="@color/result_exists_data"
                     android:inputType="numberDecimal"
                     android:imeOptions="actionSend"
                     android:fontFamily="sans-serif-light"
                     android:cursorVisible="false"
                     android:background="@null"
+                    android:textCursorDrawable="@null"
                     />
 
             </LinearLayout>

@@ -71,8 +71,7 @@
         <item name = "colorAccent">@color/colorPrimary</item>
     </style>
 
-    <style name="AddDialog"
-        parent="Theme.AppCompat.Light.Dialog">
+    <style name="AddDialog">
         <item name="android:textColor">@color/colorPrimary</item>
         <item name="android:width">120dp</item>
     </style>

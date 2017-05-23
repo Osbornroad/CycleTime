@@ -22,6 +22,7 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.SubMenu;
 import android.view.View;
+import android.widget.Button;
 import android.widget.Toast;
 
 import com.gmail.osbornroad.cycletime.dao.StopWatchContract;
@@ -106,10 +107,16 @@ public class MainActivity extends AppCompatActivity
             @Override
             public void onBackStackChanged() {
                 setActionBarTitle();
-                if ((fragMan.getBackStackEntryCount() > 1) && (fragment.getClass() == StopWatchFragment.class)) {
+/*                if ((fragMan.getBackStackEntryCount() > 1) && (fragment.getClass() == StopWatchFragment.class)) {
+                    fragMan.popBackStack();
+                }*/
+                if (fragment.getClass() == StopWatchFragment.class) {
+                    if (fragMan.getBackStackEntryCount() > 1) {
+                        fragMan.popBackStack();
+                    }
+                } else if (fragMan.getBackStackEntryCount() > 2) {
                     fragMan.popBackStack();
                 }
-
             }
         });
 
@@ -194,11 +201,14 @@ public class MainActivity extends AppCompatActivity
         }
         transaction.add(R.id.content_main, fragment, "visible_fragment");
 
+/*        int count;
         if (currentFragment != null) {
-            if (fragment.getClass() == currentFragment.getClass() && (fragMan.getBackStackEntryCount() > 1)) {
-                fragMan.popBackStack();
+            if (fragment.getClass() == currentFragment.getClass()){
+                if ((count = fragMan.getBackStackEntryCount()) > 1){
+                    fragMan.popBackStack();
+                }
             }
-        }
+        }*/
         transaction.addToBackStack(null);
         transaction.commit();
         invalidateOptionsMenu();
@@ -442,7 +452,7 @@ public class MainActivity extends AppCompatActivity
 
     @Override
     public void onEmployeeDialogNegativeCheck(DialogFragment dialog) {
-        Toast.makeText(this, "Pressed Cancel button", Toast.LENGTH_SHORT).show();
+
     }
 
 
@@ -454,6 +464,7 @@ public class MainActivity extends AppCompatActivity
         public boolean onCreateActionMode(ActionMode mode, Menu menu) {
             MenuInflater inflater = mode.getMenuInflater();
             inflater.inflate(R.menu.context_menu_employee, menu);
+            getSupportActionBar().setDisplayHomeAsUpEnabled(false);
             return true;
         }
 
@@ -483,12 +494,14 @@ public class MainActivity extends AppCompatActivity
         @Override
         public void onDestroyActionMode(ActionMode mode) {
             mActionMode = null;
+            getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+            ((EmployeesFragment)fragment).employeeListAdapter.swapCursor(((EmployeesFragment)fragment).getAllEmployees());
         }
     };
 
 
     public void deleteEmployee(final int id) {
-        new AlertDialog.Builder(this/*, R.style.DeleteDialog*/)
+        AlertDialog.Builder builder = new AlertDialog.Builder(this/*, R.style.DeleteDialog*/)
                 .setMessage(getResources().getString(R.string.dialog_sure_delete_employee))
                 .setPositiveButton(R.string.dialog_delete_ok, new DialogInterface.OnClickListener() {
                     @Override
@@ -507,8 +520,13 @@ public class MainActivity extends AppCompatActivity
                         ((EmployeesFragment)fragment).employeeListAdapter.swapCursor(((EmployeesFragment)fragment).getAllEmployees());
                     }
                 })
-                .setCancelable(false)
-                .create()
-                .show();
+                .setCancelable(false);
+
+        AlertDialog dialog = builder.create();
+        dialog.show();
+        Button positiveButton = dialog.getButton(DialogInterface.BUTTON_POSITIVE);
+        positiveButton.setTextColor(getResources().getColor(R.color.result_exists_data));
+        Button negativeButton = dialog.getButton(DialogInterface.BUTTON_NEGATIVE);
+        negativeButton.setTextColor(getResources().getColor(R.color.result_no_data));
     }
 }
