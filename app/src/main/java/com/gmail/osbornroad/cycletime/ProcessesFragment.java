@@ -9,6 +9,7 @@ import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.DividerItemDecoration;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.support.v7.widget.helper.ItemTouchHelper;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -20,10 +21,14 @@ import com.gmail.osbornroad.cycletime.model.Process;
 /**
  * A simple {@link Fragment} subclass.
  */
-public class ProcessesFragment extends Fragment implements ProcessListAdapter.ListItemClickListener, NavigationFragment {
+public class ProcessesFragment extends Fragment
+        implements ProcessListAdapter.ListItemClickListener,
+        ProcessListAdapter.ListItemLongClickListener,
+        NavigationFragment,
+        SavableToDatabase{
 
     private static final int NUM_LIST_ITEMS = 100;
-    private ProcessListAdapter processListAdapter;
+    protected ProcessListAdapter processListAdapter;
     private RecyclerView recyclerView;
     private MainActivity mainActivity;
 
@@ -60,16 +65,41 @@ public class ProcessesFragment extends Fragment implements ProcessListAdapter.Li
         mainActivity = (MainActivity) getActivity();
 
         Cursor cursor = getAllProcesses();
-        processListAdapter = new ProcessListAdapter(this, cursor);
+        processListAdapter = new ProcessListAdapter(this, this, cursor);
         recyclerView.setAdapter(processListAdapter);
+
+        new ItemTouchHelper(new ItemTouchHelper.SimpleCallback(0, ItemTouchHelper.LEFT | ItemTouchHelper.RIGHT) {
+            @Override
+            public boolean onMove(RecyclerView recyclerView, RecyclerView.ViewHolder viewHolder, RecyclerView.ViewHolder target) {
+                return false;
+            }
+
+            @Override
+            public void onSwiped(RecyclerView.ViewHolder viewHolder, int direction) {
+                int id = (int) viewHolder.itemView.getTag();
+                mainActivity.deleteRowFromDatabase(id);
+            }
+        }).attachToRecyclerView(recyclerView);
 
         return rootView;
     }
 
     @Override
     public void onListItemClick(Process process) {
+        if (mainActivity.longClickProcessSelected != null) {
+            return;
+        }
         mainActivity.selectedProcess = process;
         mainActivity.switchFragment(StopWatchFragment.class, getResources().getString(R.string.stopwatch_fragment_title));
+    }
+
+    @Override
+    public void onListItemLongClick(Process process) {
+        if (mainActivity.mActionMode != null) {
+            return;
+        }
+        mainActivity.longClickProcessSelected = process;
+        mainActivity.mActionMode = mainActivity.startSupportActionMode(mainActivity.mActionModeCallBack);
     }
 
     @Override
@@ -77,7 +107,7 @@ public class ProcessesFragment extends Fragment implements ProcessListAdapter.Li
         return FRAGMENT_ID;
     }
 
-    private Cursor getAllProcesses() {
+    protected Cursor getAllProcesses() {
         return mainActivity.mDb.query(
                 StopWatchContract.ProcessEntry.TABLE_NAME,
                 null,
@@ -89,4 +119,18 @@ public class ProcessesFragment extends Fragment implements ProcessListAdapter.Li
         );
     }
 
+    @Override
+    public void updateView() {
+        processListAdapter.swapCursor(getAllProcesses());
+    }
+
+    @Override
+    public String getTableName() {
+        return StopWatchContract.ProcessEntry.TABLE_NAME;
+    }
+
+    @Override
+    public String getRowIdFromDatabase() {
+        return StopWatchContract.ProcessEntry._ID;
+    }
 }

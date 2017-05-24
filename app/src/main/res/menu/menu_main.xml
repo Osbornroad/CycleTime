@@ -14,5 +14,23 @@
         app:showAsAction="ifRoom"
         android:orderInCategory="100"
         android:icon="@drawable/plus"/>
+    <item
+        android:id="@+id/main_action_process_plus"
+        android:title="@string/add"
+        app:showAsAction="ifRoom"
+        android:orderInCategory="100"
+        android:icon="@drawable/plus"/>
+    <item
+        android:id="@+id/main_action_machine_plus"
+        android:title="@string/add"
+        app:showAsAction="ifRoom"
+        android:orderInCategory="100"
+        android:icon="@drawable/plus"/>
+    <item
+        android:id="@+id/main_action_part_plus"
+        android:title="@string/add"
+        app:showAsAction="ifRoom"
+        android:orderInCategory="100"
+        android:icon="@drawable/plus"/>
 
 </menu>

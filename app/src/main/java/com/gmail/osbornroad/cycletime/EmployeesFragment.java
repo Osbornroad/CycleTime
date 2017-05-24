@@ -16,7 +16,11 @@ import android.view.ViewGroup;
 import com.gmail.osbornroad.cycletime.dao.StopWatchContract;
 import com.gmail.osbornroad.cycletime.model.Employee;
 
-public class EmployeesFragment extends Fragment implements EmployeeListAdapter.ListItemClickListener, EmployeeListAdapter.ListItemLongClickListener, NavigationFragment {
+public class EmployeesFragment extends Fragment
+        implements EmployeeListAdapter.ListItemClickListener,
+        EmployeeListAdapter.ListItemLongClickListener,
+        NavigationFragment,
+        SavableToDatabase {
 
     private static final int NUM_LIST_ITEMS = 100;
     protected EmployeeListAdapter employeeListAdapter;
@@ -68,7 +72,7 @@ public class EmployeesFragment extends Fragment implements EmployeeListAdapter.L
             @Override
             public void onSwiped(RecyclerView.ViewHolder viewHolder, int direction) {
                 int id = (int) viewHolder.itemView.getTag();
-                mainActivity.deleteEmployee(id);
+                mainActivity.deleteRowFromDatabase(id);
             }
         }).attachToRecyclerView(recyclerView);
 
@@ -110,5 +114,20 @@ public class EmployeesFragment extends Fragment implements EmployeeListAdapter.L
                 null,
                 StopWatchContract.EmployeeEntry.COLUMN_EMPLOYEE_NAME
         );
+    }
+
+    @Override
+    public void updateView() {
+        employeeListAdapter.swapCursor(getAllEmployees());
+    }
+
+    @Override
+    public String getTableName() {
+        return StopWatchContract.EmployeeEntry.TABLE_NAME;
+    }
+
+    @Override
+    public String getRowIdFromDatabase() {
+        return StopWatchContract.EmployeeEntry._ID;
     }
 }

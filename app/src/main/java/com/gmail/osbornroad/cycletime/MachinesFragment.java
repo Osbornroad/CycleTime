@@ -20,7 +20,10 @@ import com.gmail.osbornroad.cycletime.model.Machine;
 /**
  * A simple {@link Fragment} subclass.
  */
-public class MachinesFragment extends Fragment implements MachineListAdapter.ListItemClickListener, NavigationFragment  {
+public class MachinesFragment extends Fragment
+        implements MachineListAdapter.ListItemClickListener,
+        NavigationFragment,
+        SavableToDatabase {
 
     private static final int NUM_LIST_ITEMS = 100;
     private MachineListAdapter machineListAdapter;
@@ -77,6 +80,12 @@ public class MachinesFragment extends Fragment implements MachineListAdapter.Lis
         return FRAGMENT_ID;
     }
 
+    @Override
+    public void updateView() {
+
+    }
+
+
     private Cursor getAllMachines() {
         return mainActivity.mDb.query(
                 StopWatchContract.MachineEntry.TABLE_NAME,
@@ -89,4 +98,13 @@ public class MachinesFragment extends Fragment implements MachineListAdapter.Lis
         );
     }
 
+    @Override
+    public String getTableName() {
+        return StopWatchContract.MachineEntry.TABLE_NAME;
+    }
+
+    @Override
+    public String getRowIdFromDatabase() {
+        return StopWatchContract.MachineEntry._ID;
+    }
 }

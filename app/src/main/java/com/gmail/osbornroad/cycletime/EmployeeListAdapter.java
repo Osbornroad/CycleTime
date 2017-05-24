@@ -38,7 +38,7 @@ public class EmployeeListAdapter extends RecyclerView.Adapter<EmployeeListAdapte
         void onListItemLongClick(Employee employee);
     }
 
-    public void swapCursor(Cursor newCursor) {
+    void swapCursor(Cursor newCursor) {
         if (mCursor != null) {
             mCursor.close();
         }

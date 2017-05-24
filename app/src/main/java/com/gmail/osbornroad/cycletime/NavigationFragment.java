@@ -6,4 +6,6 @@ package com.gmail.osbornroad.cycletime;
 
 public interface NavigationFragment {
     int getMenuId();
+
+    void updateView();
 }

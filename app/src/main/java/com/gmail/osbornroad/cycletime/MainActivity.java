@@ -4,6 +4,7 @@ import android.content.ContentValues;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.database.sqlite.SQLiteDatabase;
+import android.net.Uri;
 import android.os.Bundle;
 import android.support.design.widget.NavigationView;
 import android.support.v4.app.DialogFragment;
@@ -31,6 +32,10 @@ import com.gmail.osbornroad.cycletime.model.Employee;
 import com.gmail.osbornroad.cycletime.model.Machine;
 import com.gmail.osbornroad.cycletime.model.Part;
 import com.gmail.osbornroad.cycletime.model.Process;
+import com.google.android.gms.appindexing.Action;
+import com.google.android.gms.appindexing.AppIndex;
+import com.google.android.gms.appindexing.Thing;
+import com.google.android.gms.common.api.GoogleApiClient;
 
 //import com.gmail.osbornroad.cycletime.service.MachineService;
 //import com.gmail.osbornroad.cycletime.service.PartService;
@@ -38,7 +43,8 @@ import com.gmail.osbornroad.cycletime.model.Process;
 
 public class MainActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener,
-                    DialogEmployeeFragment.DialogEmployeeListener{
+        DialogEmployeeFragment.DialogEmployeeListener,
+        DialogProcessFragment.DialogProcessListener {
 
     private Fragment fragment;
     private Class fragmentClass;
@@ -71,6 +77,11 @@ public class MainActivity extends AppCompatActivity
     private StopWatch stopWatch;
 
     protected SQLiteDatabase mDb;
+    /**
+     * ATTENTION: This was auto-generated to implement the App Indexing API.
+     * See https://g.co/AppIndexing/AndroidStudio for more information.
+     */
+    private GoogleApiClient client;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -125,6 +136,9 @@ public class MainActivity extends AppCompatActivity
         StopWatchDbHelper helper = new StopWatchDbHelper(this);
         mDb = helper.getWritableDatabase();
 
+        // ATTENTION: This was auto-generated to implement the App Indexing API.
+        // See https://g.co/AppIndexing/AndroidStudio for more information.
+        client = new GoogleApiClient.Builder(this).addApi(AppIndex.API).build();
     }
 
     /**
@@ -137,8 +151,7 @@ public class MainActivity extends AppCompatActivity
                 getSupportActionBar().setDisplayHomeAsUpEnabled(false);
                 toggle.setDrawerIndicatorEnabled(true);
                 toggle.setToolbarNavigationClickListener(null);
-            }
-            else {
+            } else {
                 drawer.setDrawerLockMode(DrawerLayout.LOCK_MODE_LOCKED_CLOSED);
                 toggle.setDrawerIndicatorEnabled(false);
                 getSupportActionBar().setDisplayHomeAsUpEnabled(true);
@@ -187,7 +200,7 @@ public class MainActivity extends AppCompatActivity
     protected void switchFragment(Class fragmentClass, String title) {
         Fragment currentFragment = fragMan.findFragmentByTag("visible_fragment");
         try {
-            fragment= (Fragment) fragmentClass.newInstance();
+            fragment = (Fragment) fragmentClass.newInstance();
         } catch (InstantiationException e) {
             e.printStackTrace();
         } catch (IllegalAccessException e) {
@@ -290,18 +303,18 @@ public class MainActivity extends AppCompatActivity
         invalidateOptionsMenu();
 
         final Menu menu = navigationView.getMenu();
-                for (int i = 0; i < menu.size(); i++) {
-                    MenuItem item = menu.getItem(i);
-                    if (item.hasSubMenu()) {
-                        SubMenu subMenu = item.getSubMenu();
-                        for (int j = 0; j < subMenu.size(); j++) {
-                            MenuItem subMenuItem = subMenu.getItem(j);
-                            subMenuItem.setChecked(false);
-                        }
-                    } else {
-                        item.setChecked(false);
-                    }
+        for (int i = 0; i < menu.size(); i++) {
+            MenuItem item = menu.getItem(i);
+            if (item.hasSubMenu()) {
+                SubMenu subMenu = item.getSubMenu();
+                for (int j = 0; j < subMenu.size(); j++) {
+                    MenuItem subMenuItem = subMenu.getItem(j);
+                    subMenuItem.setChecked(false);
                 }
+            } else {
+                item.setChecked(false);
+            }
+        }
 
         MenuItem item = menu.getItem(((NavigationFragment) fragment).getMenuId());
         item.setChecked(true);
@@ -317,6 +330,9 @@ public class MainActivity extends AppCompatActivity
     public boolean onPrepareOptionsMenu(Menu menu) {
         menu.findItem(R.id.main_action_calc).setVisible(fragment.getClass() == StopWatchFragment.class);
         menu.findItem(R.id.main_action_employee_plus).setVisible(fragment.getClass() == EmployeesFragment.class);
+        menu.findItem(R.id.main_action_process_plus).setVisible(fragment.getClass() == ProcessesFragment.class);
+        menu.findItem(R.id.main_action_machine_plus).setVisible(fragment.getClass() == MachinesFragment.class);
+        menu.findItem(R.id.main_action_part_plus).setVisible(fragment.getClass() == PartsFragment.class);
         return super.onPrepareOptionsMenu(menu);
     }
 
@@ -333,56 +349,60 @@ public class MainActivity extends AppCompatActivity
             dialogEmployeeFragment.show(fragMan, "dialogEmployeeFragment");
         }
 
+        if (id == R.id.main_action_process_plus) {
+            DialogProcessFragment dialogProcessFragment = new DialogProcessFragment();
+            dialogProcessFragment.show(fragMan, "dialogEmployeeFragment");
+        }
+
         if (id == R.id.main_action_calc) {
 
-                fragMan = getSupportFragmentManager();
-                fragment = fragMan.findFragmentByTag("visible_fragment");
+            fragMan = getSupportFragmentManager();
+            fragment = fragMan.findFragmentByTag("visible_fragment");
 
-                if (!(fragment instanceof StopWatchFragment)) {
-                    return false;
-                }
+            if (!(fragment instanceof StopWatchFragment)) {
+                return false;
+            }
 
-                Intent intent = new Intent(this, ResultMeasurementActivity.class);
-                if (selectedEmployee != null) {
-                    intent.putExtra("selectedEmployee", selectedEmployee);
-                }
-                if (selectedProcess != null) {
-                    intent.putExtra("selectedProcess", selectedProcess);
-                }
-                if (selectedMachine != null) {
-                    intent.putExtra("selectedMachine", selectedMachine);
-                }
-                if (selectedPart != null) {
-                    intent.putExtra("selectedPart", selectedPart);
-                }
-                try {
-                    partQuantity = Integer.parseInt(((StopWatchFragment) fragment).partQuantity.getText().toString());
-                } catch (Exception e) {
-                    Toast.makeText(this, "Please input correct quantity", Toast.LENGTH_SHORT).show();
-                    return true;
-                }
-                if (partQuantity > 0) {
-                    intent.putExtra("partQuantity", partQuantity);
-                } else {
-                    Toast.makeText(this, "Please input correct quantity", Toast.LENGTH_SHORT).show();
-                    return true;
-                }
-                if (mInProgress) {
-                    if (!mStarted) {
-                        int resultStopWatch = (int) stopWatch.getElapsedTimeInSec();
-                        intent.putExtra("resultStopWatch", resultStopWatch);
-                    } else {
-                        Toast.makeText(this, "Stopwatch still running", Toast.LENGTH_SHORT).show();
-                        return true;
-                    }
-                }
-                else {
-                    Toast.makeText(this, "Stopwatch data is zero", Toast.LENGTH_SHORT).show();
-                    return true;
-                }
-                startActivity(intent);
-
+            Intent intent = new Intent(this, ResultMeasurementActivity.class);
+            if (selectedEmployee != null) {
+                intent.putExtra("selectedEmployee", selectedEmployee);
+            }
+            if (selectedProcess != null) {
+                intent.putExtra("selectedProcess", selectedProcess);
+            }
+            if (selectedMachine != null) {
+                intent.putExtra("selectedMachine", selectedMachine);
+            }
+            if (selectedPart != null) {
+                intent.putExtra("selectedPart", selectedPart);
+            }
+            try {
+                partQuantity = Integer.parseInt(((StopWatchFragment) fragment).partQuantity.getText().toString());
+            } catch (Exception e) {
+                Toast.makeText(this, "Please input correct quantity", Toast.LENGTH_SHORT).show();
                 return true;
+            }
+            if (partQuantity > 0) {
+                intent.putExtra("partQuantity", partQuantity);
+            } else {
+                Toast.makeText(this, "Please input correct quantity", Toast.LENGTH_SHORT).show();
+                return true;
+            }
+            if (mInProgress) {
+                if (!mStarted) {
+                    int resultStopWatch = (int) stopWatch.getElapsedTimeInSec();
+                    intent.putExtra("resultStopWatch", resultStopWatch);
+                } else {
+                    Toast.makeText(this, "Stopwatch still running", Toast.LENGTH_SHORT).show();
+                    return true;
+                }
+            } else {
+                Toast.makeText(this, "Stopwatch data is zero", Toast.LENGTH_SHORT).show();
+                return true;
+            }
+            startActivity(intent);
+
+            return true;
         }
 
         //noinspection SimplifiableIfStatement
@@ -428,7 +448,6 @@ public class MainActivity extends AppCompatActivity
         switchFragment(StopWatchFragment.class, getResources().getString(R.string.stopwatch_fragment_title));*/
     }
 
-    //https://developer.android.com/guide/topics/ui/dialogs.html?hl=ru
 
     @Override
     public void onEmployeeDialogPositiveCheck(DialogFragment dialog, Employee longClickEmployeeSelected) {
@@ -445,19 +464,46 @@ public class MainActivity extends AppCompatActivity
             mDb.insert(StopWatchContract.EmployeeEntry.TABLE_NAME, null, cv);
         } else {
             mDb.update(StopWatchContract.EmployeeEntry.TABLE_NAME, cv,
-                    StopWatchContract.EmployeeEntry._ID + " = ?", new String[]{String.valueOf(longClickEmployeeSelected.getId())});
+                    StopWatchContract.EmployeeEntry._ID + " = ?",
+                    new String[]{String.valueOf(longClickEmployeeSelected.getId())});
         }
-        ((EmployeesFragment) fragment).employeeListAdapter.swapCursor(((EmployeesFragment) fragment).getAllEmployees());
+        ((NavigationFragment) fragment).updateView();
+//        ((EmployeesFragment) fragment).employeeListAdapter.swapCursor(((EmployeesFragment) fragment).getAllEmployees());
     }
+
+/*    @Override
+    public void onEmployeeDialogNegativeCheck(DialogFragment dialog) {
+    }*/
 
     @Override
-    public void onEmployeeDialogNegativeCheck(DialogFragment dialog) {
-
+    public void onProcessDialogPositiveCheck(DialogFragment dialog, Process longClickProcessSelected) {
+        String newProcessName = ((DialogProcessFragment) dialog).getProcessName().getText().toString();
+        if ("".equals(newProcessName)) {
+            Toast.makeText(getApplicationContext(), R.string.dialog_no_data, Toast.LENGTH_SHORT).show();
+            return;
+        }
+        ContentValues cv = new ContentValues();
+        cv.put(StopWatchContract.ProcessEntry.COLUMN_PROCESS_NAME, newProcessName);
+        cv.put(StopWatchContract.ProcessEntry.COLUMN_PROCESS_ENABLE, true);
+        if (longClickProcessSelected == null) {
+            mDb.insert(StopWatchContract.ProcessEntry.TABLE_NAME, null, cv);
+        } else {
+            mDb.update(StopWatchContract.ProcessEntry.TABLE_NAME, cv,
+                    StopWatchContract.ProcessEntry._ID + " = ?",
+                    new String[]{String.valueOf(longClickProcessSelected.getId())});
+        }
+        ((NavigationFragment) fragment).updateView();
+//        ((ProcessesFragment) fragment).processListAdapter.swapCursor(((ProcessesFragment) fragment).getAllProcesses());
     }
 
+/*    @Override
+    public void onProcessDialogNegativeCheck(DialogFragment dialog) {
+    }*/
 
     protected ActionMode mActionMode;
     protected Employee longClickEmployeeSelected;
+    public Process longClickProcessSelected;
+
 
     protected ActionMode.Callback mActionModeCallBack = new ActionMode.Callback() {
         @Override
@@ -477,12 +523,19 @@ public class MainActivity extends AppCompatActivity
         public boolean onActionItemClicked(ActionMode mode, MenuItem item) {
             switch (item.getItemId()) {
                 case R.id.context_edit_employee:
-                    if (longClickEmployeeSelected != null) {
+                    if (fragment != null && fragment.getClass() == EmployeesFragment.class && longClickEmployeeSelected != null) {
                         DialogEmployeeFragment dialogEmployeeFragment = new DialogEmployeeFragment();
                         Bundle bundle = new Bundle();
                         bundle.putParcelable("longClickEmployeeSelected", longClickEmployeeSelected);
                         dialogEmployeeFragment.setArguments(bundle);
                         dialogEmployeeFragment.show(fragMan, "dialogEmployeeFragment");
+                    }
+                    else if (fragment != null && fragment.getClass() == ProcessesFragment.class && longClickProcessSelected != null) {
+                        DialogProcessFragment dialogProcessFragment = new DialogProcessFragment();
+                        Bundle bundle = new Bundle();
+                        bundle.putParcelable("longClickProcessSelected", longClickProcessSelected);
+                        dialogProcessFragment.setArguments(bundle);
+                        dialogProcessFragment.show(fragMan, "dialogProcessFragment");
                     }
                     mode.finish();
                     return true;
@@ -495,29 +548,30 @@ public class MainActivity extends AppCompatActivity
         public void onDestroyActionMode(ActionMode mode) {
             mActionMode = null;
             getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-            ((EmployeesFragment)fragment).employeeListAdapter.swapCursor(((EmployeesFragment)fragment).getAllEmployees());
+            ((NavigationFragment) fragment).updateView();
+            longClickEmployeeSelected = null;
+            longClickProcessSelected = null;
         }
     };
 
 
-    public void deleteEmployee(final int id) {
+    public void deleteRowFromDatabase(final int id) {
         AlertDialog.Builder builder = new AlertDialog.Builder(this/*, R.style.DeleteDialog*/)
-                .setMessage(getResources().getString(R.string.dialog_sure_delete_employee))
+                .setMessage(getResources().getString(R.string.dialog_sure_delete))
                 .setPositiveButton(R.string.dialog_delete_ok, new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
-                        if (mDb.delete(StopWatchContract.EmployeeEntry.TABLE_NAME, StopWatchContract.EmployeeEntry._ID + " = " + id, null) < 0 )
-                        {
+                        if (mDb.delete(((SavableToDatabase) fragment).getTableName(), ((SavableToDatabase) fragment).getRowIdFromDatabase() + " = " + id, null) < 0) {
                             Toast.makeText(getApplicationContext(), "Deleting unsuccessful", Toast.LENGTH_SHORT).show();
                         }
-                        ((EmployeesFragment)fragment).employeeListAdapter.swapCursor(((EmployeesFragment)fragment).getAllEmployees());
+                        ((NavigationFragment) fragment).updateView();
                     }
                 })
                 .setNegativeButton(R.string.dialog_delete_cancel, new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
                         dialog.cancel();
-                        ((EmployeesFragment)fragment).employeeListAdapter.swapCursor(((EmployeesFragment)fragment).getAllEmployees());
+                        ((NavigationFragment) fragment).updateView();
                     }
                 })
                 .setCancelable(false);
@@ -528,5 +582,41 @@ public class MainActivity extends AppCompatActivity
         positiveButton.setTextColor(getResources().getColor(R.color.result_exists_data));
         Button negativeButton = dialog.getButton(DialogInterface.BUTTON_NEGATIVE);
         negativeButton.setTextColor(getResources().getColor(R.color.result_no_data));
+    }
+
+    /**
+     * ATTENTION: This was auto-generated to implement the App Indexing API.
+     * See https://g.co/AppIndexing/AndroidStudio for more information.
+     */
+    public Action getIndexApiAction() {
+        Thing object = new Thing.Builder()
+                .setName("Main Page") // TODO: Define a title for the content shown.
+                // TODO: Make sure this auto-generated URL is correct.
+                .setUrl(Uri.parse("http://[ENTER-YOUR-URL-HERE]"))
+                .build();
+        return new Action.Builder(Action.TYPE_VIEW)
+                .setObject(object)
+                .setActionStatus(Action.STATUS_TYPE_COMPLETED)
+                .build();
+    }
+
+    @Override
+    public void onStart() {
+        super.onStart();
+
+        // ATTENTION: This was auto-generated to implement the App Indexing API.
+        // See https://g.co/AppIndexing/AndroidStudio for more information.
+        client.connect();
+        AppIndex.AppIndexApi.start(client, getIndexApiAction());
+    }
+
+    @Override
+    public void onStop() {
+        super.onStop();
+
+        // ATTENTION: This was auto-generated to implement the App Indexing API.
+        // See https://g.co/AppIndexing/AndroidStudio for more information.
+        AppIndex.AppIndexApi.end(client, getIndexApiAction());
+        client.disconnect();
     }
 }

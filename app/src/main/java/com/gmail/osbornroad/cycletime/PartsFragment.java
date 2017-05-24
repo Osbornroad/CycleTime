@@ -20,7 +20,10 @@ import com.gmail.osbornroad.cycletime.model.Part;
 /**
  * A simple {@link Fragment} subclass.
  */
-public class PartsFragment extends Fragment implements PartListAdapter.ListItemClickListener, NavigationFragment {
+public class PartsFragment extends Fragment
+        implements PartListAdapter.ListItemClickListener,
+        NavigationFragment,
+        SavableToDatabase {
 
     private static final int NUM_LIST_ITEMS = 100;
     private PartListAdapter partListAdapter;
@@ -78,6 +81,11 @@ public class PartsFragment extends Fragment implements PartListAdapter.ListItemC
         return FRAGMENT_ID;
     }
 
+    @Override
+    public void updateView() {
+
+    }
+
     private Cursor getAllParts() {
         return mainActivity.mDb.query(
                 StopWatchContract.PartsEntry.TABLE_NAME,
@@ -88,6 +96,16 @@ public class PartsFragment extends Fragment implements PartListAdapter.ListItemC
                 null,
                 StopWatchContract.PartsEntry.COLUMN_PARTS_NAME
         );
+    }
+
+    @Override
+    public String getTableName() {
+        return StopWatchContract.PartsEntry.TABLE_NAME;
+    }
+
+    @Override
+    public String getRowIdFromDatabase() {
+        return StopWatchContract.PartsEntry._ID;
     }
 
 }

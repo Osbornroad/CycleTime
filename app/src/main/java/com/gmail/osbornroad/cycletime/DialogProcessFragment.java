@@ -1,6 +1,5 @@
 package com.gmail.osbornroad.cycletime;
 
-
 import android.app.Activity;
 import android.app.Dialog;
 import android.content.DialogInterface;
@@ -14,38 +13,37 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 
-import com.gmail.osbornroad.cycletime.model.Employee;
+import com.gmail.osbornroad.cycletime.model.Process;
 
 /**
- * Created by User on 19.05.2017.
+ * Created by User on 24.05.2017.
  */
+public class DialogProcessFragment extends DialogFragment {
 
-public class DialogEmployeeFragment extends DialogFragment {
+    private EditText processName;
+    private Process longClickProcessSelected;
 
-    private EditText employeeName;
-    private Employee longClickEmployeeSelected;
-
-    public EditText getEmployeeName() {
-        return employeeName;
+    public EditText getProcessName() {
+        return processName;
     }
 
-    public interface DialogEmployeeListener {
-        public void onEmployeeDialogPositiveCheck(DialogFragment dialog, Employee employee);
-//        public void onEmployeeDialogNegativeCheck(DialogFragment dialog);
+    public interface DialogProcessListener {
+        public void onProcessDialogPositiveCheck(DialogFragment dialog, Process process);
+//        public void onProcessDialogNegativeCheck(DialogFragment dialog);
     }
 
-    private DialogEmployeeListener mListener;
+    private DialogProcessFragment.DialogProcessListener mListener;
 
     @Override
     public void onAttach(Activity activity) {
         super.onAttach(activity);
         try {
             // Instantiate the NoticeDialogListener so we can send events to the host
-            mListener = (DialogEmployeeListener) activity;
+            mListener = (DialogProcessFragment.DialogProcessListener) activity;
         } catch (ClassCastException e) {
             // The activity doesn't implement the interface, throw exception
             throw new ClassCastException(activity.toString()
-                    + " must implement DialogEmployeeListener");
+                    + " must implement DialogProcessListener");
         }
     }
 
@@ -54,7 +52,7 @@ public class DialogEmployeeFragment extends DialogFragment {
         super.onCreate(savedInstanceState);
         Bundle bundle = this.getArguments();
         if (bundle != null) {
-            longClickEmployeeSelected = bundle.getParcelable("longClickEmployeeSelected");
+            longClickProcessSelected = bundle.getParcelable("longClickProcessSelected");
         }
     }
 
@@ -66,25 +64,26 @@ public class DialogEmployeeFragment extends DialogFragment {
         LayoutInflater inflater = getActivity().getLayoutInflater();
         View rootView = inflater.inflate(R.layout.dialog_employee_add, null);
 
-        employeeName = (EditText) rootView.findViewById(R.id.edit_text_add_employee);
+        processName = (EditText) rootView.findViewById(R.id.edit_text_add_employee);
+        processName.setHint(R.string.hint_add_process);
 
-        if (longClickEmployeeSelected != null) {
-            employeeName.setText(longClickEmployeeSelected.getEmployeeName());
+        if (longClickProcessSelected != null) {
+            processName.setText(longClickProcessSelected.getProcessName());
         }
 
         builder.setView(rootView)
-                .setTitle(longClickEmployeeSelected == null ? R.string.add_employee : R.string.edit_employee)
+                .setTitle(longClickProcessSelected == null ? R.string.add_process : R.string.edit_process)
                 .setCancelable(false)
                 .setPositiveButton(R.string.dialog_button_ok, new DialogInterface.OnClickListener(){
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
-                        mListener.onEmployeeDialogPositiveCheck(DialogEmployeeFragment.this, longClickEmployeeSelected);
+                        mListener.onProcessDialogPositiveCheck(DialogProcessFragment.this, longClickProcessSelected);
                     }
                 })
                 .setNegativeButton(R.string.dialog_button_cancel, new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
-//                        mListener.onEmployeeDialogNegativeCheck(DialogEmployeeFragment.this);
+//                        mListener.onProcessDialogNegativeCheck(DialogProcessFragment.this);
                     }
                 });
 

@@ -19,10 +19,12 @@ import com.gmail.osbornroad.cycletime.model.Process;
 public class ProcessListAdapter extends RecyclerView.Adapter<ProcessListAdapter.ProcessViewHolder> {
 
     final private ListItemClickListener mOnClickListener;
+    final private ProcessListAdapter.ListItemLongClickListener mOnLongClickListener;
     private Cursor mCursor;
 
-    public ProcessListAdapter(ListItemClickListener mOnClickListener, Cursor cursor) {
+    public ProcessListAdapter(ListItemClickListener mOnClickListener, ListItemLongClickListener mOnLongClickListener, Cursor cursor) {
         this.mOnClickListener = mOnClickListener;
+        this.mOnLongClickListener = mOnLongClickListener;
         this.mCursor = cursor;
     }
 
@@ -33,6 +35,19 @@ public class ProcessListAdapter extends RecyclerView.Adapter<ProcessListAdapter.
         void onListItemClick(Process process);
     }
 
+    interface ListItemLongClickListener {
+        void onListItemLongClick(Process process);
+    }
+
+    void swapCursor(Cursor newCursor) {
+        if (mCursor != null) {
+            mCursor.close();
+        }
+        mCursor = newCursor;
+        if (newCursor != null) {
+            this.notifyDataSetChanged();
+        }
+    }
     @Override
     public ProcessViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         Context context = parent.getContext();
@@ -50,6 +65,7 @@ public class ProcessListAdapter extends RecyclerView.Adapter<ProcessListAdapter.
         int id = mCursor.getInt(mCursor.getColumnIndex(ProcessEntry._ID));
         String name = mCursor.getString(mCursor.getColumnIndex(ProcessEntry.COLUMN_PROCESS_NAME));
         boolean enable = mCursor.getInt(mCursor.getColumnIndex(ProcessEntry.COLUMN_PROCESS_ENABLE)) == 1;
+        holder.itemView.setTag(id);
         holder.bind(id, name, enable);    }
 
     @Override
@@ -57,7 +73,7 @@ public class ProcessListAdapter extends RecyclerView.Adapter<ProcessListAdapter.
         return mCursor.getCount();
     }
 
-    public class ProcessViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
+    public class ProcessViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener, View.OnLongClickListener {
 
         TextView listItemProcessName;
         Process process;
@@ -66,12 +82,21 @@ public class ProcessListAdapter extends RecyclerView.Adapter<ProcessListAdapter.
             super(itemView);
             listItemProcessName = (TextView)itemView.findViewById(R.id.tv_process_name);
             itemView.setOnClickListener(this);
+            itemView.setOnLongClickListener(this);
+        }
+
+        @Override
+        public boolean onLongClick(View v) {
+            mOnLongClickListener.onListItemLongClick(process);
+            v.setBackgroundColor(R.color.colorPrimary);
+            return true;
         }
 
         @Override
         public void onClick(View view) {
             mOnClickListener.onListItemClick(process);
         }
+
 
         public void bind(int processId, String processName, boolean processEnable) {
             process = new Process(processId, processName, processEnable);

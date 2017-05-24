@@ -327,5 +327,10 @@ public class StopWatchFragment extends Fragment implements NavigationFragment {
     public int getMenuId() {
         return FRAGMENT_ID;
     }
+
+    @Override
+    public void updateView() {
+
+    }
 }
 

@@ -61,9 +61,12 @@
     <string name="hint_add_employee">Input employee name</string>
     <string name="edit">Edit</string>
     <string name="delete">Delete</string>
-    <string name="dialog_sure_delete_employee">A you sure to delete employee?</string>
+    <string name="dialog_sure_delete">A you sure to delete?</string>
     <string name="dialog_delete_ok">Delete</string>
     <string name="dialog_delete_cancel">Cancel</string>
-    <string name="dialog_no_data">You didn\'t put any name</string>
+    <string name="dialog_no_data">You didn\'t put anything</string>
     <string name="edit_employee">Edit employee</string>
+    <string name="add_process">Add process</string>
+    <string name="edit_process">Edit process</string>
+    <string name="hint_add_process">Input process name</string>
 </resources>
