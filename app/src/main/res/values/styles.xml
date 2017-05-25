@@ -8,7 +8,7 @@
         <item name="colorAccent">@color/colorAccent</item>
     </style>
 
-    <style name="ListForChoose" parent="@style/TextAppearance.AppCompat.Title">
+    <style name="TextViewListForChoose" parent="@style/TextAppearance.AppCompat.Title">
         <item name="android:layout_width">wrap_content</item>
         <item name="android:layout_height">wrap_content</item>
         <item name="android:gravity">center_vertical|start</item>
@@ -19,6 +19,19 @@
         <item name="android:paddingLeft">16dp</item>
         <item name="android:paddingTop">13dp</item>
         <item name="android:paddingBottom">13dp</item>
+    </style>
+
+    <style name="CheckBoxListForChoose" parent="@style/TextAppearance.AppCompat.Title">
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:layout_gravity">center_vertical|end</item>
+        <item name="android:fontFamily">sans-serif-light</item>
+        <item name="android:textColor">@color/colorPrimary</item>
+        <item name="android:layout_marginRight">16dp</item>
+        <item name="android:text">@string/show_item</item>
+        <item name="android:textSize">12sp</item>
+        <item name="android:button">@null</item>
+        <item name="android:drawableRight">?android:attr/listChoiceIndicatorMultiple</item>
     </style>
 
     <style name="FrameLayoutCardsForRecyclerView">

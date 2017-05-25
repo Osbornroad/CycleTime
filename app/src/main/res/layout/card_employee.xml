@@ -6,8 +6,13 @@
 
     <TextView
         android:id="@+id/tv_employee_name"
-        style="@style/ListForChoose"
+        style="@style/TextViewListForChoose"
         tools:text="Employee"
+        />
+    
+    <android.support.v7.widget.AppCompatCheckBox
+        android:id="@+id/cb_employee_enable"
+        style="@style/CheckBoxListForChoose"
         />
 
 </FrameLayout>

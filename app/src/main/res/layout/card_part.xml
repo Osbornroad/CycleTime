@@ -6,7 +6,7 @@
 
     <TextView
         android:id="@+id/tv_part_name"
-        style="@style/ListForChoose"
+        style="@style/TextViewListForChoose"
         tools:text="Part"
         />
 

@@ -6,7 +6,7 @@
 
     <TextView
         android:id="@+id/tv_machine_name"
-        style="@style/ListForChoose"
+        style="@style/TextViewListForChoose"
         tools:text="Machine"
         />
 

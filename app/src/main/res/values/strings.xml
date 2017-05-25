@@ -74,4 +74,5 @@
     <string name="edit_machine">Edit machine</string>
     <string name="add_part">Add part</string>
     <string name="edit_part">Edit part</string>
+    <string name="show_item">show item</string>
 </resources>
