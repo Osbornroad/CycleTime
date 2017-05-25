@@ -69,4 +69,9 @@
     <string name="add_process">Add process</string>
     <string name="edit_process">Edit process</string>
     <string name="hint_add_process">Input process name</string>
+    <string name="hint_add_machine">Input machine name</string>
+    <string name="add_machine">Add machine</string>
+    <string name="edit_machine">Edit machine</string>
+    <string name="add_part">Add part</string>
+    <string name="edit_part">Edit part</string>
 </resources>

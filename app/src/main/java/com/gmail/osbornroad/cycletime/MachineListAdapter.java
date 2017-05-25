@@ -11,7 +11,6 @@ import android.widget.TextView;
 import com.gmail.osbornroad.cycletime.dao.StopWatchContract.MachineEntry;
 import com.gmail.osbornroad.cycletime.model.Machine;
 
-
 /**
  * Created by User on 28.04.2017.
  */
@@ -19,15 +18,31 @@ import com.gmail.osbornroad.cycletime.model.Machine;
 public class MachineListAdapter extends RecyclerView.Adapter<MachineListAdapter.MachineViewHolder> {
 
     final private ListItemClickListener mOnClickListener;
+    final private ListItemLongClickListener mOnLongClickListener;
     private Cursor mCursor;
 
-    public MachineListAdapter(ListItemClickListener mOnClickListener, Cursor cursor) {
+    public MachineListAdapter(ListItemClickListener mOnClickListener, ListItemLongClickListener mOnLongClickListener, Cursor cursor) {
         this.mOnClickListener = mOnClickListener;
+        this.mOnLongClickListener = mOnLongClickListener;
         this.mCursor = cursor;
     }
 
     interface ListItemClickListener {
         void onListItemClick(Machine machine);
+    }
+
+    interface ListItemLongClickListener {
+        void onListItemLongClick(Machine machine);
+    }
+
+    void swapCursor(Cursor newCursor) {
+        if (mCursor != null) {
+            mCursor.close();
+        }
+        mCursor = newCursor;
+        if (newCursor != null) {
+            this.notifyDataSetChanged();
+        }
     }
 
     @Override
@@ -48,6 +63,7 @@ public class MachineListAdapter extends RecyclerView.Adapter<MachineListAdapter.
         String name = mCursor.getString(mCursor.getColumnIndex(MachineEntry.COLUMN_MACHINE_NAME));
         int parentProcessId = mCursor.getInt(mCursor.getColumnIndex(MachineEntry.COLUMN_PARENT_PROCESS_ID));
         boolean enable = mCursor.getInt(mCursor.getColumnIndex(MachineEntry.COLUMN_MACHINE_ENABLE)) == 1;
+        holder.itemView.setTag(id);
         holder.bind(id, name, parentProcessId, enable);    }
 
     @Override
@@ -55,7 +71,7 @@ public class MachineListAdapter extends RecyclerView.Adapter<MachineListAdapter.
         return mCursor.getCount();
     }
 
-    class MachineViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
+    class MachineViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener, View.OnLongClickListener {
 
         TextView listItemMachineName;
         Machine machine;
@@ -63,7 +79,15 @@ public class MachineListAdapter extends RecyclerView.Adapter<MachineListAdapter.
         public MachineViewHolder(View itemView) {
             super(itemView);
             listItemMachineName = (TextView) itemView.findViewById(R.id.tv_machine_name);
+            itemView.setOnLongClickListener(this);
             itemView.setOnClickListener(this);
+        }
+
+        @Override
+        public boolean onLongClick(View v) {
+            mOnLongClickListener.onListItemLongClick(machine);
+            v.setBackgroundColor(R.color.colorPrimary);
+            return true;
         }
 
         @Override

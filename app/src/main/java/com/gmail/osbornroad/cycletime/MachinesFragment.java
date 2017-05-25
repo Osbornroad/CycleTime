@@ -9,6 +9,7 @@ import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.DividerItemDecoration;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.support.v7.widget.helper.ItemTouchHelper;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -22,6 +23,7 @@ import com.gmail.osbornroad.cycletime.model.Machine;
  */
 public class MachinesFragment extends Fragment
         implements MachineListAdapter.ListItemClickListener,
+        MachineListAdapter.ListItemLongClickListener,
         NavigationFragment,
         SavableToDatabase {
 
@@ -63,28 +65,49 @@ public class MachinesFragment extends Fragment
         mainActivity = (MainActivity) getActivity();
 
         Cursor cursor = getAllMachines();
-        machineListAdapter = new MachineListAdapter(this, cursor);
+        machineListAdapter = new MachineListAdapter(this, this, cursor);
         recyclerView.setAdapter(machineListAdapter);
+
+        new ItemTouchHelper(new ItemTouchHelper.SimpleCallback(0, ItemTouchHelper.LEFT | ItemTouchHelper.RIGHT) {
+            @Override
+            public boolean onMove(RecyclerView recyclerView, RecyclerView.ViewHolder viewHolder, RecyclerView.ViewHolder target) {
+                return false;
+            }
+
+            @Override
+            public void onSwiped(RecyclerView.ViewHolder viewHolder, int direction) {
+                int id = (int) viewHolder.itemView.getTag();
+                mainActivity.deleteRowFromDatabase(id);
+            }
+        }).attachToRecyclerView(recyclerView);
 
         return rootView;
     }
 
     @Override
     public void onListItemClick(Machine machine) {
+        if (mainActivity.longClickMachineSelected != null) {
+            return;
+        }
         mainActivity.selectedMachine = machine;
         mainActivity.switchFragment(StopWatchFragment.class, getResources().getString(R.string.stopwatch_fragment_title));
+    }
+
+    @Override
+    public void onListItemLongClick(Machine machine) {
+        if (mainActivity.mActionMode != null) {
+            return;
+        }
+        mainActivity.longClickMachineSelected = machine;
+        mainActivity.mActionMode = mainActivity.startSupportActionMode(mainActivity.mActionModeCallBack);
+
+
     }
 
     @Override
     public int getMenuId() {
         return FRAGMENT_ID;
     }
-
-    @Override
-    public void updateView() {
-
-    }
-
 
     private Cursor getAllMachines() {
         return mainActivity.mDb.query(
@@ -96,6 +119,11 @@ public class MachinesFragment extends Fragment
                 null,
                 StopWatchContract.MachineEntry.COLUMN_MACHINE_NAME
         );
+    }
+
+    @Override
+    public void updateView() {
+        machineListAdapter.swapCursor(getAllMachines());
     }
 
     @Override

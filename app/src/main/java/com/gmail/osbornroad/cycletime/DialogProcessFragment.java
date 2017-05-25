@@ -62,9 +62,9 @@ public class DialogProcessFragment extends DialogFragment {
 
         AlertDialog.Builder builder = new AlertDialog.Builder(getActivity()/*, R.style.AddDialog*/);
         LayoutInflater inflater = getActivity().getLayoutInflater();
-        View rootView = inflater.inflate(R.layout.dialog_employee_add, null);
+        View rootView = inflater.inflate(R.layout.dialog_add_update, null);
 
-        processName = (EditText) rootView.findViewById(R.id.edit_text_add_employee);
+        processName = (EditText) rootView.findViewById(R.id.edit_text_name_add_update);
         processName.setHint(R.string.hint_add_process);
 
         if (longClickProcessSelected != null) {
@@ -86,15 +86,12 @@ public class DialogProcessFragment extends DialogFragment {
 //                        mListener.onProcessDialogNegativeCheck(DialogProcessFragment.this);
                     }
                 });
-
         AlertDialog dialog = builder.create();
         dialog.show();
         Button positiveButton = dialog.getButton(DialogInterface.BUTTON_POSITIVE);
         positiveButton.setTextColor(getResources().getColor(R.color.result_exists_data));
         Button negativeButton = dialog.getButton(DialogInterface.BUTTON_NEGATIVE);
         negativeButton.setTextColor(getResources().getColor(R.color.result_no_data));
-
-
         return dialog;
     }
 }

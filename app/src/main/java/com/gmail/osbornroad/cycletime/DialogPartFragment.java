@@ -1,6 +1,5 @@
 package com.gmail.osbornroad.cycletime;
 
-
 import android.app.Activity;
 import android.app.Dialog;
 import android.content.DialogInterface;
@@ -14,38 +13,36 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 
-import com.gmail.osbornroad.cycletime.model.Employee;
+import com.gmail.osbornroad.cycletime.model.Part;
 
 /**
- * Created by User on 19.05.2017.
+ * Created by User on 25.05.2017.
  */
+public class DialogPartFragment extends DialogFragment {
 
-public class DialogEmployeeFragment extends DialogFragment {
+    private EditText partName;
+    private Part longClickPartSelected;
 
-    private EditText employeeName;
-    private Employee longClickEmployeeSelected;
-
-    public EditText getEmployeeName() {
-        return employeeName;
+    public EditText getPartName() {
+        return partName;
     }
 
-    public interface DialogEmployeeListener {
-        public void onEmployeeDialogPositiveCheck(DialogFragment dialog, Employee employee);
-//        public void onEmployeeDialogNegativeCheck(DialogFragment dialog);
+    public interface DialogPartListener {
+        void onPartDialogPositiveCheck(DialogFragment dialog, Part part);
     }
 
-    private DialogEmployeeListener mListener;
+    private DialogPartListener mListener;
 
     @Override
     public void onAttach(Activity activity) {
         super.onAttach(activity);
         try {
             // Instantiate the NoticeDialogListener so we can send events to the host
-            mListener = (DialogEmployeeListener) activity;
+            mListener = (DialogPartListener) activity;
         } catch (ClassCastException e) {
             // The activity doesn't implement the interface, throw exception
             throw new ClassCastException(activity.toString()
-                    + " must implement DialogEmployeeListener");
+                    + " must implement DialogPartListener");
         }
     }
 
@@ -54,10 +51,9 @@ public class DialogEmployeeFragment extends DialogFragment {
         super.onCreate(savedInstanceState);
         Bundle bundle = this.getArguments();
         if (bundle != null) {
-            longClickEmployeeSelected = bundle.getParcelable("longClickEmployeeSelected");
+            longClickPartSelected = bundle.getParcelable("longClickPartSelected");
         }
     }
-
     @NonNull
     @Override
     public Dialog onCreateDialog(Bundle savedInstanceState) {
@@ -66,25 +62,24 @@ public class DialogEmployeeFragment extends DialogFragment {
         LayoutInflater inflater = getActivity().getLayoutInflater();
         View rootView = inflater.inflate(R.layout.dialog_add_update, null);
 
-        employeeName = (EditText) rootView.findViewById(R.id.edit_text_name_add_update);
+        partName = (EditText) rootView.findViewById(R.id.edit_text_name_add_update);
 
-        if (longClickEmployeeSelected != null) {
-            employeeName.setText(longClickEmployeeSelected.getEmployeeName());
+        if (longClickPartSelected != null) {
+            partName.setText(longClickPartSelected.getPartName());
         }
 
         builder.setView(rootView)
-                .setTitle(longClickEmployeeSelected == null ? R.string.add_employee : R.string.edit_employee)
+                .setTitle(longClickPartSelected == null ? R.string.add_part : R.string.edit_part)
                 .setCancelable(false)
                 .setPositiveButton(R.string.dialog_button_ok, new DialogInterface.OnClickListener(){
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
-                        mListener.onEmployeeDialogPositiveCheck(DialogEmployeeFragment.this, longClickEmployeeSelected);
+                        mListener.onPartDialogPositiveCheck(DialogPartFragment.this, longClickPartSelected);
                     }
                 })
                 .setNegativeButton(R.string.dialog_button_cancel, new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
-//                        mListener.onEmployeeDialogNegativeCheck(DialogEmployeeFragment.this);
                     }
                 });
 

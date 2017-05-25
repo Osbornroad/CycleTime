@@ -9,6 +9,7 @@ import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.DividerItemDecoration;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.support.v7.widget.helper.ItemTouchHelper;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -22,6 +23,7 @@ import com.gmail.osbornroad.cycletime.model.Part;
  */
 public class PartsFragment extends Fragment
         implements PartListAdapter.ListItemClickListener,
+        PartListAdapter.ListItemLongClickListener,
         NavigationFragment,
         SavableToDatabase {
 
@@ -63,8 +65,21 @@ public class PartsFragment extends Fragment
         mainActivity = (MainActivity) getActivity();
 
         Cursor cursor = getAllParts();
-        partListAdapter = new PartListAdapter(this, cursor);
+        partListAdapter = new PartListAdapter(this, this, cursor);
         recyclerView.setAdapter(partListAdapter);
+
+        new ItemTouchHelper(new ItemTouchHelper.SimpleCallback(0, ItemTouchHelper.LEFT | ItemTouchHelper.RIGHT) {
+            @Override
+            public boolean onMove(RecyclerView recyclerView, RecyclerView.ViewHolder viewHolder, RecyclerView.ViewHolder target) {
+                return false;
+            }
+
+            @Override
+            public void onSwiped(RecyclerView.ViewHolder viewHolder, int direction) {
+                int id = (int) viewHolder.itemView.getTag();
+                mainActivity.deleteRowFromDatabase(id);
+            }
+        }).attachToRecyclerView(recyclerView);
 
         return rootView;
     }
@@ -72,18 +87,25 @@ public class PartsFragment extends Fragment
 
     @Override
     public void onListItemClick(Part part) {
+        if(mainActivity.longClickPartSelected != null) {
+            return;
+        }
         mainActivity.selectedPart = part;
         mainActivity.switchFragment(StopWatchFragment.class, getResources().getString(R.string.stopwatch_fragment_title));
     }
 
     @Override
-    public int getMenuId() {
-        return FRAGMENT_ID;
+    public void onListItemLongClick(Part part) {
+        if (mainActivity.mActionMode != null) {
+            return;
+        }
+        mainActivity.longClickPartSelected = part;
+        mainActivity.mActionMode = mainActivity.startSupportActionMode(mainActivity.mActionModeCallBack);
     }
 
     @Override
-    public void updateView() {
-
+    public int getMenuId() {
+        return FRAGMENT_ID;
     }
 
     private Cursor getAllParts() {
@@ -96,6 +118,11 @@ public class PartsFragment extends Fragment
                 null,
                 StopWatchContract.PartsEntry.COLUMN_PARTS_NAME
         );
+    }
+
+    @Override
+    public void updateView() {
+        partListAdapter.swapCursor(getAllParts());
     }
 
     @Override
