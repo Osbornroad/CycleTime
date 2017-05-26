@@ -60,7 +60,7 @@ public class EmployeesFragment extends Fragment
         mainActivity = (MainActivity) getActivity();
 
         Cursor cursor = getAllEmployees();
-        employeeListAdapter = new EmployeeListAdapter(this, this, cursor);
+        employeeListAdapter = new EmployeeListAdapter(this, this, cursor, getResources());
         recyclerView.setAdapter(employeeListAdapter);
 
         new ItemTouchHelper(new ItemTouchHelper.SimpleCallback(0, ItemTouchHelper.LEFT | ItemTouchHelper.RIGHT) {
@@ -108,8 +108,8 @@ public class EmployeesFragment extends Fragment
         return mainActivity.mDb.query(
                 StopWatchContract.EmployeeEntry.TABLE_NAME,
                 null,
-                null,
-                null,
+                StopWatchContract.EmployeeEntry.COLUMN_EMPLOYEE_ENABLE + " = ? OR ?",
+                mainActivity.showAll ? new String[]{"0", "1"} : new String[]{"1"},
                 null,
                 null,
                 StopWatchContract.EmployeeEntry.COLUMN_EMPLOYEE_NAME

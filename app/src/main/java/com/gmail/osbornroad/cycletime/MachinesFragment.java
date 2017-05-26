@@ -65,7 +65,7 @@ public class MachinesFragment extends Fragment
         mainActivity = (MainActivity) getActivity();
 
         Cursor cursor = getAllMachines();
-        machineListAdapter = new MachineListAdapter(this, this, cursor);
+        machineListAdapter = new MachineListAdapter(this, this, cursor, getResources());
         recyclerView.setAdapter(machineListAdapter);
 
         new ItemTouchHelper(new ItemTouchHelper.SimpleCallback(0, ItemTouchHelper.LEFT | ItemTouchHelper.RIGHT) {
@@ -113,8 +113,8 @@ public class MachinesFragment extends Fragment
         return mainActivity.mDb.query(
                 StopWatchContract.MachineEntry.TABLE_NAME,
                 null,
-                null,
-                null,
+                StopWatchContract.MachineEntry.COLUMN_MACHINE_ENABLE + " = ? OR ?",
+                mainActivity.showAll ? new String[]{"0", "1"} : new String[]{"1"},
                 null,
                 null,
                 StopWatchContract.MachineEntry.COLUMN_MACHINE_NAME

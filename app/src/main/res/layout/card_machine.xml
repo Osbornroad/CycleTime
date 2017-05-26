@@ -10,4 +10,10 @@
         tools:text="Machine"
         />
 
+
+    <ImageView
+        android:id="@+id/element_hidden_machine"
+        style="@style/IconInvisible"
+        />
+
 </FrameLayout>

@@ -61,8 +61,13 @@
     <string name="hint_add_employee">Input employee name</string>
     <string name="edit">Edit</string>
     <string name="delete">Delete</string>
-    <string name="dialog_sure_delete">A you sure to delete?</string>
-    <string name="dialog_delete_ok">Delete</string>
+    <string name="dialog_sure_delete">
+        When you delete, the item will be erased forever, and you lost information in result data.\n
+        You can also hide unusual items:\n
+        1. \"Long press\" on item,\n
+        2. Select \"Edit\" in context mode bar,\n
+        3. Switch off \"show".</string>
+    <string name="dialog_delete_ok">Delete anyway</string>
     <string name="dialog_delete_cancel">Cancel</string>
     <string name="dialog_no_data">You didn\'t put anything</string>
     <string name="edit_employee">Edit employee</string>
@@ -74,4 +79,8 @@
     <string name="edit_machine">Edit machine</string>
     <string name="add_part">Add part</string>
     <string name="edit_part">Edit part</string>
+    <string name="switch_show_item_text">Show</string>
+    <string name="text_on">on</string>
+    <string name="text_off">off</string>
+    <string name="show_hidden">Show all</string>
 </resources>

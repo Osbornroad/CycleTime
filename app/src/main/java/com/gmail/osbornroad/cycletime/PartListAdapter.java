@@ -1,11 +1,13 @@
 package com.gmail.osbornroad.cycletime;
 
 import android.content.Context;
+import android.content.res.Resources;
 import android.database.Cursor;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.gmail.osbornroad.cycletime.dao.StopWatchContract.PartsEntry;
@@ -21,11 +23,13 @@ public class PartListAdapter extends RecyclerView.Adapter<PartListAdapter.PartVi
     final private ListItemClickListener mOnClickListener;
     final private ListItemLongClickListener mOnLongClickListener;
     private Cursor mCursor;
+    private Resources resources;
 
-    public PartListAdapter(ListItemClickListener mOnClickListener, ListItemLongClickListener mOnLongClickListener, Cursor cursor) {
+    public PartListAdapter(ListItemClickListener mOnClickListener, ListItemLongClickListener mOnLongClickListener, Cursor cursor, Resources resources) {
         this.mOnClickListener = mOnClickListener;
         this.mOnLongClickListener = mOnLongClickListener;
         this.mCursor = cursor;
+        this.resources = resources;
     }
 
     interface ListItemClickListener {
@@ -73,12 +77,14 @@ public class PartListAdapter extends RecyclerView.Adapter<PartListAdapter.PartVi
 
     class PartViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener, View.OnLongClickListener {
 
-        TextView listItemPartView;
+        TextView listName;
         Part part;
+        ImageView visible;
 
         public PartViewHolder(View itemView) {
             super(itemView);
-            listItemPartView = (TextView) itemView.findViewById(R.id.tv_part_name);
+            listName = (TextView) itemView.findViewById(R.id.tv_part_name);
+            visible = (ImageView) itemView.findViewById(R.id.element_hidden_part);
             itemView.setOnClickListener(this);
             itemView.setOnLongClickListener(this);
         }
@@ -86,8 +92,9 @@ public class PartListAdapter extends RecyclerView.Adapter<PartListAdapter.PartVi
         @Override
         public boolean onLongClick(View v) {
             mOnLongClickListener.onListItemLongClick(part);
-            v.setBackgroundColor(R.color.colorPrimary);
-            return true;        }
+            v.setBackgroundColor(resources.getColor(R.color.colorPrimaryLight));
+            return true;
+        }
 
         @Override
         public void onClick(View v) {
@@ -96,7 +103,14 @@ public class PartListAdapter extends RecyclerView.Adapter<PartListAdapter.PartVi
 
         public void bind(int partId, String partName, boolean partEnable) {
             part = new Part(partId, partName, partEnable);
-            listItemPartView.setText(partName);
+            listName.setText(partName);
+            if (part.isEnable()) {
+                visible.setVisibility(View.INVISIBLE);
+                listName.setTextColor(resources.getColor(R.color.colorPrimary));
+            } else {
+                visible.setVisibility(View.VISIBLE);
+                listName.setTextColor(resources.getColor(android.R.color.darker_gray));
+            }
         }
     }
 }

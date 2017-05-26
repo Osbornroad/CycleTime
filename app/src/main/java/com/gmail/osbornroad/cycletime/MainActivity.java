@@ -215,6 +215,7 @@ public class MainActivity extends AppCompatActivity
         invalidateOptionsMenu();
         setActionBarTitle();
         setDrawerAccess();
+        showAll = false;
     }
 
     private void setSavedInfo(Bundle savedInstanceState) {
@@ -306,6 +307,7 @@ public class MainActivity extends AppCompatActivity
 
         MenuItem item = menu.getItem(((NavigationFragment) fragment).getMenuId());
         item.setChecked(true);
+        showAll = false;
     }
 
     @Override
@@ -321,8 +323,15 @@ public class MainActivity extends AppCompatActivity
         menu.findItem(R.id.main_action_process_plus).setVisible(fragment.getClass() == ProcessesFragment.class);
         menu.findItem(R.id.main_action_machine_plus).setVisible(fragment.getClass() == MachinesFragment.class);
         menu.findItem(R.id.main_action_part_plus).setVisible(fragment.getClass() == PartsFragment.class);
+
+        menu.findItem(R.id.main_action_show_all)
+                .setIcon(!showAll ? R.drawable.ic_visibility_white_48dp : R.drawable.ic_visibility_off_white_48dp)
+                .setVisible(fragment.getClass() != StopWatchFragment.class);
+
         return super.onPrepareOptionsMenu(menu);
     }
+
+    boolean showAll = false;
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
@@ -334,6 +343,11 @@ public class MainActivity extends AppCompatActivity
         if (id == R.id.main_action_employee_plus) {
             DialogEmployeeFragment dialogEmployeeFragment = new DialogEmployeeFragment();
             dialogEmployeeFragment.show(fragMan, "dialogEmployeeFragment");
+        }
+        if (id == R.id.main_action_show_all) {
+            showAll = !showAll;
+            invalidateOptionsMenu();
+            ((NavigationFragment) fragment).updateView();
         }
         if (id == R.id.main_action_process_plus) {
             DialogProcessFragment dialogProcessFragment = new DialogProcessFragment();
@@ -445,13 +459,14 @@ public class MainActivity extends AppCompatActivity
     @Override
     public void onEmployeeDialogPositiveCheck(DialogFragment dialog, Employee employee) {
         String newEmployeeName = ((DialogEmployeeFragment) dialog).getEmployeeName().getText().toString();
+        boolean newEmployeeEnable = ((DialogEmployeeFragment) dialog).getEnable().isChecked();
         if ("".equals(newEmployeeName)) {
             Toast.makeText(getApplicationContext(), R.string.dialog_no_data, Toast.LENGTH_SHORT).show();
             return;
         }
         ContentValues cv = new ContentValues();
         cv.put(StopWatchContract.EmployeeEntry.COLUMN_EMPLOYEE_NAME, newEmployeeName);
-        cv.put(StopWatchContract.EmployeeEntry.COLUMN_EMPLOYEE_ENABLE, true);
+        cv.put(StopWatchContract.EmployeeEntry.COLUMN_EMPLOYEE_ENABLE, newEmployeeEnable);
         if (employee == null) {
             mDb.insert(StopWatchContract.EmployeeEntry.TABLE_NAME, null, cv);
         } else {
@@ -465,13 +480,14 @@ public class MainActivity extends AppCompatActivity
     @Override
     public void onProcessDialogPositiveCheck(DialogFragment dialog, Process process) {
         String newProcessName = ((DialogProcessFragment) dialog).getProcessName().getText().toString();
+        boolean newProcessEnable = ((DialogProcessFragment) dialog).getEnable().isChecked();
         if ("".equals(newProcessName)) {
             Toast.makeText(getApplicationContext(), R.string.dialog_no_data, Toast.LENGTH_SHORT).show();
             return;
         }
         ContentValues cv = new ContentValues();
         cv.put(StopWatchContract.ProcessEntry.COLUMN_PROCESS_NAME, newProcessName);
-        cv.put(StopWatchContract.ProcessEntry.COLUMN_PROCESS_ENABLE, true);
+        cv.put(StopWatchContract.ProcessEntry.COLUMN_PROCESS_ENABLE, newProcessEnable);
         if (process == null) {
             mDb.insert(StopWatchContract.ProcessEntry.TABLE_NAME, null, cv);
         } else {
@@ -485,13 +501,14 @@ public class MainActivity extends AppCompatActivity
     @Override
     public void onMachineDialogPositiveCheck(DialogFragment dialog, Machine machine) {
         String newMachineName = ((DialogMachineFragment) dialog).getMachineName().getText().toString();
+        boolean newMachineEnable = ((DialogMachineFragment) dialog).getEnable().isChecked();
         if ("".equals(newMachineName)) {
             Toast.makeText(getApplicationContext(), R.string.dialog_no_data, Toast.LENGTH_SHORT).show();
             return;
         }
         ContentValues cv = new ContentValues();
         cv.put(StopWatchContract.MachineEntry.COLUMN_MACHINE_NAME, newMachineName);
-        cv.put(StopWatchContract.MachineEntry.COLUMN_MACHINE_ENABLE, true);
+        cv.put(StopWatchContract.MachineEntry.COLUMN_MACHINE_ENABLE, newMachineEnable);
         cv.put(StopWatchContract.MachineEntry.COLUMN_PARENT_PROCESS_ID, 0);
         if (machine == null) {
             mDb.insert(StopWatchContract.MachineEntry.TABLE_NAME, null, cv);
@@ -506,13 +523,14 @@ public class MainActivity extends AppCompatActivity
     @Override
     public void onPartDialogPositiveCheck(DialogFragment dialog, Part part) {
         String newPartName = ((DialogPartFragment) dialog).getPartName().getText().toString();
+        boolean newPartEnable = ((DialogPartFragment) dialog).getEnable().isChecked();
         if ("".equals(newPartName)) {
             Toast.makeText(getApplicationContext(), R.string.dialog_no_data, Toast.LENGTH_SHORT).show();
             return;
         }
         ContentValues cv = new ContentValues();
         cv.put(StopWatchContract.PartsEntry.COLUMN_PARTS_NAME, newPartName);
-        cv.put(StopWatchContract.PartsEntry.COLUMN_PARTS_ENABLE, true);
+        cv.put(StopWatchContract.PartsEntry.COLUMN_PARTS_ENABLE, newPartEnable);
         if (part == null) {
             mDb.insert(StopWatchContract.PartsEntry.TABLE_NAME, null, cv);
         } else {

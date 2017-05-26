@@ -1,11 +1,13 @@
 package com.gmail.osbornroad.cycletime;
 
 import android.content.Context;
+import android.content.res.Resources;
 import android.database.Cursor;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.gmail.osbornroad.cycletime.dao.StopWatchContract.ProcessEntry;
@@ -21,11 +23,13 @@ public class ProcessListAdapter extends RecyclerView.Adapter<ProcessListAdapter.
     final private ListItemClickListener mOnClickListener;
     final private ProcessListAdapter.ListItemLongClickListener mOnLongClickListener;
     private Cursor mCursor;
+    private Resources resources;
 
-    public ProcessListAdapter(ListItemClickListener mOnClickListener, ListItemLongClickListener mOnLongClickListener, Cursor cursor) {
+    public ProcessListAdapter(ListItemClickListener mOnClickListener, ListItemLongClickListener mOnLongClickListener, Cursor cursor, Resources resources) {
         this.mOnClickListener = mOnClickListener;
         this.mOnLongClickListener = mOnLongClickListener;
         this.mCursor = cursor;
+        this.resources = resources;
     }
 
     /**
@@ -75,12 +79,14 @@ public class ProcessListAdapter extends RecyclerView.Adapter<ProcessListAdapter.
 
     public class ProcessViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener, View.OnLongClickListener {
 
-        TextView listItemProcessName;
+        TextView listName;
         Process process;
+        ImageView visible;
 
         public ProcessViewHolder(View itemView) {
             super(itemView);
-            listItemProcessName = (TextView)itemView.findViewById(R.id.tv_process_name);
+            listName = (TextView)itemView.findViewById(R.id.tv_process_name);
+            visible = (ImageView) itemView.findViewById(R.id.element_hidden_process);
             itemView.setOnClickListener(this);
             itemView.setOnLongClickListener(this);
         }
@@ -88,7 +94,7 @@ public class ProcessListAdapter extends RecyclerView.Adapter<ProcessListAdapter.
         @Override
         public boolean onLongClick(View v) {
             mOnLongClickListener.onListItemLongClick(process);
-            v.setBackgroundColor(R.color.colorPrimary);
+            v.setBackgroundColor(resources.getColor(R.color.colorPrimaryLight));
             return true;
         }
 
@@ -100,7 +106,14 @@ public class ProcessListAdapter extends RecyclerView.Adapter<ProcessListAdapter.
 
         public void bind(int processId, String processName, boolean processEnable) {
             process = new Process(processId, processName, processEnable);
-            listItemProcessName.setText(processName);
+            listName.setText(processName);
+            if (process.isEnable()) {
+                visible.setVisibility(View.INVISIBLE);
+                listName.setTextColor(resources.getColor(R.color.colorPrimary));
+            } else {
+                visible.setVisibility(View.VISIBLE);
+                listName.setTextColor(resources.getColor(android.R.color.darker_gray));
+            }
         }
     }
 }

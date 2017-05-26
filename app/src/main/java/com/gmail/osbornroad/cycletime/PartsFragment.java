@@ -65,7 +65,7 @@ public class PartsFragment extends Fragment
         mainActivity = (MainActivity) getActivity();
 
         Cursor cursor = getAllParts();
-        partListAdapter = new PartListAdapter(this, this, cursor);
+        partListAdapter = new PartListAdapter(this, this, cursor, getResources());
         recyclerView.setAdapter(partListAdapter);
 
         new ItemTouchHelper(new ItemTouchHelper.SimpleCallback(0, ItemTouchHelper.LEFT | ItemTouchHelper.RIGHT) {
@@ -112,8 +112,8 @@ public class PartsFragment extends Fragment
         return mainActivity.mDb.query(
                 StopWatchContract.PartsEntry.TABLE_NAME,
                 null,
-                null,
-                null,
+                StopWatchContract.PartsEntry.COLUMN_PARTS_ENABLE + " = ? OR ?",
+                mainActivity.showAll ? new String[]{"0", "1"} : new String[]{"1"},
                 null,
                 null,
                 StopWatchContract.PartsEntry.COLUMN_PARTS_NAME

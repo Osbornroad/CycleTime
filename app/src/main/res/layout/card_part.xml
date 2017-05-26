@@ -10,4 +10,9 @@
         tools:text="Part"
         />
 
+    <ImageView
+        android:id="@+id/element_hidden_part"
+        style="@style/IconInvisible"
+        />
+
 </FrameLayout>

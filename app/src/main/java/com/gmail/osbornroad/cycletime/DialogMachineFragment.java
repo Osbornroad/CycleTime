@@ -8,6 +8,7 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.DialogFragment;
 import android.support.v7.app.AlertDialog;
+import android.support.v7.widget.SwitchCompat;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.Button;
@@ -20,10 +21,15 @@ import com.gmail.osbornroad.cycletime.model.Machine;
  */
 public class DialogMachineFragment extends DialogFragment {
     private EditText machineName;
+    private android.support.v7.widget.SwitchCompat enable;
     private Machine longClickMachineSelected;
 
     public EditText getMachineName() {
         return machineName;
+    }
+
+    public SwitchCompat getEnable() {
+        return enable;
     }
 
     public interface DialogMachineListener {
@@ -63,10 +69,13 @@ public class DialogMachineFragment extends DialogFragment {
         View rootView = inflater.inflate(R.layout.dialog_add_update, null);
 
         machineName = (EditText) rootView.findViewById(R.id.edit_text_name_add_update);
+        enable =(android.support.v7.widget.SwitchCompat) rootView.findViewById(R.id.switch_show_item);
         machineName.setHint(R.string.hint_add_machine);
 
         if (longClickMachineSelected != null) {
             machineName.setText((longClickMachineSelected.getMachineName()));
+            enable.setChecked(longClickMachineSelected.isEnable());
+
         }
 
         builder.setView(rootView)

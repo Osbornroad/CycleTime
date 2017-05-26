@@ -1,11 +1,13 @@
 package com.gmail.osbornroad.cycletime;
 
 import android.content.Context;
+import android.content.res.Resources;
 import android.database.Cursor;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.gmail.osbornroad.cycletime.dao.StopWatchContract.EmployeeEntry;
@@ -20,11 +22,13 @@ public class EmployeeListAdapter extends RecyclerView.Adapter<EmployeeListAdapte
     final private ListItemClickListener mOnClickListener;
     final private ListItemLongClickListener mOnLongClickListener;
     private Cursor mCursor;
+    private Resources resources;
 
-    public EmployeeListAdapter(ListItemClickListener mOnClickListener, ListItemLongClickListener mOnLongClickListener, Cursor cursor) {
+    public EmployeeListAdapter(ListItemClickListener mOnClickListener, ListItemLongClickListener mOnLongClickListener, Cursor cursor, Resources resources) {
         this.mOnClickListener = mOnClickListener;
         this.mOnLongClickListener = mOnLongClickListener;
         this.mCursor = cursor;
+        this.resources = resources;
     }
 
     /**
@@ -78,12 +82,14 @@ public class EmployeeListAdapter extends RecyclerView.Adapter<EmployeeListAdapte
 
     class EmployeeViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener, View.OnLongClickListener{
 
-        TextView listItemEmployeeName;
+        TextView listName;
         Employee employee;
+        ImageView visible;
 
         public EmployeeViewHolder(View itemView) {
             super(itemView);
-            listItemEmployeeName = (TextView) itemView.findViewById(R.id.tv_employee_name);
+            listName = (TextView) itemView.findViewById(R.id.tv_employee_name);
+            visible = (ImageView) itemView.findViewById(R.id.element_hidden_employee);
             itemView.setOnClickListener(this);
             itemView.setOnLongClickListener(this);
         }
@@ -91,7 +97,7 @@ public class EmployeeListAdapter extends RecyclerView.Adapter<EmployeeListAdapte
         @Override
         public boolean onLongClick(View v) {
             mOnLongClickListener.onListItemLongClick(employee);
-            v.setBackgroundColor(R.color.colorPrimary);
+            v.setBackgroundColor(resources.getColor(R.color.colorPrimaryLight));
             return true;
         }
 
@@ -102,7 +108,15 @@ public class EmployeeListAdapter extends RecyclerView.Adapter<EmployeeListAdapte
 
         public void bind(int employeeId, String employeeName, boolean employeeEnable) {
             employee = new Employee(employeeId, employeeName, employeeEnable);
-            listItemEmployeeName.setText(employeeName);
+            listName.setText(employeeName);
+//            visible.setVisibility(employee.isEnable() ? View.INVISIBLE : View.VISIBLE);
+            if (employee.isEnable()) {
+                visible.setVisibility(View.INVISIBLE);
+                listName.setTextColor(resources.getColor(R.color.colorPrimary));
+            } else {
+                visible.setVisibility(View.VISIBLE);
+                listName.setTextColor(resources.getColor(android.R.color.darker_gray));
+            }
         }
 
 

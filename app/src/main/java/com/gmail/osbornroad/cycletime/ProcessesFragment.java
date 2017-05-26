@@ -65,7 +65,7 @@ public class ProcessesFragment extends Fragment
         mainActivity = (MainActivity) getActivity();
 
         Cursor cursor = getAllProcesses();
-        processListAdapter = new ProcessListAdapter(this, this, cursor);
+        processListAdapter = new ProcessListAdapter(this, this, cursor, getResources());
         recyclerView.setAdapter(processListAdapter);
 
         new ItemTouchHelper(new ItemTouchHelper.SimpleCallback(0, ItemTouchHelper.LEFT | ItemTouchHelper.RIGHT) {
@@ -111,8 +111,8 @@ public class ProcessesFragment extends Fragment
         return mainActivity.mDb.query(
                 StopWatchContract.ProcessEntry.TABLE_NAME,
                 null,
-                null,
-                null,
+                StopWatchContract.ProcessEntry.COLUMN_PROCESS_ENABLE + " = ? OR ?",
+                mainActivity.showAll ? new String[]{"0", "1"} : new String[]{"1"},
                 null,
                 null,
                 StopWatchContract.ProcessEntry.COLUMN_PROCESS_NAME

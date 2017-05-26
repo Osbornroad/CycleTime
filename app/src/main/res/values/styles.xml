@@ -20,6 +20,15 @@
         <item name="android:paddingTop">13dp</item>
         <item name="android:paddingBottom">13dp</item>
     </style>
+    
+    <style name="IconInvisible">
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:src">@drawable/ic_visibility_off_black_24dp</item>
+        <item name="android:layout_gravity">center_vertical|right</item>
+        <item name="android:layout_marginRight">16dp</item>
+        <item name="android:visibility">invisible</item>
+    </style>
 
     <style name="FrameLayoutCardsForRecyclerView">
         <item name="android:layout_width">match_parent</item>
@@ -69,8 +78,7 @@
         <item name="android:paddingRight">10dp</item>
     </style>
 
-    <style name="DeleteDialog"
-        >
+    <style name="DeleteDialog">
         <item name = "colorAccent">@color/colorPrimary</item>
     </style>
 
@@ -79,6 +87,14 @@
         <item name="android:width">120dp</item>
     </style>
 
+    <style name="AddDialogSwitch" parent="Theme.AppCompat.Light">
+        <!-- активное состояние (30% прозрачности для фона) -->
+        <item name="colorControlActivated">#4CAF50</item>
+        <!-- неактивное состояние ползунка -->
+        <item name="colorSwitchThumbNormal">#9E9E9E</item>
+        <!-- цвет дорожки для неактивного состояния (30% прозрачности) -->
+        <item name="android:colorForeground">#BDBDBD</item>
+    </style>
 
 </resources>
 

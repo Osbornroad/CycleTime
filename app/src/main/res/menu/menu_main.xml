@@ -32,5 +32,9 @@
         app:showAsAction="ifRoom"
         android:orderInCategory="100"
         android:icon="@drawable/plus"/>
-
+    <item
+        android:id="@+id/main_action_show_all"
+        android:title="@string/show_hidden"
+        app:showAsAction="ifRoom"
+        android:orderInCategory="200"/>
 </menu>
