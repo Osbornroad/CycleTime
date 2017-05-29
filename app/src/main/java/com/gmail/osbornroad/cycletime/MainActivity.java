@@ -386,13 +386,13 @@ public class MainActivity extends AppCompatActivity
             try {
                 partQuantity = Integer.parseInt(((StopWatchFragment) fragment).partQuantity.getText().toString());
             } catch (Exception e) {
-                Toast.makeText(this, "Please input correct quantity", Toast.LENGTH_SHORT).show();
+                Toast.makeText(this, R.string.quantity_not_number, Toast.LENGTH_SHORT).show();
                 return true;
             }
             if (partQuantity > 0) {
                 intent.putExtra("partQuantity", partQuantity);
             } else {
-                Toast.makeText(this, "Please input correct quantity", Toast.LENGTH_SHORT).show();
+                Toast.makeText(this, R.string.quantity_less_than_one, Toast.LENGTH_SHORT).show();
                 return true;
             }
             if (mInProgress) {
@@ -407,6 +407,7 @@ public class MainActivity extends AppCompatActivity
                 Toast.makeText(this, "Stopwatch data is zero", Toast.LENGTH_SHORT).show();
                 return true;
             }
+            intent.putExtra("startTime", stopWatch.getStartDateTime());
             startActivity(intent);
 
             return true;

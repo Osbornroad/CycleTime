@@ -1,6 +1,6 @@
 package com.gmail.osbornroad.cycletime.model;
 
-import java.util.GregorianCalendar;
+import java.util.Calendar;
 
 /**
  * Created by User on 24.04.2017.
@@ -8,67 +8,70 @@ import java.util.GregorianCalendar;
 
 public class Sample {
     private int id;
-    private GregorianCalendar date;
-    private String processName;
-    private String machineName;
-    private String partName;
-    private String workerName;
-    private int cycleTime;
-    private String comments;
+    private Integer employeeId;
+    private Integer processId;
+    private Integer machineId;
+    private Integer partId;
+    private int quantity;
+    private Calendar startDateTime;
+    private int duration; //in sec
 
-    public Sample(GregorianCalendar date, String processName, String machineName, String partName, String workerName, int cycleTime, String comments) {
-        this.date = date;
-        this.processName = processName;
-        this.machineName = machineName;
-        this.partName = partName;
-        this.workerName = workerName;
-        this.cycleTime = cycleTime;
-        this.comments = comments;
+    public Sample(int id, Integer employeeId, Integer processId,
+                  Integer machineId, Integer partId, int quantity,
+                  Calendar startDateTime, int duration) {
+        this.id = id;
+        this.employeeId = employeeId;
+        this.processId = processId;
+        this.machineId = machineId;
+        this.partId = partId;
+        this.quantity = quantity;
+        this.startDateTime = startDateTime;
+        this.duration = duration;
     }
 
     public int getId() {
         return id;
     }
 
-    public GregorianCalendar getDate() {
-        return date;
+    public Integer getEmployeeId() {
+        return employeeId;
     }
 
-    public String getProcessName() {
-        return processName;
+    public Integer getProcessId() {
+        return processId;
     }
 
-    public String getMachineName() {
-        return machineName;
+    public Integer getMachineId() {
+        return machineId;
     }
 
-    public String getPartName() {
-        return partName;
+    public Integer getPartId() {
+        return partId;
     }
 
-    public String getWorkerName() {
-        return workerName;
+    public int getQuantity() {
+        return quantity;
     }
 
-    public int getCycleTime() {
-        return cycleTime;
+    public Calendar getStartDateTime() {
+        return startDateTime;
     }
 
-    public String getComments() {
-        return comments;
+    public int getDuration() {
+        return duration;
     }
 
     @Override
     public String toString() {
         return "Sample{" +
                 "id=" + id +
-                ", date=" + date +
-                ", processName='" + processName + '\'' +
-                ", machineName='" + machineName + '\'' +
-                ", partName='" + partName + '\'' +
-                ", workerName='" + workerName + '\'' +
-                ", cycleTime=" + cycleTime +
-                ", comments='" + comments + '\'' +
+                ", employeeId=" + employeeId +
+                ", processId=" + processId +
+                ", machineId=" + machineId +
+                ", partId=" + partId +
+                ", quantity=" + quantity +
+                ", startDateTime=" + startDateTime +
+                ", duration=" + duration +
                 '}';
     }
 }

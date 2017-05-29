@@ -1,6 +1,8 @@
 package com.gmail.osbornroad.cycletime;
 
+import android.content.ContentValues;
 import android.content.Intent;
+import android.database.sqlite.SQLiteDatabase;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.NavUtils;
@@ -10,11 +12,16 @@ import android.view.MenuItem;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.gmail.osbornroad.cycletime.dao.StopWatchContract;
+import com.gmail.osbornroad.cycletime.dao.StopWatchDbHelper;
 import com.gmail.osbornroad.cycletime.model.Employee;
 import com.gmail.osbornroad.cycletime.model.Machine;
 import com.gmail.osbornroad.cycletime.model.Part;
 import com.gmail.osbornroad.cycletime.model.Process;
 import com.gmail.osbornroad.cycletime.utility.Utility;
+
+import java.text.SimpleDateFormat;
+import java.util.Date;
 
 public class ResultMeasurementActivity extends AppCompatActivity {
 
@@ -26,8 +33,11 @@ public class ResultMeasurementActivity extends AppCompatActivity {
     private int partQuantity;
     private int resultStopWatch;
     private int cycleTime;
+    private String startDateTime;
 
     private Intent intent;
+
+    private SQLiteDatabase mDb;
 
     private TextView employeeNameDisplay;
     private TextView processNameDisplay;
@@ -47,6 +57,9 @@ public class ResultMeasurementActivity extends AppCompatActivity {
 
         getSupportActionBar().setHomeButtonEnabled(true);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+
+        StopWatchDbHelper helper = new StopWatchDbHelper(this);
+        mDb = helper.getWritableDatabase();
     }
 
     @Override
@@ -87,6 +100,27 @@ public class ResultMeasurementActivity extends AppCompatActivity {
                 else {
                     Toast.makeText(this, R.string.no_email_app, Toast.LENGTH_SHORT).show();
                 }
+                break;
+            case R.id.action_save:
+                ContentValues cv = new ContentValues();
+                cv.put(StopWatchContract.SampleEntry.COLUMN_EMPLOYEE_ID, employee != null ? employee.getId() : null);
+                cv.put(StopWatchContract.SampleEntry.COLUMN_PROCESS_ID, process != null ? process.getId() : null);
+                cv.put(StopWatchContract.SampleEntry.COLUMN_MACHINE_ID, machine != null ? machine.getId() : null);
+                cv.put(StopWatchContract.SampleEntry.COLUMN_PART_ID, part != null ? part.getId() : null);
+                if (partQuantity > 0) {
+                    cv.put(StopWatchContract.SampleEntry.COLUMN_QUANTITY, partQuantity);
+                } else {
+                    Toast.makeText(this, R.string.quantity_less_than_one, Toast.LENGTH_SHORT).show();
+                    return false;
+                }
+                cv.put(StopWatchContract.SampleEntry.COLUMN_START_DATE_TIME, startDateTime != null ? startDateTime :
+                        new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(new Date(System.currentTimeMillis())));
+                if (resultStopWatch > 0) {
+                    cv.put(StopWatchContract.SampleEntry.COLUMN_DURATION, resultStopWatch);
+                } else {
+                    Toast.makeText(this, R.string.no_stopwatch_result, Toast.LENGTH_SHORT).show();
+                }
+                mDb.insert(StopWatchContract.SampleEntry.TABLE_NAME, null, cv);
         }
         return super.onOptionsItemSelected(item);
     }
@@ -137,6 +171,9 @@ public class ResultMeasurementActivity extends AppCompatActivity {
 //            String resultForDisplay = String.valueOf(resultStopWatch) + " sec";
             resultStopWatchDisplay.setText(output);
             resultStopWatchDisplay.setTextColor(getResources().getColor(R.color.result_exists_data));
+        }
+        if (intent.hasExtra("startDateTime")) {
+            startDateTime = intent.getStringExtra("startDateTime");
         }
         if ((partQuantity != 0) && (resultStopWatch != 0)) {
             cycleTime = resultStopWatch % partQuantity == 0 ? resultStopWatch / partQuantity : resultStopWatch / partQuantity + 1;

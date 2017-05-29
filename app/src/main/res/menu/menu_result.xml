@@ -8,4 +8,9 @@
         android:title="@string/action_mail_send"
         android:icon="@drawable/sent_white"
         app:showAsAction="ifRoom"/>
+    <item
+        android:id="@+id/action_save"
+        android:title="@string/action_sample_save"
+        android:icon="@drawable/ic_save_white_48dp"
+        app:showAsAction="ifRoom"/>
 </menu>

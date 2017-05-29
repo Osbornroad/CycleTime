@@ -28,4 +28,14 @@ public class StopWatchContract {
         public static final String COLUMN_PARTS_NAME = "partsName";
         public static final String COLUMN_PARTS_ENABLE = "partsEnable";
     }
+    public static final class SampleEntry implements BaseColumns {
+        public static final String TABLE_NAME = "sample_table";
+        public static final String COLUMN_EMPLOYEE_ID = "employeeId";
+        public static final String COLUMN_PROCESS_ID = "processId";
+        public static final String COLUMN_MACHINE_ID = "machineId";
+        public static final String COLUMN_PART_ID = "partId";
+        public static final String COLUMN_QUANTITY = "quantity";
+        public static final String COLUMN_START_DATE_TIME = "startDateTime";
+        public static final String COLUMN_DURATION = "duration";
+    }
 }

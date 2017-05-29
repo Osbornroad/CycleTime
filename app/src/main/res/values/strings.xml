@@ -83,4 +83,11 @@
     <string name="text_on">on</string>
     <string name="text_off">off</string>
     <string name="show_hidden">Show all</string>
+    <string name="action_sample_save">Save</string>
+    <string name="quantity_not_number">Quantity should be an integer</string>
+    <string name="quantity_less_than_one">Quantity should be more than zero</string>
+    <string name="no_stopwatch_result">No stopwatch result</string>
+
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
 </resources>

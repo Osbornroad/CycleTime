@@ -1,5 +1,8 @@
 package com.gmail.osbornroad.cycletime;
 
+import java.text.SimpleDateFormat;
+import java.util.Date;
+
 /**
  * Created by User on 24.04.2017.
  */
@@ -63,4 +66,10 @@ public class StopWatch {
         String output = String.format("%02d:%02d:%02d", hours, minutes, seconds);
         return output;
     }
+
+    public String getStartDateTime() {
+        String startDateTime = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(new Date(mStartTime));
+        return startDateTime;
+    }
+
 }

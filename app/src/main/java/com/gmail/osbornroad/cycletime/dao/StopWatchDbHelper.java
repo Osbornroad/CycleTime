@@ -16,7 +16,7 @@ public class StopWatchDbHelper extends SQLiteOpenHelper {
     private static final String DATABASE_NAME = "stopwatch.db";
 
     // If you change the database schema, you must increment the database version
-    private static final int DATABASE_VERSION = 5;
+    private static final int DATABASE_VERSION = 12;
 
     public StopWatchDbHelper(Context context) {
         super(context, DATABASE_NAME, null, DATABASE_VERSION);
@@ -24,6 +24,8 @@ public class StopWatchDbHelper extends SQLiteOpenHelper {
 
     @Override
     public void onCreate(SQLiteDatabase db) {
+        db.execSQL("PRAGMA foreign_keys=on");
+
         //create Employee table
         final String SQL_CREATE_EMPLOYEE_TABLE = "CREATE TABLE " + EmployeeEntry.TABLE_NAME + " (" +
                 EmployeeEntry._ID + " INTEGER PRIMARY KEY AUTOINCREMENT, " +
@@ -57,6 +59,23 @@ public class StopWatchDbHelper extends SQLiteOpenHelper {
                 "); ";
         db.execSQL(SQL_CREATE_PARTS_TABLE);
 
+        //Sample table
+        final String SQL_CREATE_SAMPLE_TABLE = "CREATE TABLE " + SampleEntry.TABLE_NAME + " (" +
+                SampleEntry._ID + " INTEGER PRIMARY KEY AUTOINCREMENT, " +
+                SampleEntry.COLUMN_EMPLOYEE_ID + " INTEGER, " +
+                SampleEntry.COLUMN_PROCESS_ID + " INTEGER, " +
+                SampleEntry.COLUMN_MACHINE_ID + " INTEGER, " +
+                SampleEntry.COLUMN_PART_ID + " INTEGER, " +
+                SampleEntry.COLUMN_QUANTITY + " INTEGER NOT NULL, " +
+                SampleEntry.COLUMN_START_DATE_TIME + " STRING NOT NULL, " +
+                SampleEntry.COLUMN_DURATION + " INTEGER NOT NULL, " +
+                "FOREIGN KEY (" + SampleEntry.COLUMN_EMPLOYEE_ID + ") REFERENCES " + EmployeeEntry.TABLE_NAME + "(" + EmployeeEntry._ID + "), " +
+                "FOREIGN KEY (" + SampleEntry.COLUMN_PROCESS_ID + ") REFERENCES " + ProcessEntry.TABLE_NAME + "(" + ProcessEntry._ID + "), " +
+                "FOREIGN KEY (" + SampleEntry.COLUMN_MACHINE_ID + ") REFERENCES " + MachineEntry.TABLE_NAME + "(" + MachineEntry._ID + "), " +
+                "FOREIGN KEY (" + SampleEntry.COLUMN_PART_ID + ") REFERENCES " + PartsEntry.TABLE_NAME + "(" + PartsEntry._ID + ")" +
+                "); ";
+        db.execSQL(SQL_CREATE_SAMPLE_TABLE);
+
         Utility.insertFakeEmployeeData(db);
         Utility.insertFakeProcessData(db);
         Utility.insertFakeMachineData(db);
@@ -72,6 +91,7 @@ public class StopWatchDbHelper extends SQLiteOpenHelper {
         db.execSQL("DROP TABLE IF EXISTS " + ProcessEntry.TABLE_NAME);
         db.execSQL("DROP TABLE IF EXISTS " + MachineEntry.TABLE_NAME);
         db.execSQL("DROP TABLE IF EXISTS " + PartsEntry.TABLE_NAME);
+        db.execSQL("DROP TABLE IF EXISTS " + SampleEntry.TABLE_NAME);
         onCreate(db);
     }
 }
