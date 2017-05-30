@@ -14,16 +14,26 @@ import android.widget.TextView;
  */
 
 public class SampleListAdapter extends RecyclerView.Adapter<SampleListAdapter.SampleViewHolder> {
-    final private EmployeeListAdapter.ListItemClickListener mOnClickListener;
-    final private EmployeeListAdapter.ListItemLongClickListener mOnLongClickListener;
+    final private SampleListAdapter.ListItemClickListener mOnClickListener;
+    final private SampleListAdapter.ListItemLongClickListener mOnLongClickListener;
     private Cursor mCursor;
     private Resources resources;
 
-    public SampleListAdapter(EmployeeListAdapter.ListItemClickListener mOnClickListener, EmployeeListAdapter.ListItemLongClickListener mOnLongClickListener, Cursor mCursor, Resources resources) {
+    public SampleListAdapter(SampleListAdapter.ListItemClickListener mOnClickListener, SampleListAdapter.ListItemLongClickListener mOnLongClickListener, Cursor mCursor, Resources resources) {
         this.mOnClickListener = mOnClickListener;
         this.mOnLongClickListener = mOnLongClickListener;
         this.mCursor = mCursor;
         this.resources = resources;
+    }
+
+    void swapCursor(Cursor newCursor) {
+        if (mCursor != null) {
+            mCursor.close();
+        }
+        mCursor = newCursor;
+        if (newCursor != null) {
+            this.notifyDataSetChanged();
+        }
     }
 
     interface ListItemClickListener {
@@ -48,13 +58,16 @@ public class SampleListAdapter extends RecyclerView.Adapter<SampleListAdapter.Sa
         if (!mCursor.moveToPosition(position)) {
             return;
         }
-        String employeeName;
-        String processName;
-        String machineName;
-        String partName;
-        String quantity;
-        String duration;
-        String startDateTime;
+        int id = mCursor.getInt(0);
+        String employeeName = mCursor.getString(4);
+        String processName = mCursor.getString(5);
+        String machineName = mCursor.getString(6);
+        String partName = mCursor.getString(7);
+        int quantity = mCursor.getInt(1);
+        String startDateTime = mCursor.getString(2);
+        int duration = mCursor.getInt(3);
+        holder.itemView.setTag(id);
+        holder.bind(employeeName, processName, machineName, partName, quantity, startDateTime, duration);
     }
 
     @Override
@@ -68,7 +81,7 @@ public class SampleListAdapter extends RecyclerView.Adapter<SampleListAdapter.Sa
         TextView machineName;
         TextView partName;
         TextView quantity;
-        TextView duration;
+        TextView cycleTime;
         TextView startDateTime;
 
         public SampleViewHolder(View itemView) {
@@ -78,7 +91,7 @@ public class SampleListAdapter extends RecyclerView.Adapter<SampleListAdapter.Sa
             machineName = (TextView) itemView.findViewById(R.id.sample_machine_name);
             partName = (TextView) itemView.findViewById(R.id.sample_part_name);
             quantity = (TextView) itemView.findViewById(R.id.sample_quantity);
-            duration = (TextView) itemView.findViewById(R.id.sample_duration);
+            cycleTime = (TextView) itemView.findViewById(R.id.sample_cycletime_result);
             startDateTime = (TextView) itemView.findViewById(R.id.sample_start_date_time);
         }
 
@@ -91,6 +104,43 @@ public class SampleListAdapter extends RecyclerView.Adapter<SampleListAdapter.Sa
         @Override
         public boolean onLongClick(View v) {
             return false;
+        }
+
+
+        public void bind(String employeeName, String processName, String machineName, String partName, int quantity, String startDateTime, int duration) {
+            if (!("".equals(employeeName))) {
+                this.employeeName.setText(employeeName);
+//                this.employeeName.setTextColor(resources.getColor(R.color.result_exists_data));
+            }
+            if (!("".equals(processName))) {
+                this.processName.setText(processName);
+//                this.processName.setTextColor(resources.getColor(R.color.result_exists_data));
+            }
+            if (!("".equals(machineName))) {
+                this.machineName.setText(machineName);
+//                this.machineName.setTextColor(resources.getColor(R.color.result_exists_data));
+            }
+            if (!("".equals(partName))) {
+                this.partName.setText(partName);
+//                this.partName.setTextColor(resources.getColor(R.color.result_exists_data));
+            }
+            this.quantity.setText(String.valueOf(quantity));
+//            this.quantity.setTextColor(resources.getColor(R.color.result_exists_data));
+
+            this.startDateTime.setText(startDateTime.split(" ")[0]);
+
+            String cycleTimeString = resources.getString(R.string.no_data);
+            try {
+                int cycleTime = duration % quantity == 0 ? duration / quantity : duration / quantity + 1;
+                int hours = (int) (cycleTime / 3600);
+                int minutes = (int) ((cycleTime % 3600) / 60);
+                int seconds = (int) (cycleTime % 60);
+                cycleTimeString = String.format("%02d:%02d:%02d", hours, minutes, seconds);
+            } catch (Exception e) {
+
+            }
+
+            this.cycleTime.setText(cycleTimeString);
         }
     }
 }

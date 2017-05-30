@@ -25,6 +25,9 @@
             android:id="@+id/nav_parts"
             android:icon="@drawable/ic_parts"
             android:title="@string/nav_menu_parts"/>
+        <item
+            android:id="@+id/nav_samples"
+            android:title="@string/nav_menu_samples"/>
     </group>
 
     <!--<group android:checkableBehavior="single">

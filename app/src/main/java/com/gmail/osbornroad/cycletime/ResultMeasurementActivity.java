@@ -120,7 +120,12 @@ public class ResultMeasurementActivity extends AppCompatActivity {
                 } else {
                     Toast.makeText(this, R.string.no_stopwatch_result, Toast.LENGTH_SHORT).show();
                 }
-                mDb.insert(StopWatchContract.SampleEntry.TABLE_NAME, null, cv);
+                if (mDb.insert(StopWatchContract.SampleEntry.TABLE_NAME, null, cv) > -1) {
+                    Toast.makeText(this, R.string.save_successful, Toast.LENGTH_SHORT).show();
+                } else {
+                    Toast.makeText(this, R.string.save_unsuccessful, Toast.LENGTH_SHORT).show();
+
+                }
         }
         return super.onOptionsItemSelected(item);
     }

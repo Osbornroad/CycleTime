@@ -181,6 +181,8 @@ public class MainActivity extends AppCompatActivity
             title = getResources().getString(R.string.machines_fragment_title);
         } else if (fragment instanceof PartsFragment) {
             title = getResources().getString(R.string.parts_fragment_title);
+        } else if (fragment instanceof SampleFragment) {
+            title = getResources().getString(R.string.sample_fragment_title);
         }
         setTitle(title);
     }
@@ -326,7 +328,7 @@ public class MainActivity extends AppCompatActivity
 
         menu.findItem(R.id.main_action_show_all)
                 .setIcon(!showAll ? R.drawable.ic_visibility_white_48dp : R.drawable.ic_visibility_off_white_48dp)
-                .setVisible(fragment.getClass() != StopWatchFragment.class);
+                .setVisible((fragment.getClass() != StopWatchFragment.class) && (fragment.getClass() != SampleFragment.class));
 
         return super.onPrepareOptionsMenu(menu);
     }
@@ -443,6 +445,8 @@ public class MainActivity extends AppCompatActivity
             fragmentClass = MachinesFragment.class;
         } else if (id == R.id.nav_parts) {
             fragmentClass = PartsFragment.class;
+        } else if (id == R.id.nav_samples) {
+            fragmentClass = SampleFragment.class;
         }
         switchFragment(fragmentClass, "");
         item.setChecked(true);
@@ -631,8 +635,9 @@ public class MainActivity extends AppCompatActivity
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
                         if (mDb.delete(((SavableToDatabase) fragment).getTableName(), ((SavableToDatabase) fragment).getRowIdFromDatabase() + " = " + id, null) < 0) {
-                            Toast.makeText(getApplicationContext(), "Deleting unsuccessful", Toast.LENGTH_SHORT).show();
+                            Toast.makeText(getApplicationContext(), R.string.deleting_unsuccessful, Toast.LENGTH_SHORT).show();
                         } else {
+                            Toast.makeText(getApplicationContext(), R.string.deleting_successful, Toast.LENGTH_SHORT).show();
                             if (fragment.getClass() == EmployeesFragment.class && selectedEmployee != null && selectedEmployee.getId() == id) {
                                 selectedEmployee = null;
                             }
