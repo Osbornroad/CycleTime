@@ -1,6 +1,7 @@
 package com.gmail.osbornroad.cycletime;
 
 
+import android.content.ContentValues;
 import android.database.Cursor;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
@@ -68,16 +69,66 @@ public class ProcessesFragment extends Fragment
         processListAdapter = new ProcessListAdapter(this, this, cursor, getResources());
         recyclerView.setAdapter(processListAdapter);
 
-        new ItemTouchHelper(new ItemTouchHelper.SimpleCallback(0, ItemTouchHelper.LEFT | ItemTouchHelper.RIGHT) {
+        new ItemTouchHelper(new ItemTouchHelper.SimpleCallback(ItemTouchHelper.UP | ItemTouchHelper.DOWN, ItemTouchHelper.LEFT) {
             @Override
             public boolean onMove(RecyclerView recyclerView, RecyclerView.ViewHolder viewHolder, RecyclerView.ViewHolder target) {
-                return false;
+                final int fromPos = viewHolder.getAdapterPosition();
+                final int toPos = target.getAdapterPosition();
+//                Toast.makeText(mainActivity.getApplicationContext(), "from: " + fromPos + " to: " + toPos, Toast.LENGTH_SHORT).show();
+                Process process = ((ProcessListAdapter.ProcessViewHolder) viewHolder).getProcess();
+                int id = process.getId();
+
+                Process targetProcess = ((ProcessListAdapter.ProcessViewHolder) target).getProcess();
+                int targetOrder = targetProcess.getOrderNumber();
+
+                ContentValues cv = new ContentValues();
+                cv.put(StopWatchContract.ProcessEntry.COLUMN_PROCESS_ORDER_NUMBER, targetOrder + 1);
+                cv.put(StopWatchContract.ProcessEntry.COLUMN_PROCESS_NAME, process.getProcessName());
+                cv.put(StopWatchContract.ProcessEntry.COLUMN_PROCESS_ENABLE, process.isEnable() ? 1 : 0);
+
+                //Что-то не работает
+                mainActivity.mDb.execSQL("UPDATE " + StopWatchContract.ProcessEntry.TABLE_NAME +
+                        " SET " + StopWatchContract.ProcessEntry.COLUMN_PROCESS_ORDER_NUMBER + " = " +
+                        StopWatchContract.ProcessEntry.COLUMN_PROCESS_ORDER_NUMBER + " + " + 1 + " WHERE " +
+                        StopWatchContract.ProcessEntry.COLUMN_PROCESS_ORDER_NUMBER + " > " + targetOrder);
+
+                mainActivity.mDb.update(StopWatchContract.ProcessEntry.TABLE_NAME,
+                        cv,
+                        StopWatchContract.ProcessEntry._ID + " = ?",
+                        new String[]{String.valueOf(process.getId())});
+
+                processListAdapter.notifyItemMoved(fromPos, toPos);
+
+
+
+
+                return true;
+            }
+
+/*            @Override
+            public void onMoved(RecyclerView recyclerView, RecyclerView.ViewHolder viewHolder, int fromPos, RecyclerView.ViewHolder target, int toPos, int x, int y) {
+                Toast.makeText(mainActivity.getApplicationContext(), "from: " + fromPos + " to: " + toPos, Toast.LENGTH_SHORT).show();
+            }*/
+
+                        @Override
+            public boolean isLongPressDragEnabled() {
+                return true;
             }
 
             @Override
             public void onSwiped(RecyclerView.ViewHolder viewHolder, int direction) {
+                if (direction == ItemTouchHelper.RIGHT)
+                    return;
                 int id = (int) viewHolder.itemView.getTag();
                 mainActivity.deleteRowFromDatabase(id);
+            }
+
+            @Override
+            public int getMovementFlags(RecyclerView recyclerView,
+                                        RecyclerView.ViewHolder viewHolder) {
+                int dragFlags = ItemTouchHelper.UP | ItemTouchHelper.DOWN;
+                int swipeFlags = ItemTouchHelper.START | ItemTouchHelper.END;
+                return makeMovementFlags(dragFlags, swipeFlags);
             }
         }).attachToRecyclerView(recyclerView);
 
@@ -95,11 +146,11 @@ public class ProcessesFragment extends Fragment
 
     @Override
     public void onListItemLongClick(Process process) {
-        if (mainActivity.mActionMode != null) {
+/*        if (mainActivity.mActionMode != null) {
             return;
         }
         mainActivity.longClickProcessSelected = process;
-        mainActivity.mActionMode = mainActivity.startSupportActionMode(mainActivity.mActionModeCallBack);
+        mainActivity.mActionMode = mainActivity.startSupportActionMode(mainActivity.mActionModeCallBack);*/
     }
 
     @Override
@@ -115,7 +166,7 @@ public class ProcessesFragment extends Fragment
                 mainActivity.showAll ? new String[]{"0", "1"} : new String[]{"1"},
                 null,
                 null,
-                StopWatchContract.ProcessEntry.COLUMN_PROCESS_NAME
+                StopWatchContract.ProcessEntry.COLUMN_PROCESS_ORDER_NUMBER
         );
     }
 

@@ -14,6 +14,7 @@ public class StopWatchContract {
     }
     public static final class ProcessEntry implements BaseColumns {
         public static final String TABLE_NAME = "process_table";
+        public static final String COLUMN_PROCESS_ORDER_NUMBER = "orderNumber";
         public static final String COLUMN_PROCESS_NAME = "processName";
         public static final String COLUMN_PROCESS_ENABLE = "processEnable";
     }

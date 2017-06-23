@@ -1,6 +1,7 @@
 package com.gmail.osbornroad.cycletime.utility;
 
 import android.content.ContentValues;
+import android.database.Cursor;
 import android.database.SQLException;
 import android.database.sqlite.SQLiteDatabase;
 
@@ -70,7 +71,7 @@ public class Utility {
             return;
         }
 
-        List<ContentValues> processList = new ArrayList<ContentValues>();
+//        List<ContentValues> processList = new ArrayList<ContentValues>();
 
         String[] processNamesArray = new String[]{
                 "HPC",
@@ -89,24 +90,43 @@ public class Utility {
 
         for (int i = 0; i < processNamesArray.length; i++) {
             ContentValues cv = new ContentValues();
+            cv.put(StopWatchContract.ProcessEntry.COLUMN_PROCESS_ORDER_NUMBER, getMaxOrderNumberOfProcesses(db) + 1);
             cv.put(StopWatchContract.ProcessEntry.COLUMN_PROCESS_NAME, processNamesArray[i]);
             cv.put(StopWatchContract.ProcessEntry.COLUMN_PROCESS_ENABLE, 1);
-            processList.add(cv);
-        }
+//            processList.add(cv);
+
 
         try {
             db.beginTransaction();
-            db.delete(StopWatchContract.ProcessEntry.TABLE_NAME, null, null);
-            for (ContentValues c : processList) {
-                db.insert(StopWatchContract.ProcessEntry.TABLE_NAME, null, c);
-            }
+//            db.delete(StopWatchContract.ProcessEntry.TABLE_NAME, null, null);
+//            for (ContentValues c : processList) {
+                db.insert(StopWatchContract.ProcessEntry.TABLE_NAME, null, cv);
+//            }
             db.setTransactionSuccessful();
         } catch (SQLException e) {
             System.out.println(e.toString());
         } finally {
             db.endTransaction();
         }
+        }
     }
+
+    public static int getMaxOrderNumberOfProcesses(SQLiteDatabase db) {
+        if (db == null) {
+            return 0;
+        }
+        int maxOrderNumber = 0;
+        Cursor cursor = db.query(StopWatchContract.ProcessEntry.TABLE_NAME,
+                new String[]{"MAX(" + StopWatchContract.ProcessEntry.COLUMN_PROCESS_ORDER_NUMBER + ")"},
+                null, null, null, null, null);
+        if (cursor.getCount() > 0) {
+            cursor.moveToFirst();
+            maxOrderNumber = cursor.getInt(0);
+        }
+        cursor.close();
+        return maxOrderNumber;
+    }
+
 
     public static void insertFakeMachineData(SQLiteDatabase db) {
         if (db == null) {

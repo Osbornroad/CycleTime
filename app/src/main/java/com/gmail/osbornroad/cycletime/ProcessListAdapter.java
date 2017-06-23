@@ -67,10 +67,11 @@ public class ProcessListAdapter extends RecyclerView.Adapter<ProcessListAdapter.
             return;
         }
         int id = mCursor.getInt(mCursor.getColumnIndex(ProcessEntry._ID));
+        int orderNumber = mCursor.getInt(mCursor.getColumnIndex(ProcessEntry.COLUMN_PROCESS_ORDER_NUMBER));
         String name = mCursor.getString(mCursor.getColumnIndex(ProcessEntry.COLUMN_PROCESS_NAME));
         boolean enable = mCursor.getInt(mCursor.getColumnIndex(ProcessEntry.COLUMN_PROCESS_ENABLE)) == 1;
         holder.itemView.setTag(id);
-        holder.bind(id, name, enable);    }
+        holder.bind(id, orderNumber, name, enable);    }
 
     @Override
     public int getItemCount() {
@@ -82,6 +83,10 @@ public class ProcessListAdapter extends RecyclerView.Adapter<ProcessListAdapter.
         TextView listName;
         Process process;
         ImageView visible;
+
+        public Process getProcess() {
+            return process;
+        }
 
         public ProcessViewHolder(View itemView) {
             super(itemView);
@@ -104,9 +109,9 @@ public class ProcessListAdapter extends RecyclerView.Adapter<ProcessListAdapter.
         }
 
 
-        public void bind(int processId, String processName, boolean processEnable) {
-            process = new Process(processId, processName, processEnable);
-            listName.setText(processName);
+        public void bind(int processId, int orderNumber, String processName, boolean processEnable) {
+            process = new Process(processId, orderNumber, processName, processEnable);
+            listName.setText(processName + " order: " + orderNumber);
             if (process.isEnable()) {
                 visible.setVisibility(View.INVISIBLE);
                 listName.setTextColor(resources.getColor(R.color.colorPrimary));

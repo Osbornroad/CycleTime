@@ -16,7 +16,7 @@ public class StopWatchDbHelper extends SQLiteOpenHelper {
     private static final String DATABASE_NAME = "stopwatch.db";
 
     // If you change the database schema, you must increment the database version
-    private static final int DATABASE_VERSION = 12;
+    private static final int DATABASE_VERSION = 29;
 
     public StopWatchDbHelper(Context context) {
         super(context, DATABASE_NAME, null, DATABASE_VERSION);
@@ -37,6 +37,7 @@ public class StopWatchDbHelper extends SQLiteOpenHelper {
         //Process table
         final String SQL_CREATE_PROCESS_TABLE = "CREATE TABLE " + ProcessEntry.TABLE_NAME + " (" +
                 ProcessEntry._ID + " INTEGER PRIMARY KEY AUTOINCREMENT, " +
+                ProcessEntry.COLUMN_PROCESS_ORDER_NUMBER + " INTEGER NOT NULL, " +
                 ProcessEntry.COLUMN_PROCESS_NAME + " TEXT NOT NULL, " +
                 ProcessEntry.COLUMN_PROCESS_ENABLE + " INTEGER NOT NULL" +
                 "); ";
