@@ -81,21 +81,48 @@ public class ProcessesFragment extends Fragment
                 Process targetProcess = ((ProcessListAdapter.ProcessViewHolder) target).getProcess();
                 int targetOrder = targetProcess.getOrderNumber();
 
-                ContentValues cv = new ContentValues();
+               /* ContentValues cv = new ContentValues();
                 cv.put(StopWatchContract.ProcessEntry.COLUMN_PROCESS_ORDER_NUMBER, targetOrder + 1);
                 cv.put(StopWatchContract.ProcessEntry.COLUMN_PROCESS_NAME, process.getProcessName());
-                cv.put(StopWatchContract.ProcessEntry.COLUMN_PROCESS_ENABLE, process.isEnable() ? 1 : 0);
+                cv.put(StopWatchContract.ProcessEntry.COLUMN_PROCESS_ENABLE, process.isEnable() ? 1 : 0);*/
 
                 //Что-то не работает
-                mainActivity.mDb.execSQL("UPDATE " + StopWatchContract.ProcessEntry.TABLE_NAME +
+/*                mainActivity.mDb.execSQL("UPDATE " + StopWatchContract.ProcessEntry.TABLE_NAME +
                         " SET " + StopWatchContract.ProcessEntry.COLUMN_PROCESS_ORDER_NUMBER + " = " +
                         StopWatchContract.ProcessEntry.COLUMN_PROCESS_ORDER_NUMBER + " + " + 1 + " WHERE " +
-                        StopWatchContract.ProcessEntry.COLUMN_PROCESS_ORDER_NUMBER + " > " + targetOrder);
+                        StopWatchContract.ProcessEntry.COLUMN_PROCESS_ORDER_NUMBER + " > " + targetOrder);*/
 
-                mainActivity.mDb.update(StopWatchContract.ProcessEntry.TABLE_NAME,
+                /*mainActivity.mDb.update(StopWatchContract.ProcessEntry.TABLE_NAME,
                         cv,
                         StopWatchContract.ProcessEntry._ID + " = ?",
-                        new String[]{String.valueOf(process.getId())});
+                        new String[]{String.valueOf(process.getId())});*/
+                if (fromPos < toPos) {
+                    for (int i = fromPos + 1; i <= toPos; i++) {
+                        Process proc = ((ProcessListAdapter.ProcessViewHolder)recyclerView.findViewHolderForAdapterPosition(i)).getProcess();
+                        int procId = proc.getId();
+                        mainActivity.mDb.execSQL("UPDATE " + StopWatchContract.ProcessEntry.TABLE_NAME +
+                                " SET " + StopWatchContract.ProcessEntry.COLUMN_PROCESS_ORDER_NUMBER + " = " +
+                                StopWatchContract.ProcessEntry.COLUMN_PROCESS_ORDER_NUMBER + " - " + 1 + " WHERE " +
+                                StopWatchContract.ProcessEntry._ID + " = " + procId);
+                    }
+                    mainActivity.mDb.execSQL("UPDATE " + StopWatchContract.ProcessEntry.TABLE_NAME +
+                            " SET " + StopWatchContract.ProcessEntry.COLUMN_PROCESS_ORDER_NUMBER + " = " +
+                            targetOrder  + " WHERE " +
+                            StopWatchContract.ProcessEntry._ID + " = " + id);
+                } else {
+                    for (int i = toPos; i < fromPos; i++) {
+                        Process proc = ((ProcessListAdapter.ProcessViewHolder)recyclerView.findViewHolderForAdapterPosition(i)).getProcess();
+                        int procId = proc.getId();
+                        mainActivity.mDb.execSQL("UPDATE " + StopWatchContract.ProcessEntry.TABLE_NAME +
+                                " SET " + StopWatchContract.ProcessEntry.COLUMN_PROCESS_ORDER_NUMBER + " = " +
+                                StopWatchContract.ProcessEntry.COLUMN_PROCESS_ORDER_NUMBER + " + " + 1 + " WHERE " +
+                                StopWatchContract.ProcessEntry._ID + " = " + procId);
+                    }
+                    mainActivity.mDb.execSQL("UPDATE " + StopWatchContract.ProcessEntry.TABLE_NAME +
+                            " SET " + StopWatchContract.ProcessEntry.COLUMN_PROCESS_ORDER_NUMBER + " = " +
+                            targetOrder /*+ " + " + 1*/ + " WHERE " +
+                            StopWatchContract.ProcessEntry._ID + " = " + id);
+                }
 
                 processListAdapter.notifyItemMoved(fromPos, toPos);
 
