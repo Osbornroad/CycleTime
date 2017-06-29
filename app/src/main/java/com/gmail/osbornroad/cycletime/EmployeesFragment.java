@@ -122,6 +122,16 @@ public class EmployeesFragment extends Fragment
     }
 
     @Override
+    public boolean getSavedSorting() {
+        return false;
+    }
+
+    @Override
+    public void setSortingType() {
+
+    }
+
+    @Override
     public String getTableName() {
         return StopWatchContract.EmployeeEntry.TABLE_NAME;
     }

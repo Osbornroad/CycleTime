@@ -8,33 +8,15 @@
         app:showAsAction="ifRoom"
         android:icon="@drawable/calculator_white"
         />
-    <item
-        android:id="@+id/main_action_employee_plus"
-        android:title="@string/add"
-        app:showAsAction="ifRoom"
-        android:orderInCategory="100"
-        android:icon="@drawable/plus"/>
-    <item
-        android:id="@+id/main_action_process_plus"
-        android:title="@string/add"
-        app:showAsAction="ifRoom"
-        android:orderInCategory="100"
-        android:icon="@drawable/plus"/>
-    <item
-        android:id="@+id/main_action_machine_plus"
-        android:title="@string/add"
-        app:showAsAction="ifRoom"
-        android:orderInCategory="100"
-        android:icon="@drawable/plus"/>
-    <item
-        android:id="@+id/main_action_part_plus"
-        android:title="@string/add"
-        app:showAsAction="ifRoom"
-        android:orderInCategory="100"
-        android:icon="@drawable/plus"/>
+
     <item
         android:id="@+id/main_action_show_all"
         android:title="@string/show_hidden"
         app:showAsAction="ifRoom"
         android:orderInCategory="200"/>
+    <item
+        android:id="@+id/main_action_sort"
+        android:title="@string/sort"
+        app:showAsAction="ifRoom"
+        android:orderInCategory="300"/>
 </menu>

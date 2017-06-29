@@ -22,7 +22,6 @@ public class Process implements Parcelable {
 //        this.machineList = machineList;
     }
 
-
     public boolean isNew() {
         return id == null;
     }
@@ -37,10 +36,6 @@ public class Process implements Parcelable {
 
     public Integer getOrderNumber() {
         return orderNumber;
-    }
-
-    public void setOrderNumber(Integer orderNumber) {
-        this.orderNumber = orderNumber;
     }
 
     public String getProcessName() {

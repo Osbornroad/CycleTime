@@ -31,6 +31,7 @@ import com.gmail.osbornroad.cycletime.model.Employee;
 import com.gmail.osbornroad.cycletime.model.Machine;
 import com.gmail.osbornroad.cycletime.model.Part;
 import com.gmail.osbornroad.cycletime.model.Process;
+import com.gmail.osbornroad.cycletime.utility.Utility;
 
 //import com.gmail.osbornroad.cycletime.service.MachineService;
 //import com.gmail.osbornroad.cycletime.service.PartService;
@@ -321,13 +322,17 @@ public class MainActivity extends AppCompatActivity
     @Override
     public boolean onPrepareOptionsMenu(Menu menu) {
         menu.findItem(R.id.main_action_calc).setVisible(fragment.getClass() == StopWatchFragment.class);
-        menu.findItem(R.id.main_action_employee_plus).setVisible(fragment.getClass() == EmployeesFragment.class);
-        menu.findItem(R.id.main_action_process_plus).setVisible(fragment.getClass() == ProcessesFragment.class);
-        menu.findItem(R.id.main_action_machine_plus).setVisible(fragment.getClass() == MachinesFragment.class);
-        menu.findItem(R.id.main_action_part_plus).setVisible(fragment.getClass() == PartsFragment.class);
+//        menu.findItem(R.id.main_action_employee_plus).setVisible(fragment.getClass() == EmployeesFragment.class);
+//        menu.findItem(R.id.main_action_process_plus).setVisible(fragment.getClass() == ProcessesFragment.class);
+//        menu.findItem(R.id.main_action_machine_plus).setVisible(fragment.getClass() == MachinesFragment.class);
+//        menu.findItem(R.id.main_action_part_plus).setVisible(fragment.getClass() == PartsFragment.class);
 
         menu.findItem(R.id.main_action_show_all)
-                .setIcon(!showAll ? R.drawable.ic_visibility_white_48dp : R.drawable.ic_visibility_off_white_48dp)
+                .setIcon(!showAll ? R.drawable.ic_visibility_white_24dp : R.drawable.ic_visibility_off_white_24dp)
+                .setVisible((fragment.getClass() != StopWatchFragment.class) && (fragment.getClass() != SampleFragment.class));
+
+        menu.findItem(R.id.main_action_sort)
+                .setIcon(((NavigationFragment)fragment).getSavedSorting() ? R.drawable.ic_sort_white_24dp : R.drawable.ic_sort_by_alpha_white_24dp)
                 .setVisible((fragment.getClass() != StopWatchFragment.class) && (fragment.getClass() != SampleFragment.class));
 
         return super.onPrepareOptionsMenu(menu);
@@ -342,16 +347,21 @@ public class MainActivity extends AppCompatActivity
             return true;
         }
         int id = item.getItemId();
-        if (id == R.id.main_action_employee_plus) {
+/*        if (id == R.id.main_action_employee_plus) {
             DialogEmployeeFragment dialogEmployeeFragment = new DialogEmployeeFragment();
             dialogEmployeeFragment.show(fragMan, "dialogEmployeeFragment");
+        }*/
+        if (id == R.id.main_action_sort) {
+            ((NavigationFragment) fragment).setSortingType();
+            invalidateOptionsMenu();
+            ((NavigationFragment) fragment).updateView();
         }
         if (id == R.id.main_action_show_all) {
             showAll = !showAll;
             invalidateOptionsMenu();
             ((NavigationFragment) fragment).updateView();
         }
-        if (id == R.id.main_action_process_plus) {
+/*        if (id == R.id.main_action_process_plus) {
             DialogProcessFragment dialogProcessFragment = new DialogProcessFragment();
             dialogProcessFragment.show(fragMan, "dialogEmployeeFragment");
         }
@@ -362,7 +372,7 @@ public class MainActivity extends AppCompatActivity
         if (id == R.id.main_action_part_plus) {
             DialogPartFragment dialogPartFragment = new DialogPartFragment();
             dialogPartFragment.show(fragMan, "dialogPartFragment");
-        }
+        }*/
         if (id == R.id.main_action_calc) {
 
             fragMan = getSupportFragmentManager();
@@ -455,12 +465,6 @@ public class MainActivity extends AppCompatActivity
         return true;
     }
 
-    public void setSelectedEmployee(int clickedEmployeeId) {
-/*        selectedEmployee = employeeService.get(clickedEmployeeId);
-        switchFragment(StopWatchFragment.class, getResources().getString(R.string.stopwatch_fragment_title));*/
-    }
-
-
     @Override
     public void onEmployeeDialogPositiveCheck(DialogFragment dialog, Employee employee) {
         String newEmployeeName = ((DialogEmployeeFragment) dialog).getEmployeeName().getText().toString();
@@ -484,6 +488,7 @@ public class MainActivity extends AppCompatActivity
 
     @Override
     public void onProcessDialogPositiveCheck(DialogFragment dialog, Process process) {
+        int newOrderNumber = process == null ? Utility.getMaxOrderNumberOfProcesses(mDb) + 1 : process.getOrderNumber();
         String newProcessName = ((DialogProcessFragment) dialog).getProcessName().getText().toString();
         boolean newProcessEnable = ((DialogProcessFragment) dialog).getEnable().isChecked();
         if ("".equals(newProcessName)) {
@@ -491,6 +496,7 @@ public class MainActivity extends AppCompatActivity
             return;
         }
         ContentValues cv = new ContentValues();
+        cv.put(StopWatchContract.ProcessEntry.COLUMN_PROCESS_ORDER_NUMBER, newOrderNumber);
         cv.put(StopWatchContract.ProcessEntry.COLUMN_PROCESS_NAME, newProcessName);
         cv.put(StopWatchContract.ProcessEntry.COLUMN_PROCESS_ENABLE, newProcessEnable);
         if (process == null) {
@@ -500,6 +506,11 @@ public class MainActivity extends AppCompatActivity
                     StopWatchContract.ProcessEntry._ID + " = ?",
                     new String[]{String.valueOf(process.getId())});
         }
+        ((NavigationFragment) fragment).updateView();
+    }
+
+    @Override
+    public void onProcessDialogNegativeCheck(DialogFragment dialog) {
         ((NavigationFragment) fragment).updateView();
     }
 
@@ -623,6 +634,26 @@ public class MainActivity extends AppCompatActivity
         }
     };
 
+    void updateRowinDatabase(final int id) {
+        if (fragment.getClass() == EmployeesFragment.class) {
+
+        }
+        else if (fragment.getClass() == ProcessesFragment.class) {
+            Process process = ((ProcessesFragment)fragment).getProcessById(id);
+            DialogProcessFragment dialogProcessFragment = new DialogProcessFragment();
+            Bundle bundle = new Bundle();
+            bundle.putParcelable("longClickProcessSelected", process);
+            dialogProcessFragment.setArguments(bundle);
+            dialogProcessFragment.show(fragMan, "dialogProcessFragment");
+        }
+        else if (fragment.getClass() == MachinesFragment.class) {
+
+        }
+        else if (fragment.getClass() == PartsFragment.class) {
+
+        }
+    }
+
     /**
      * Common method for delete from any table
      * Target fragment should implement NavigationFragment interface
@@ -669,7 +700,5 @@ public class MainActivity extends AppCompatActivity
         positiveButton.setTextColor(getResources().getColor(R.color.result_exists_data));
         Button negativeButton = dialog.getButton(DialogInterface.BUTTON_NEGATIVE);
         negativeButton.setTextColor(getResources().getColor(R.color.result_no_data));
-
-
     }
 }

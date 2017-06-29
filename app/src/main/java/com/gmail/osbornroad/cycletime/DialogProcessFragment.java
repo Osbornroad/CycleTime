@@ -23,7 +23,7 @@ public class DialogProcessFragment extends DialogFragment {
 
     private EditText processName;
     private android.support.v7.widget.SwitchCompat enable;
-    private Process longClickProcessSelected;
+    private Process processSelectedForEdit;
 
     public EditText getProcessName() {
         return processName;
@@ -34,8 +34,8 @@ public class DialogProcessFragment extends DialogFragment {
     }
 
     public interface DialogProcessListener {
-        public void onProcessDialogPositiveCheck(DialogFragment dialog, Process process);
-//        public void onProcessDialogNegativeCheck(DialogFragment dialog);
+        void onProcessDialogPositiveCheck(DialogFragment dialog, Process process);
+        void onProcessDialogNegativeCheck(DialogFragment dialog);
     }
 
     private DialogProcessFragment.DialogProcessListener mListener;
@@ -58,7 +58,7 @@ public class DialogProcessFragment extends DialogFragment {
         super.onCreate(savedInstanceState);
         Bundle bundle = this.getArguments();
         if (bundle != null) {
-            longClickProcessSelected = bundle.getParcelable("longClickProcessSelected");
+            processSelectedForEdit = bundle.getParcelable("processSelectedForEdit");
         }
     }
 
@@ -74,24 +74,24 @@ public class DialogProcessFragment extends DialogFragment {
         enable =(android.support.v7.widget.SwitchCompat) rootView.findViewById(R.id.switch_show_item);
         processName.setHint(R.string.hint_add_process);
 
-        if (longClickProcessSelected != null) {
-            processName.setText(longClickProcessSelected.getProcessName());
-            enable.setChecked(longClickProcessSelected.isEnable());
+        if (processSelectedForEdit != null) {
+            processName.setText(processSelectedForEdit.getProcessName());
+            enable.setChecked(processSelectedForEdit.isEnable());
         }
 
         builder.setView(rootView)
-                .setTitle(longClickProcessSelected == null ? R.string.add_process : R.string.edit_process)
+                .setTitle(processSelectedForEdit == null ? R.string.add_process : R.string.edit_process)
                 .setCancelable(false)
                 .setPositiveButton(R.string.dialog_button_ok, new DialogInterface.OnClickListener(){
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
-                        mListener.onProcessDialogPositiveCheck(DialogProcessFragment.this, longClickProcessSelected);
+                        mListener.onProcessDialogPositiveCheck(DialogProcessFragment.this, processSelectedForEdit);
                     }
                 })
                 .setNegativeButton(R.string.dialog_button_cancel, new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
-//                        mListener.onProcessDialogNegativeCheck(DialogProcessFragment.this);
+                        mListener.onProcessDialogNegativeCheck(DialogProcessFragment.this);
                     }
                 });
         AlertDialog dialog = builder.create();

@@ -8,4 +8,8 @@ public interface NavigationFragment {
     int getMenuId();
 
     void updateView();
+
+    boolean getSavedSorting();
+
+    void setSortingType();
 }

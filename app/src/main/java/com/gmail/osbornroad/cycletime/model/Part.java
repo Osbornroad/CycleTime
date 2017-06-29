@@ -9,16 +9,16 @@ import android.os.Parcelable;
 
 public class Part implements Parcelable {
     private Integer id;
+    private Integer orderNumber;
     private final String partName;
     private final boolean enable;
 
-    public Part(Integer id, String partName, boolean enable) {
+    public Part(Integer id, Integer orderNumber, String partName, boolean enable) {
         this.id = id;
+        this.orderNumber = orderNumber;
         this.partName = partName;
         this.enable = enable;
     }
-
-
 
     public boolean isNew() {
         return id == null;
@@ -30,6 +30,10 @@ public class Part implements Parcelable {
 
     public void setId(Integer id) {
         this.id = id;
+    }
+
+    public Integer getOrderNumber() {
+        return orderNumber;
     }
 
     public String getPartName() {
@@ -57,6 +61,7 @@ public class Part implements Parcelable {
     @Override
     public void writeToParcel(Parcel dest, int flags) {
         dest.writeInt(id);
+        dest.writeInt(orderNumber);
         dest.writeString(partName);
         dest.writeInt(enable ? 1 : 0);
     }
@@ -74,6 +79,7 @@ public class Part implements Parcelable {
     };
     protected Part(Parcel in) {
         id = in.readInt();
+        orderNumber = in.readInt();
         partName = in.readString();
         enable = (in.readInt() == 1);
     }

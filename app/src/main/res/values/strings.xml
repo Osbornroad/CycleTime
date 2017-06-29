@@ -98,4 +98,5 @@
     <string name="deleting_unsuccessful">Deleting unsuccessful</string>
     <string name="deleting_successful">Deleted</string>
     <string name="sample_fragment_title">Trials</string>
+    <string name="sort">Sort</string>
 </resources>

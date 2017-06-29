@@ -126,6 +126,16 @@ public class PartsFragment extends Fragment
     }
 
     @Override
+    public boolean getSavedSorting() {
+        return false;
+    }
+
+    @Override
+    public void setSortingType() {
+
+    }
+
+    @Override
     public String getTableName() {
         return StopWatchContract.PartsEntry.TABLE_NAME;
     }

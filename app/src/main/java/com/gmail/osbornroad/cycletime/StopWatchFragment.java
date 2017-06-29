@@ -332,5 +332,15 @@ public class StopWatchFragment extends Fragment implements NavigationFragment {
     public void updateView() {
 
     }
+
+    @Override
+    public boolean getSavedSorting() {
+        return false;
+    }
+
+    @Override
+    public void setSortingType() {
+
+    }
 }
 

@@ -86,6 +86,16 @@ public class SampleFragment extends Fragment
     }
 
     @Override
+    public boolean getSavedSorting() {
+        return false;
+    }
+
+    @Override
+    public void setSortingType() {
+
+    }
+
+    @Override
     public void onListItemClick() {
 
     }

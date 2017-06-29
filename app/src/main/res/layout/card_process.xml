@@ -11,6 +11,11 @@
         />
 
     <ImageView
+        android:id="@+id/element_reorder_process"
+        style="@style/IconReorder"
+        />
+
+    <ImageView
         android:id="@+id/element_hidden_process"
         style="@style/IconInvisible"
         />

@@ -10,6 +10,10 @@
         tools:text="Machine"
         />
 
+    <ImageView
+        android:id="@+id/element_reorder_machine"
+        style="@style/IconReorder"
+        />
 
     <ImageView
         android:id="@+id/element_hidden_machine"

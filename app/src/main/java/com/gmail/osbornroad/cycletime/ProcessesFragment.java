@@ -1,10 +1,17 @@
 package com.gmail.osbornroad.cycletime;
 
 
-import android.content.ContentValues;
+import android.content.Context;
+import android.content.SharedPreferences;
 import android.database.Cursor;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.graphics.Canvas;
+import android.graphics.Paint;
+import android.graphics.RectF;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.DividerItemDecoration;
@@ -26,7 +33,9 @@ public class ProcessesFragment extends Fragment
         implements ProcessListAdapter.ListItemClickListener,
         ProcessListAdapter.ListItemLongClickListener,
         NavigationFragment,
-        SavableToDatabase{
+        SavableToDatabase,
+        ProcessListAdapter.LongItemClickAccessor,
+        View.OnClickListener{
 
     private static final int NUM_LIST_ITEMS = 100;
     protected ProcessListAdapter processListAdapter;
@@ -34,6 +43,11 @@ public class ProcessesFragment extends Fragment
     private MainActivity mainActivity;
 
     private final int FRAGMENT_ID = 2;
+
+    boolean sortedByName;
+    private Paint p = new Paint();
+
+    public static final String PROCESS_PREFERENCE = "ProcessPreference";
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
@@ -45,6 +59,14 @@ public class ProcessesFragment extends Fragment
         // Required empty public constructor
     }
 
+    @Override
+    public void onAttach(Context context) {
+        super.onAttach(context);
+        sortedByName = false;
+
+        SharedPreferences sharedPreferences = context.getSharedPreferences(PROCESS_PREFERENCE, 0);
+        sortedByName = sharedPreferences.getBoolean("sortedByName", sortedByName);
+    }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -59,6 +81,9 @@ public class ProcessesFragment extends Fragment
                 layoutManager.getOrientation()));
         recyclerView.setHasFixedSize(true);
         recyclerView.setItemAnimator(new DefaultItemAnimator());
+
+        FloatingActionButton fab = (FloatingActionButton) rootView.findViewById(R.id.fab_process);
+        fab.setOnClickListener(this);
         /**
          * Get adapter, set to RecyclerView
          */
@@ -66,36 +91,25 @@ public class ProcessesFragment extends Fragment
         mainActivity = (MainActivity) getActivity();
 
         Cursor cursor = getAllProcesses();
-        processListAdapter = new ProcessListAdapter(this, this, cursor, getResources());
+        processListAdapter = new ProcessListAdapter(this, this, cursor, getResources(), this);
         recyclerView.setAdapter(processListAdapter);
 
-        new ItemTouchHelper(new ItemTouchHelper.SimpleCallback(ItemTouchHelper.UP | ItemTouchHelper.DOWN, ItemTouchHelper.LEFT) {
+        /*sortedByName = false;
+
+        SharedPreferences sharedPreferences = mainActivity.getSharedPreferences(PROCESS_PREFERENCE, 0);
+        sortedByName = sharedPreferences.getBoolean("sortedByName", sortedByName);*/
+
+        new ItemTouchHelper(new ItemTouchHelper.SimpleCallback(ItemTouchHelper.UP | ItemTouchHelper.DOWN, ItemTouchHelper.LEFT | ItemTouchHelper.RIGHT) {
             @Override
             public boolean onMove(RecyclerView recyclerView, RecyclerView.ViewHolder viewHolder, RecyclerView.ViewHolder target) {
                 final int fromPos = viewHolder.getAdapterPosition();
                 final int toPos = target.getAdapterPosition();
-//                Toast.makeText(mainActivity.getApplicationContext(), "from: " + fromPos + " to: " + toPos, Toast.LENGTH_SHORT).show();
                 Process process = ((ProcessListAdapter.ProcessViewHolder) viewHolder).getProcess();
                 int id = process.getId();
 
                 Process targetProcess = ((ProcessListAdapter.ProcessViewHolder) target).getProcess();
                 int targetOrder = targetProcess.getOrderNumber();
 
-               /* ContentValues cv = new ContentValues();
-                cv.put(StopWatchContract.ProcessEntry.COLUMN_PROCESS_ORDER_NUMBER, targetOrder + 1);
-                cv.put(StopWatchContract.ProcessEntry.COLUMN_PROCESS_NAME, process.getProcessName());
-                cv.put(StopWatchContract.ProcessEntry.COLUMN_PROCESS_ENABLE, process.isEnable() ? 1 : 0);*/
-
-                //Что-то не работает
-/*                mainActivity.mDb.execSQL("UPDATE " + StopWatchContract.ProcessEntry.TABLE_NAME +
-                        " SET " + StopWatchContract.ProcessEntry.COLUMN_PROCESS_ORDER_NUMBER + " = " +
-                        StopWatchContract.ProcessEntry.COLUMN_PROCESS_ORDER_NUMBER + " + " + 1 + " WHERE " +
-                        StopWatchContract.ProcessEntry.COLUMN_PROCESS_ORDER_NUMBER + " > " + targetOrder);*/
-
-                /*mainActivity.mDb.update(StopWatchContract.ProcessEntry.TABLE_NAME,
-                        cv,
-                        StopWatchContract.ProcessEntry._ID + " = ?",
-                        new String[]{String.valueOf(process.getId())});*/
                 if (fromPos < toPos) {
                     for (int i = fromPos + 1; i <= toPos; i++) {
                         Process proc = ((ProcessListAdapter.ProcessViewHolder)recyclerView.findViewHolderForAdapterPosition(i)).getProcess();
@@ -126,28 +140,58 @@ public class ProcessesFragment extends Fragment
 
                 processListAdapter.notifyItemMoved(fromPos, toPos);
 
-
-
-
                 return true;
             }
 
-/*            @Override
-            public void onMoved(RecyclerView recyclerView, RecyclerView.ViewHolder viewHolder, int fromPos, RecyclerView.ViewHolder target, int toPos, int x, int y) {
-                Toast.makeText(mainActivity.getApplicationContext(), "from: " + fromPos + " to: " + toPos, Toast.LENGTH_SHORT).show();
-            }*/
 
-                        @Override
+            @Override
             public boolean isLongPressDragEnabled() {
-                return true;
+                return !sortedByName;
             }
 
             @Override
             public void onSwiped(RecyclerView.ViewHolder viewHolder, int direction) {
-                if (direction == ItemTouchHelper.RIGHT)
-                    return;
                 int id = (int) viewHolder.itemView.getTag();
-                mainActivity.deleteRowFromDatabase(id);
+                if (direction == ItemTouchHelper.START) {
+                    mainActivity.deleteRowFromDatabase(id);
+                } else {
+                    Process process = getProcessById(id);
+                    DialogProcessFragment dialogProcessFragment = new DialogProcessFragment();
+                    Bundle bundle = new Bundle();
+                    bundle.putParcelable("processSelectedForEdit", process);
+                    dialogProcessFragment.setArguments(bundle);
+                    dialogProcessFragment.show(mainActivity.getSupportFragmentManager(), "dialogProcessFragment");
+                }
+            }
+
+            @Override
+            public void onChildDraw(Canvas c, RecyclerView recyclerView, RecyclerView.ViewHolder viewHolder, float dX, float dY, int actionState, boolean isCurrentlyActive) {
+
+                Bitmap icon;
+                if(actionState == ItemTouchHelper.ACTION_STATE_SWIPE){
+
+                    View itemView = viewHolder.itemView;
+                    float height = (float) itemView.getBottom() - (float) itemView.getTop();
+                    float width = height / 3;
+
+                    if(dX > 0){
+                        p.setColor(mainActivity.getResources().getColor(R.color.result_exists_data));
+                        RectF background = new RectF((float) itemView.getLeft(), (float) itemView.getTop(), dX,(float) itemView.getBottom());
+                        c.drawRect(background,p);
+                        icon = BitmapFactory.decodeResource(getResources(), R.drawable.ic_mode_edit_white_24dp);
+                        RectF icon_dest = new RectF((float) itemView.getLeft() + width ,(float) itemView.getTop() + width,(float) itemView.getLeft()+ 2*width,(float)itemView.getBottom() - width);
+                        c.drawBitmap(icon,null,icon_dest,p);
+                    }
+                    if(dX < 0) {
+                        p.setColor(mainActivity.getResources().getColor(R.color.result_no_data));
+                        RectF background = new RectF((float) itemView.getRight() + dX, (float) itemView.getTop(),(float) itemView.getRight(), (float) itemView.getBottom());
+                        c.drawRect(background,p);
+                        icon = BitmapFactory.decodeResource(getResources(), R.drawable.ic_delete_white_24dp);
+                        RectF icon_dest = new RectF((float) itemView.getRight() - 2*width ,(float) itemView.getTop() + width,(float) itemView.getRight() - width,(float)itemView.getBottom() - width);
+                        c.drawBitmap(icon,null,icon_dest,p);
+                    }
+                }
+                super.onChildDraw(c, recyclerView, viewHolder, dX, dY, actionState, isCurrentlyActive);
             }
 
             @Override
@@ -160,6 +204,15 @@ public class ProcessesFragment extends Fragment
         }).attachToRecyclerView(recyclerView);
 
         return rootView;
+    }
+
+    @Override
+    public void onDetach() {
+        super.onDetach();
+        SharedPreferences sharedPreferences = mainActivity.getSharedPreferences(PROCESS_PREFERENCE, 0);
+        SharedPreferences.Editor editor = sharedPreferences.edit();
+        editor.putBoolean("sortedByName", sortedByName);
+        editor.commit();
     }
 
     @Override
@@ -193,13 +246,50 @@ public class ProcessesFragment extends Fragment
                 mainActivity.showAll ? new String[]{"0", "1"} : new String[]{"1"},
                 null,
                 null,
-                StopWatchContract.ProcessEntry.COLUMN_PROCESS_ORDER_NUMBER
+                sortedByName ?
+                        StopWatchContract.ProcessEntry.COLUMN_PROCESS_NAME :
+                        StopWatchContract.ProcessEntry.COLUMN_PROCESS_ORDER_NUMBER
         );
+    }
+
+    Process getProcessById(int id) {
+        Cursor cursor = mainActivity.mDb.query(
+                StopWatchContract.ProcessEntry.TABLE_NAME,
+                null,
+                StopWatchContract.ProcessEntry._ID + " = ?",
+                new String[]{String.valueOf(id)},
+                null,
+                null,
+                null
+        );
+        if (!cursor.moveToFirst()) {
+            return null;
+        }
+        int orderNumber = cursor.getInt(cursor.getColumnIndex(StopWatchContract.ProcessEntry.COLUMN_PROCESS_ORDER_NUMBER));
+        String name = cursor.getString(cursor.getColumnIndex(StopWatchContract.ProcessEntry.COLUMN_PROCESS_NAME));
+        boolean enable = cursor.getInt(cursor.getColumnIndex(StopWatchContract.ProcessEntry.COLUMN_PROCESS_ENABLE)) == 1;
+        return new Process(id, orderNumber, name, enable);
+    }
+
+    @Override
+    public void onClick(View v) {
+        DialogProcessFragment dialogProcessFragment = new DialogProcessFragment();
+        dialogProcessFragment.show(mainActivity.getSupportFragmentManager(), "dialogEmployeeFragment");
     }
 
     @Override
     public void updateView() {
         processListAdapter.swapCursor(getAllProcesses());
+    }
+
+    @Override
+    public boolean getSavedSorting() {
+        return sortedByName;
+    }
+
+    @Override
+    public void setSortingType() {
+        sortedByName = !sortedByName;
     }
 
     @Override
@@ -211,4 +301,11 @@ public class ProcessesFragment extends Fragment
     public String getRowIdFromDatabase() {
         return StopWatchContract.ProcessEntry._ID;
     }
+
+    @Override
+    public boolean isProcessSortedByName() {
+        return sortedByName;
+    }
+
+
 }

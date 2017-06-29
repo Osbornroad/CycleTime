@@ -24,17 +24,22 @@ public class ProcessListAdapter extends RecyclerView.Adapter<ProcessListAdapter.
     final private ProcessListAdapter.ListItemLongClickListener mOnLongClickListener;
     private Cursor mCursor;
     private Resources resources;
+    private LongItemClickAccessor longItemClickAccessor;
 
-    public ProcessListAdapter(ListItemClickListener mOnClickListener, ListItemLongClickListener mOnLongClickListener, Cursor cursor, Resources resources) {
+
+    public ProcessListAdapter(ListItemClickListener mOnClickListener, ListItemLongClickListener mOnLongClickListener,
+                              Cursor cursor, Resources resources, LongItemClickAccessor longItemClickAccessor) {
         this.mOnClickListener = mOnClickListener;
         this.mOnLongClickListener = mOnLongClickListener;
         this.mCursor = cursor;
         this.resources = resources;
+        this.longItemClickAccessor = longItemClickAccessor;
     }
 
-    /**
-     * Interface ListItemClickListener for clickable of list items
-     */
+    interface LongItemClickAccessor {
+        boolean isProcessSortedByName();
+    }
+
     interface ListItemClickListener {
         void onListItemClick(Process process);
     }
@@ -82,6 +87,7 @@ public class ProcessListAdapter extends RecyclerView.Adapter<ProcessListAdapter.
 
         TextView listName;
         Process process;
+        ImageView reorder;
         ImageView visible;
 
         public Process getProcess() {
@@ -91,6 +97,7 @@ public class ProcessListAdapter extends RecyclerView.Adapter<ProcessListAdapter.
         public ProcessViewHolder(View itemView) {
             super(itemView);
             listName = (TextView)itemView.findViewById(R.id.tv_process_name);
+            reorder = (ImageView) itemView.findViewById(R.id.element_reorder_process);
             visible = (ImageView) itemView.findViewById(R.id.element_hidden_process);
             itemView.setOnClickListener(this);
             itemView.setOnLongClickListener(this);
@@ -98,6 +105,9 @@ public class ProcessListAdapter extends RecyclerView.Adapter<ProcessListAdapter.
 
         @Override
         public boolean onLongClick(View v) {
+            if (longItemClickAccessor.isProcessSortedByName()) {
+                return false;
+            }
             mOnLongClickListener.onListItemLongClick(process);
             v.setBackgroundColor(resources.getColor(R.color.colorPrimaryLight));
             return true;
@@ -111,7 +121,8 @@ public class ProcessListAdapter extends RecyclerView.Adapter<ProcessListAdapter.
 
         public void bind(int processId, int orderNumber, String processName, boolean processEnable) {
             process = new Process(processId, orderNumber, processName, processEnable);
-            listName.setText(processName + " order: " + orderNumber);
+            listName.setText(processName/* + " order: " + orderNumber*/);
+            reorder.setVisibility(longItemClickAccessor.isProcessSortedByName() ? View.INVISIBLE : View.VISIBLE);
             if (process.isEnable()) {
                 visible.setVisibility(View.INVISIBLE);
                 listName.setTextColor(resources.getColor(R.color.colorPrimary));
