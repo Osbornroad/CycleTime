@@ -88,22 +88,20 @@ public class MachinesFragment extends Fragment
 
     @Override
     public void onListItemClick(Machine machine) {
-        if (mainActivity.longClickMachineSelected != null) {
+/*        if (mainActivity.longClickMachineSelected != null) {
             return;
-        }
+        }*/
         mainActivity.selectedMachine = machine;
         mainActivity.switchFragment(StopWatchFragment.class, getResources().getString(R.string.stopwatch_fragment_title));
     }
 
     @Override
     public void onListItemLongClick(Machine machine) {
-        if (mainActivity.mActionMode != null) {
+   /*     if (mainActivity.mActionMode != null) {
             return;
         }
         mainActivity.longClickMachineSelected = machine;
-        mainActivity.mActionMode = mainActivity.startSupportActionMode(mainActivity.mActionModeCallBack);
-
-
+        mainActivity.mActionMode = mainActivity.startSupportActionMode(mainActivity.mActionModeCallBack);*/
     }
 
     @Override

@@ -214,9 +214,9 @@ public class PartsFragment extends Fragment
 
     @Override
     public void onListItemClick(Part part) {
-        if(mainActivity.longClickPartSelected != null) {
-            return;
-        }
+//        if(mainActivity.longClickPartSelected != null) {
+//            return;
+//        }
         mainActivity.selectedPart = part;
         mainActivity.switchFragment(StopWatchFragment.class, getResources().getString(R.string.stopwatch_fragment_title));
     }

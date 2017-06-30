@@ -15,10 +15,8 @@ import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
-import android.support.v7.view.ActionMode;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
-import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.SubMenu;
 import android.view.View;
@@ -467,6 +465,7 @@ public class MainActivity extends AppCompatActivity
 
     @Override
     public void onEmployeeDialogPositiveCheck(DialogFragment dialog, Employee employee) {
+        int newOrderNumber = employee == null ? Utility.getMaxOrderNumberOfEmployees(mDb) + 1 : employee.getOrderNumber();
         String newEmployeeName = ((DialogEmployeeFragment) dialog).getEmployeeName().getText().toString();
         boolean newEmployeeEnable = ((DialogEmployeeFragment) dialog).getEnable().isChecked();
         if ("".equals(newEmployeeName)) {
@@ -474,6 +473,7 @@ public class MainActivity extends AppCompatActivity
             return;
         }
         ContentValues cv = new ContentValues();
+        cv.put(StopWatchContract.EmployeeEntry.COLUMN_EMPLOYEE_ORDER_NUMBER, newOrderNumber);
         cv.put(StopWatchContract.EmployeeEntry.COLUMN_EMPLOYEE_NAME, newEmployeeName);
         cv.put(StopWatchContract.EmployeeEntry.COLUMN_EMPLOYEE_ENABLE, newEmployeeEnable);
         if (employee == null) {
@@ -483,6 +483,11 @@ public class MainActivity extends AppCompatActivity
                     StopWatchContract.EmployeeEntry._ID + " = ?",
                     new String[]{String.valueOf(employee.getId())});
         }
+        ((NavigationFragment) fragment).updateView();
+    }
+
+    @Override
+    public void onEmployeeDialogNegativeCheck(DialogFragment dialog) {
         ((NavigationFragment) fragment).updateView();
     }
 
@@ -566,15 +571,14 @@ public class MainActivity extends AppCompatActivity
         ((NavigationFragment) fragment).updateView();
     }
 
+    /*
+
     ActionMode mActionMode;
     Employee longClickEmployeeSelected;
     Process longClickProcessSelected;
     Machine longClickMachineSelected;
     Part longClickPartSelected;
 
-    /**
-     * ActionMode.Callback provides context mode
-     */
     ActionMode.Callback mActionModeCallBack = new ActionMode.Callback() {
         @Override
         public boolean onCreateActionMode(ActionMode mode, Menu menu) {
@@ -643,7 +647,9 @@ public class MainActivity extends AppCompatActivity
         }
     };
 
-    void updateRowinDatabase(final int id) {
+    */
+
+/*    void updateRowinDatabase(final int id) {
         if (fragment.getClass() == EmployeesFragment.class) {
 
         }
@@ -661,7 +667,7 @@ public class MainActivity extends AppCompatActivity
         else if (fragment.getClass() == PartsFragment.class) {
 
         }
-    }
+    }*/
 
     /**
      * Common method for delete from any table

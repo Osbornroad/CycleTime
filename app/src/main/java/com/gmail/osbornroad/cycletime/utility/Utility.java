@@ -47,6 +47,7 @@ public class Utility {
 
         for (int i = 0; i < employeeNamesArray.length; i ++) {
             ContentValues cv = new ContentValues();
+            cv.put(StopWatchContract.EmployeeEntry.COLUMN_EMPLOYEE_ORDER_NUMBER, getMaxOrderNumberOfEmployees(db) + 1);
             cv.put(StopWatchContract.EmployeeEntry.COLUMN_EMPLOYEE_NAME, employeeNamesArray[i]);
             cv.put(StopWatchContract.EmployeeEntry.COLUMN_EMPLOYEE_ENABLE, 1);
             employeeList.add(cv);
@@ -64,6 +65,23 @@ public class Utility {
         } finally {
             db.endTransaction();
         }
+    }
+
+
+    public static int getMaxOrderNumberOfEmployees(SQLiteDatabase db) {
+        if (db == null) {
+            return 0;
+        }
+        int maxOrderNumber = 0;
+        Cursor cursor = db.query(StopWatchContract.EmployeeEntry.TABLE_NAME,
+                new String[]{"MAX(" + StopWatchContract.EmployeeEntry.COLUMN_EMPLOYEE_ORDER_NUMBER + ")"},
+                null, null, null, null, null);
+        if (cursor.getCount() > 0) {
+            cursor.moveToFirst();
+            maxOrderNumber = cursor.getInt(0);
+        }
+        cursor.close();
+        return maxOrderNumber;
     }
 
     public static void insertFakeProcessData(SQLiteDatabase db) {
@@ -173,6 +191,7 @@ public class Utility {
 
         for (int i = 0; i < machineNamesArray.length; i ++) {
             ContentValues cv = new ContentValues();
+            cv.put(StopWatchContract.MachineEntry.COLUMN_MACHINE_ORDER_NUMBER, getMaxOrderNumberOfMachine(db) + 1);
             cv.put(StopWatchContract.MachineEntry.COLUMN_MACHINE_NAME, machineNamesArray[i]);
             cv.put(StopWatchContract.MachineEntry.COLUMN_PARENT_PROCESS_ID, 1);
             cv.put(StopWatchContract.MachineEntry.COLUMN_MACHINE_ENABLE, 1);
@@ -191,6 +210,22 @@ public class Utility {
         } finally {
             db.endTransaction();
         }
+    }
+
+    public static int getMaxOrderNumberOfMachine(SQLiteDatabase db) {
+        if (db == null) {
+            return 0;
+        }
+        int maxOrderNumber = 0;
+        Cursor cursor = db.query(StopWatchContract.MachineEntry.TABLE_NAME,
+                new String[]{"MAX(" + StopWatchContract.MachineEntry.COLUMN_MACHINE_ORDER_NUMBER + ")"},
+                null, null, null, null, null);
+        if (cursor.getCount() > 0) {
+            cursor.moveToFirst();
+            maxOrderNumber = cursor.getInt(0);
+        }
+        cursor.close();
+        return maxOrderNumber;
     }
 
     public static void insertFakePartsData(SQLiteDatabase db) {

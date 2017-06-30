@@ -16,7 +16,7 @@ public class StopWatchDbHelper extends SQLiteOpenHelper {
     private static final String DATABASE_NAME = "stopwatch.db";
 
     // If you change the database schema, you must increment the database version
-    private static final int DATABASE_VERSION = 48;
+    private static final int DATABASE_VERSION = 49;
 
     public StopWatchDbHelper(Context context) {
         super(context, DATABASE_NAME, null, DATABASE_VERSION);

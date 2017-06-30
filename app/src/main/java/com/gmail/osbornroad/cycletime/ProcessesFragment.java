@@ -212,12 +212,14 @@ public class ProcessesFragment extends Fragment
 
     @Override
     public void onListItemClick(Process process) {
-        if (mainActivity.longClickProcessSelected != null) {
-            return;
-        }
+//        if (mainActivity.longClickProcessSelected != null) {
+//            return;
+//        }
         mainActivity.selectedProcess = process;
         mainActivity.switchFragment(StopWatchFragment.class, getResources().getString(R.string.stopwatch_fragment_title));
     }
+
+
 
     @Override
     public void onListItemLongClick(Process process) {
@@ -233,7 +235,7 @@ public class ProcessesFragment extends Fragment
         return FRAGMENT_ID;
     }
 
-    protected Cursor getAllProcesses() {
+    Cursor getAllProcesses() {
         return mainActivity.mDb.query(
                 StopWatchContract.ProcessEntry.TABLE_NAME,
                 null,

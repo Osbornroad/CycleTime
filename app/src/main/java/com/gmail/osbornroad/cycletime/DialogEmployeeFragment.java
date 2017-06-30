@@ -25,7 +25,7 @@ public class DialogEmployeeFragment extends DialogFragment {
 
     private EditText employeeName;
     private android.support.v7.widget.SwitchCompat enable;
-    private Employee longClickEmployeeSelected;
+    private Employee employeeSelectedForEdit;
 
     public EditText getEmployeeName() {
         return employeeName;
@@ -36,8 +36,8 @@ public class DialogEmployeeFragment extends DialogFragment {
     }
 
     public interface DialogEmployeeListener {
-        public void onEmployeeDialogPositiveCheck(DialogFragment dialog, Employee employee);
-//        public void onEmployeeDialogNegativeCheck(DialogFragment dialog);
+        void onEmployeeDialogPositiveCheck(DialogFragment dialog, Employee employee);
+        void onEmployeeDialogNegativeCheck(DialogFragment dialog);
     }
 
     private DialogEmployeeListener mListener;
@@ -60,7 +60,7 @@ public class DialogEmployeeFragment extends DialogFragment {
         super.onCreate(savedInstanceState);
         Bundle bundle = this.getArguments();
         if (bundle != null) {
-            longClickEmployeeSelected = bundle.getParcelable("longClickEmployeeSelected");
+            employeeSelectedForEdit = bundle.getParcelable("employeeSelectedForEdit");
         }
     }
 
@@ -74,25 +74,26 @@ public class DialogEmployeeFragment extends DialogFragment {
 
         employeeName = (EditText) rootView.findViewById(R.id.edit_text_name_add_update);
         enable =(android.support.v7.widget.SwitchCompat) rootView.findViewById(R.id.switch_show_item);
+        employeeName.setHint(R.string.hint_add_employee);
 
-        if (longClickEmployeeSelected != null) {
-            employeeName.setText(longClickEmployeeSelected.getEmployeeName());
-            enable.setChecked(longClickEmployeeSelected.isEnable());
+        if (employeeSelectedForEdit != null) {
+            employeeName.setText(employeeSelectedForEdit.getEmployeeName());
+            enable.setChecked(employeeSelectedForEdit.isEnable());
         }
 
         builder.setView(rootView)
-                .setTitle(longClickEmployeeSelected == null ? R.string.add_employee : R.string.edit_employee)
+                .setTitle(employeeSelectedForEdit == null ? R.string.add_employee : R.string.edit_employee)
                 .setCancelable(false)
                 .setPositiveButton(R.string.dialog_button_ok, new DialogInterface.OnClickListener(){
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
-                        mListener.onEmployeeDialogPositiveCheck(DialogEmployeeFragment.this, longClickEmployeeSelected);
+                        mListener.onEmployeeDialogPositiveCheck(DialogEmployeeFragment.this, employeeSelectedForEdit);
                     }
                 })
                 .setNegativeButton(R.string.dialog_button_cancel, new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
-//                        mListener.onEmployeeDialogNegativeCheck(DialogEmployeeFragment.this);
+                        mListener.onEmployeeDialogNegativeCheck(DialogEmployeeFragment.this);
                     }
                 });
 
