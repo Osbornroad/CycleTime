@@ -22,7 +22,7 @@ import com.gmail.osbornroad.cycletime.model.Machine;
 public class DialogMachineFragment extends DialogFragment {
     private EditText machineName;
     private android.support.v7.widget.SwitchCompat enable;
-    private Machine longClickMachineSelected;
+    private Machine machineSelectedForEdit;
 
     public EditText getMachineName() {
         return machineName;
@@ -34,6 +34,7 @@ public class DialogMachineFragment extends DialogFragment {
 
     public interface DialogMachineListener {
         void onMachineDialogPositiveCheck(DialogFragment dialog, Machine machine);
+        void onMachineDialogNegativeCheck(DialogFragment dialog);
     }
 
     private DialogMachineListener mListener;
@@ -56,7 +57,7 @@ public class DialogMachineFragment extends DialogFragment {
         super.onCreate(savedInstanceState);
         Bundle bundle = this.getArguments();
         if (bundle != null) {
-            longClickMachineSelected = bundle.getParcelable("longClickMachineSelected");
+            machineSelectedForEdit = bundle.getParcelable("machineSelectedForEdit");
         }
     }
 
@@ -72,24 +73,25 @@ public class DialogMachineFragment extends DialogFragment {
         enable =(android.support.v7.widget.SwitchCompat) rootView.findViewById(R.id.switch_show_item);
         machineName.setHint(R.string.hint_add_machine);
 
-        if (longClickMachineSelected != null) {
-            machineName.setText((longClickMachineSelected.getMachineName()));
-            enable.setChecked(longClickMachineSelected.isEnable());
+        if (machineSelectedForEdit != null) {
+            machineName.setText((machineSelectedForEdit.getMachineName()));
+            enable.setChecked(machineSelectedForEdit.isEnable());
 
         }
 
         builder.setView(rootView)
-                .setTitle(longClickMachineSelected == null ? R.string.add_machine : R.string.edit_machine)
+                .setTitle(machineSelectedForEdit == null ? R.string.add_machine : R.string.edit_machine)
                 .setCancelable(false)
                 .setPositiveButton(R.string.dialog_button_ok, new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
-                        mListener.onMachineDialogPositiveCheck(DialogMachineFragment.this, longClickMachineSelected);
+                        mListener.onMachineDialogPositiveCheck(DialogMachineFragment.this, machineSelectedForEdit);
                     }
                 })
                 .setNegativeButton(R.string.dialog_button_cancel, new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
+                        mListener.onMachineDialogNegativeCheck(DialogMachineFragment.this);
                     }
                 });
         AlertDialog dialog = builder.create();

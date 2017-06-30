@@ -521,6 +521,7 @@ public class MainActivity extends AppCompatActivity
 
     @Override
     public void onMachineDialogPositiveCheck(DialogFragment dialog, Machine machine) {
+        int newOrderNumber = machine == null ? Utility.getMaxOrderNumberOfMachine(mDb) + 1 : machine.getOrderNumber();
         String newMachineName = ((DialogMachineFragment) dialog).getMachineName().getText().toString();
         boolean newMachineEnable = ((DialogMachineFragment) dialog).getEnable().isChecked();
         if ("".equals(newMachineName)) {
@@ -528,6 +529,7 @@ public class MainActivity extends AppCompatActivity
             return;
         }
         ContentValues cv = new ContentValues();
+        cv.put(StopWatchContract.MachineEntry.COLUMN_MACHINE_ORDER_NUMBER, newOrderNumber);
         cv.put(StopWatchContract.MachineEntry.COLUMN_MACHINE_NAME, newMachineName);
         cv.put(StopWatchContract.MachineEntry.COLUMN_MACHINE_ENABLE, newMachineEnable);
         cv.put(StopWatchContract.MachineEntry.COLUMN_PARENT_PROCESS_ID, 0);
@@ -542,10 +544,13 @@ public class MainActivity extends AppCompatActivity
     }
 
     @Override
-    public void onPartDialogPositiveCheck(DialogFragment dialog, Part part) {
-        int newOrderNumber = part == null ? Utility.getMaxOrderNumberOfPart(mDb) + 1 :
+    public void onMachineDialogNegativeCheck(DialogFragment dialog) {
+        ((NavigationFragment) fragment).updateView();
+    }
 
-                part.getOrderNumber();
+    @Override
+    public void onPartDialogPositiveCheck(DialogFragment dialog, Part part) {
+        int newOrderNumber = part == null ? Utility.getMaxOrderNumberOfPart(mDb) + 1 : part.getOrderNumber();
         String newPartName = ((DialogPartFragment) dialog).getPartName().getText().toString();
         boolean newPartEnable = ((DialogPartFragment) dialog).getEnable().isChecked();
         if ("".equals(newPartName)) {
