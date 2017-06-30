@@ -25,7 +25,9 @@ public class MachinesFragment extends Fragment
         implements MachineListAdapter.ListItemClickListener,
         MachineListAdapter.ListItemLongClickListener,
         NavigationFragment,
-        SavableToDatabase {
+        SavableToDatabase,
+        MachineListAdapter.LongItemClickAccessor,
+        View.OnClickListener{
 
     private static final int NUM_LIST_ITEMS = 100;
     private MachineListAdapter machineListAdapter;
@@ -65,7 +67,7 @@ public class MachinesFragment extends Fragment
         mainActivity = (MainActivity) getActivity();
 
         Cursor cursor = getAllMachines();
-        machineListAdapter = new MachineListAdapter(this, this, cursor, getResources());
+        machineListAdapter = new MachineListAdapter(this, this, cursor, getResources(), this);
         recyclerView.setAdapter(machineListAdapter);
 
         new ItemTouchHelper(new ItemTouchHelper.SimpleCallback(0, ItemTouchHelper.LEFT | ItemTouchHelper.RIGHT) {
@@ -144,5 +146,15 @@ public class MachinesFragment extends Fragment
     @Override
     public String getRowIdFromDatabase() {
         return StopWatchContract.MachineEntry._ID;
+    }
+
+    @Override
+    public void onClick(View v) {
+
+    }
+
+    @Override
+    public boolean isMachineSortedByName() {
+        return false;
     }
 }

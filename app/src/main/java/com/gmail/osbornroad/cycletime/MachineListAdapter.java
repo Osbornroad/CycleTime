@@ -23,12 +23,19 @@ public class MachineListAdapter extends RecyclerView.Adapter<MachineListAdapter.
     final private ListItemLongClickListener mOnLongClickListener;
     private Cursor mCursor;
     private Resources resources;
+    private LongItemClickAccessor longItemClickAccessor;
 
-    public MachineListAdapter(ListItemClickListener mOnClickListener, ListItemLongClickListener mOnLongClickListener, Cursor cursor, Resources resources) {
+    public MachineListAdapter(ListItemClickListener mOnClickListener, ListItemLongClickListener mOnLongClickListener,
+                              Cursor cursor, Resources resources, LongItemClickAccessor longItemClickAccessor) {
         this.mOnClickListener = mOnClickListener;
         this.mOnLongClickListener = mOnLongClickListener;
         this.mCursor = cursor;
         this.resources = resources;
+        this.longItemClickAccessor = longItemClickAccessor;
+    }
+
+    interface LongItemClickAccessor {
+        boolean isMachineSortedByName();
     }
 
     interface ListItemClickListener {
@@ -64,11 +71,12 @@ public class MachineListAdapter extends RecyclerView.Adapter<MachineListAdapter.
             return;
         }
         int id = mCursor.getInt(mCursor.getColumnIndex(MachineEntry._ID));
+        int orderNumber = mCursor.getInt(mCursor.getColumnIndex(MachineEntry.COLUMN_MACHINE_ORDER_NUMBER));
         String name = mCursor.getString(mCursor.getColumnIndex(MachineEntry.COLUMN_MACHINE_NAME));
         int parentProcessId = mCursor.getInt(mCursor.getColumnIndex(MachineEntry.COLUMN_PARENT_PROCESS_ID));
         boolean enable = mCursor.getInt(mCursor.getColumnIndex(MachineEntry.COLUMN_MACHINE_ENABLE)) == 1;
         holder.itemView.setTag(id);
-        holder.bind(id, name, parentProcessId, enable);    }
+        holder.bind(id, orderNumber, name, parentProcessId, enable);    }
 
     @Override
     public int getItemCount() {
@@ -79,11 +87,17 @@ public class MachineListAdapter extends RecyclerView.Adapter<MachineListAdapter.
 
         TextView listName;
         Machine machine;
+        ImageView reorder;
         ImageView visible;
+
+        public Machine getMachine() {
+            return machine;
+        }
 
         public MachineViewHolder(View itemView) {
             super(itemView);
             listName = (TextView) itemView.findViewById(R.id.tv_machine_name);
+            reorder = (ImageView) itemView.findViewById(R.id.element_reorder_machine);
             visible = (ImageView) itemView.findViewById(R.id.element_hidden_machine);
             itemView.setOnLongClickListener(this);
             itemView.setOnClickListener(this);
@@ -91,6 +105,9 @@ public class MachineListAdapter extends RecyclerView.Adapter<MachineListAdapter.
 
         @Override
         public boolean onLongClick(View v) {
+            if (longItemClickAccessor.isMachineSortedByName()) {
+                return false;
+            }
             mOnLongClickListener.onListItemLongClick(machine);
             v.setBackgroundColor(resources.getColor(R.color.colorPrimaryLight));
             return true;
@@ -101,9 +118,10 @@ public class MachineListAdapter extends RecyclerView.Adapter<MachineListAdapter.
             mOnClickListener.onListItemClick(machine);
         }
 
-        public void bind(int machineId, String machineName, int parentProcessId, boolean enable) {
-            machine = new Machine(machineId, machineName, parentProcessId, enable);
+        public void bind(int machineId, int orderNumber, String machineName, int parentProcessId, boolean enable) {
+            machine = new Machine(machineId, orderNumber, machineName, parentProcessId, enable);
             listName.setText(machineName);
+            reorder.setVisibility(longItemClickAccessor.isMachineSortedByName() ? View.INVISIBLE : View.VISIBLE);
             if (machine.isEnable()) {
                 visible.setVisibility(View.INVISIBLE);
                 listName.setTextColor(resources.getColor(R.color.colorPrimary));

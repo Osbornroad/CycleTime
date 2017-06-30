@@ -8,14 +8,16 @@ import android.os.Parcelable;
  */
 public class Machine implements Parcelable {
     private Integer id;
+    private Integer orderNumber;
     private final String machineName;
     private final Integer parentProcessId;
     private final boolean enable;
 
 
 
-    public Machine(Integer id, String machineName, Integer parentProcessId, boolean enable) {
+    public Machine(Integer id, Integer orderNumber,  String machineName, Integer parentProcessId, boolean enable) {
         this.id = id;
+        this.orderNumber = orderNumber;
         this.machineName = machineName;
         this.parentProcessId = parentProcessId;
         this.enable = enable;
@@ -31,6 +33,10 @@ public class Machine implements Parcelable {
 
     public void setId(Integer id) {
         this.id = id;
+    }
+
+    public Integer getOrderNumber() {
+        return orderNumber;
     }
 
     public String getMachineName() {
@@ -49,11 +55,13 @@ public class Machine implements Parcelable {
     public String toString() {
         return "Machine{" +
                 "id=" + id +
+                ", orderNumber=" + orderNumber +
                 ", machineName='" + machineName + '\'' +
                 ", parentProcessId=" + parentProcessId +
                 ", enable=" + enable +
                 '}';
     }
+
     /**
      * Parcelable part
      */
@@ -65,6 +73,7 @@ public class Machine implements Parcelable {
     @Override
     public void writeToParcel(Parcel dest, int flags) {
         dest.writeInt(id);
+        dest.writeInt(orderNumber);
         dest.writeString(machineName);
         dest.writeInt(parentProcessId);
         dest.writeInt(enable ? 1 : 0);
@@ -84,6 +93,7 @@ public class Machine implements Parcelable {
 
     protected Machine(Parcel in) {
         id = in.readInt();
+        orderNumber = in.readInt();
         machineName = in.readString();
         parentProcessId = in.readInt();
         enable = (in.readInt() == 1);

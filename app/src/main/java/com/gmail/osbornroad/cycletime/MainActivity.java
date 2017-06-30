@@ -538,6 +538,9 @@ public class MainActivity extends AppCompatActivity
 
     @Override
     public void onPartDialogPositiveCheck(DialogFragment dialog, Part part) {
+        int newOrderNumber = part == null ? Utility.getMaxOrderNumberOfPart(mDb) + 1 :
+
+                part.getOrderNumber();
         String newPartName = ((DialogPartFragment) dialog).getPartName().getText().toString();
         boolean newPartEnable = ((DialogPartFragment) dialog).getEnable().isChecked();
         if ("".equals(newPartName)) {
@@ -545,6 +548,7 @@ public class MainActivity extends AppCompatActivity
             return;
         }
         ContentValues cv = new ContentValues();
+        cv.put(StopWatchContract.PartsEntry.COLUMN_PARTS_ORDER_NUMBER, newOrderNumber);
         cv.put(StopWatchContract.PartsEntry.COLUMN_PARTS_NAME, newPartName);
         cv.put(StopWatchContract.PartsEntry.COLUMN_PARTS_ENABLE, newPartEnable);
         if (part == null) {
@@ -554,6 +558,11 @@ public class MainActivity extends AppCompatActivity
                     StopWatchContract.PartsEntry._ID + " = ?",
                     new String[]{String.valueOf(part.getId())});
         }
+        ((NavigationFragment) fragment).updateView();
+    }
+
+    @Override
+    public void onPartDialogNegativeCheck(DialogFragment dialog) {
         ((NavigationFragment) fragment).updateView();
     }
 

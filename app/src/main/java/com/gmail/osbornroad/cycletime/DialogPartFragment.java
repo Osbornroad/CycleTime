@@ -23,7 +23,7 @@ public class DialogPartFragment extends DialogFragment {
 
     private EditText partName;
     private android.support.v7.widget.SwitchCompat enable;
-    private Part longClickPartSelected;
+    private Part partSelectedForEdit;
 
     public EditText getPartName() {
         return partName;
@@ -35,6 +35,7 @@ public class DialogPartFragment extends DialogFragment {
 
     public interface DialogPartListener {
         void onPartDialogPositiveCheck(DialogFragment dialog, Part part);
+        void onPartDialogNegativeCheck(DialogFragment dialog);
     }
 
     private DialogPartListener mListener;
@@ -57,7 +58,7 @@ public class DialogPartFragment extends DialogFragment {
         super.onCreate(savedInstanceState);
         Bundle bundle = this.getArguments();
         if (bundle != null) {
-            longClickPartSelected = bundle.getParcelable("longClickPartSelected");
+            partSelectedForEdit = bundle.getParcelable("partSelectedForEdit");
         }
     }
     @NonNull
@@ -70,24 +71,26 @@ public class DialogPartFragment extends DialogFragment {
 
         partName = (EditText) rootView.findViewById(R.id.edit_text_name_add_update);
         enable =(android.support.v7.widget.SwitchCompat) rootView.findViewById(R.id.switch_show_item);
+        partName.setHint(R.string.hint_add_part);
 
-        if (longClickPartSelected != null) {
-            partName.setText(longClickPartSelected.getPartName());
-            enable.setChecked(longClickPartSelected.isEnable());
+        if (partSelectedForEdit != null) {
+            partName.setText(partSelectedForEdit.getPartName());
+            enable.setChecked(partSelectedForEdit.isEnable());
         }
 
         builder.setView(rootView)
-                .setTitle(longClickPartSelected == null ? R.string.add_part : R.string.edit_part)
+                .setTitle(partSelectedForEdit == null ? R.string.add_part : R.string.edit_part)
                 .setCancelable(false)
                 .setPositiveButton(R.string.dialog_button_ok, new DialogInterface.OnClickListener(){
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
-                        mListener.onPartDialogPositiveCheck(DialogPartFragment.this, longClickPartSelected);
+                        mListener.onPartDialogPositiveCheck(DialogPartFragment.this, partSelectedForEdit);
                     }
                 })
                 .setNegativeButton(R.string.dialog_button_cancel, new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
+                        mListener.onPartDialogNegativeCheck(DialogPartFragment.this);
                     }
                 });
 
@@ -97,8 +100,6 @@ public class DialogPartFragment extends DialogFragment {
         positiveButton.setTextColor(getResources().getColor(R.color.result_exists_data));
         Button negativeButton = dialog.getButton(DialogInterface.BUTTON_NEGATIVE);
         negativeButton.setTextColor(getResources().getColor(R.color.result_no_data));
-
-
         return dialog;
     }
 }

@@ -16,7 +16,7 @@ public class StopWatchDbHelper extends SQLiteOpenHelper {
     private static final String DATABASE_NAME = "stopwatch.db";
 
     // If you change the database schema, you must increment the database version
-    private static final int DATABASE_VERSION = 43;
+    private static final int DATABASE_VERSION = 48;
 
     public StopWatchDbHelper(Context context) {
         super(context, DATABASE_NAME, null, DATABASE_VERSION);
@@ -29,6 +29,7 @@ public class StopWatchDbHelper extends SQLiteOpenHelper {
         //create Employee table
         final String SQL_CREATE_EMPLOYEE_TABLE = "CREATE TABLE " + EmployeeEntry.TABLE_NAME + " (" +
                 EmployeeEntry._ID + " INTEGER PRIMARY KEY AUTOINCREMENT, " +
+                EmployeeEntry.COLUMN_EMPLOYEE_ORDER_NUMBER + " INTEGER NOT NULL, " +
                 EmployeeEntry.COLUMN_EMPLOYEE_NAME + " TEXT NOT NULL, " +
                 EmployeeEntry.COLUMN_EMPLOYEE_ENABLE + " INTEGER NOT NULL" +
                 "); ";
@@ -46,6 +47,7 @@ public class StopWatchDbHelper extends SQLiteOpenHelper {
         //Machine table
         final String SQL_CREATE_MACHINE_TABLE = "CREATE TABLE " + MachineEntry.TABLE_NAME + " (" +
                 MachineEntry._ID + " INTEGER PRIMARY KEY AUTOINCREMENT," +
+                MachineEntry.COLUMN_MACHINE_ORDER_NUMBER + " INTEGER NOT NULL, " +
                 MachineEntry.COLUMN_MACHINE_NAME + " TEXT NOT NULL, " +
                 MachineEntry.COLUMN_PARENT_PROCESS_ID + " INTEGER NOT NULL, " +
                 MachineEntry.COLUMN_MACHINE_ENABLE + " INTEGER NOT NULL" +
@@ -55,6 +57,7 @@ public class StopWatchDbHelper extends SQLiteOpenHelper {
         //Parts table
         final String SQL_CREATE_PARTS_TABLE = "CREATE TABLE " + PartsEntry.TABLE_NAME + " (" +
                 PartsEntry._ID + " INTEGER PRIMARY KEY AUTOINCREMENT," +
+                PartsEntry.COLUMN_PARTS_ORDER_NUMBER + " INTEGER NOT NULL, " +
                 PartsEntry.COLUMN_PARTS_NAME + " TEXT NOT NULL, " +
                 PartsEntry.COLUMN_PARTS_ENABLE + " INTEGER NOT NULL" +
                 "); ";

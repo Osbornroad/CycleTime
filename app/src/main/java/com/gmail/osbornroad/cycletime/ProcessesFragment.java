@@ -94,11 +94,6 @@ public class ProcessesFragment extends Fragment
         processListAdapter = new ProcessListAdapter(this, this, cursor, getResources(), this);
         recyclerView.setAdapter(processListAdapter);
 
-        /*sortedByName = false;
-
-        SharedPreferences sharedPreferences = mainActivity.getSharedPreferences(PROCESS_PREFERENCE, 0);
-        sortedByName = sharedPreferences.getBoolean("sortedByName", sortedByName);*/
-
         new ItemTouchHelper(new ItemTouchHelper.SimpleCallback(ItemTouchHelper.UP | ItemTouchHelper.DOWN, ItemTouchHelper.LEFT | ItemTouchHelper.RIGHT) {
             @Override
             public boolean onMove(RecyclerView recyclerView, RecyclerView.ViewHolder viewHolder, RecyclerView.ViewHolder target) {
@@ -274,7 +269,7 @@ public class ProcessesFragment extends Fragment
     @Override
     public void onClick(View v) {
         DialogProcessFragment dialogProcessFragment = new DialogProcessFragment();
-        dialogProcessFragment.show(mainActivity.getSupportFragmentManager(), "dialogEmployeeFragment");
+        dialogProcessFragment.show(mainActivity.getSupportFragmentManager(), "dialogProcessFragment");
     }
 
     @Override

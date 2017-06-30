@@ -24,12 +24,19 @@ public class PartListAdapter extends RecyclerView.Adapter<PartListAdapter.PartVi
     final private ListItemLongClickListener mOnLongClickListener;
     private Cursor mCursor;
     private Resources resources;
+    private LongItemClickAccessor longItemClickAccessor;
 
-    public PartListAdapter(ListItemClickListener mOnClickListener, ListItemLongClickListener mOnLongClickListener, Cursor cursor, Resources resources) {
+    public PartListAdapter(ListItemClickListener mOnClickListener, ListItemLongClickListener mOnLongClickListener,
+                           Cursor cursor, Resources resources, LongItemClickAccessor longItemClickAccessor) {
         this.mOnClickListener = mOnClickListener;
         this.mOnLongClickListener = mOnLongClickListener;
         this.mCursor = cursor;
         this.resources = resources;
+        this.longItemClickAccessor = longItemClickAccessor;
+    }
+
+    interface LongItemClickAccessor {
+        boolean isPartSortedByName();
     }
 
     interface ListItemClickListener {
@@ -65,10 +72,11 @@ public class PartListAdapter extends RecyclerView.Adapter<PartListAdapter.PartVi
             return;
         }
         int id = mCursor.getInt(mCursor.getColumnIndex(PartsEntry._ID));
+        int orderNumber = mCursor.getInt(mCursor.getColumnIndex(PartsEntry.COLUMN_PARTS_ORDER_NUMBER));
         String name = mCursor.getString(mCursor.getColumnIndex(PartsEntry.COLUMN_PARTS_NAME));
         boolean enable = mCursor.getInt(mCursor.getColumnIndex(PartsEntry.COLUMN_PARTS_ENABLE)) == 1;
         holder.itemView.setTag(id);
-        holder.bind(id, name, enable);    }
+        holder.bind(id, orderNumber, name, enable);    }
 
     @Override
     public int getItemCount() {
@@ -79,11 +87,17 @@ public class PartListAdapter extends RecyclerView.Adapter<PartListAdapter.PartVi
 
         TextView listName;
         Part part;
+        ImageView reorder;
         ImageView visible;
+
+        public Part getPart() {
+            return part;
+        }
 
         public PartViewHolder(View itemView) {
             super(itemView);
             listName = (TextView) itemView.findViewById(R.id.tv_part_name);
+            reorder = (ImageView) itemView.findViewById(R.id.element_reorder_part);
             visible = (ImageView) itemView.findViewById(R.id.element_hidden_part);
             itemView.setOnClickListener(this);
             itemView.setOnLongClickListener(this);
@@ -91,6 +105,9 @@ public class PartListAdapter extends RecyclerView.Adapter<PartListAdapter.PartVi
 
         @Override
         public boolean onLongClick(View v) {
+            if (longItemClickAccessor.isPartSortedByName()) {
+                return false;
+            }
             mOnLongClickListener.onListItemLongClick(part);
             v.setBackgroundColor(resources.getColor(R.color.colorPrimaryLight));
             return true;
@@ -101,9 +118,10 @@ public class PartListAdapter extends RecyclerView.Adapter<PartListAdapter.PartVi
             mOnClickListener.onListItemClick(part);
         }
 
-        public void bind(int partId, String partName, boolean partEnable) {
-            part = new Part(partId, partName, partEnable);
+        public void bind(int partId, int orderNumber, String partName, boolean partEnable) {
+            part = new Part(partId, orderNumber, partName, partEnable);
             listName.setText(partName);
+            reorder.setVisibility(longItemClickAccessor.isPartSortedByName() ? View.INVISIBLE : View.VISIBLE);
             if (part.isEnable()) {
                 visible.setVisibility(View.INVISIBLE);
                 listName.setTextColor(resources.getColor(R.color.colorPrimary));

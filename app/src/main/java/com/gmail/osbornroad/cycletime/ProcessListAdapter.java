@@ -118,7 +118,6 @@ public class ProcessListAdapter extends RecyclerView.Adapter<ProcessListAdapter.
             mOnClickListener.onListItemClick(process);
         }
 
-
         public void bind(int processId, int orderNumber, String processName, boolean processEnable) {
             process = new Process(processId, orderNumber, processName, processEnable);
             listName.setText(processName/* + " order: " + orderNumber*/);

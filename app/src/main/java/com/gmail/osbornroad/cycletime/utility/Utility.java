@@ -252,6 +252,7 @@ public class Utility {
 
         for(int i = 0; i < partNameArray.length; i ++) {
             ContentValues cv = new ContentValues();
+            cv.put(StopWatchContract.PartsEntry.COLUMN_PARTS_ORDER_NUMBER, getMaxOrderNumberOfPart(db) + 1);
             cv.put(StopWatchContract.PartsEntry.COLUMN_PARTS_NAME, partNameArray[i]);
             cv.put(StopWatchContract.PartsEntry.COLUMN_PARTS_ENABLE, 1);
             partsList.add(cv);
@@ -269,5 +270,21 @@ public class Utility {
         } finally {
             db.endTransaction();
         }
+    }
+
+    public static int getMaxOrderNumberOfPart(SQLiteDatabase db) {
+        if (db == null) {
+            return 0;
+        }
+        int maxOrderNumber = 0;
+        Cursor cursor = db.query(StopWatchContract.PartsEntry.TABLE_NAME,
+                new String[]{"MAX(" + StopWatchContract.PartsEntry.COLUMN_PARTS_ORDER_NUMBER + ")"},
+                null, null, null, null, null);
+        if (cursor.getCount() > 0) {
+            cursor.moveToFirst();
+            maxOrderNumber = cursor.getInt(0);
+        }
+        cursor.close();
+        return maxOrderNumber;
     }
 }

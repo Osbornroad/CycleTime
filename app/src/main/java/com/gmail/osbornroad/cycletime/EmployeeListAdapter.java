@@ -23,17 +23,21 @@ public class EmployeeListAdapter extends RecyclerView.Adapter<EmployeeListAdapte
     final private ListItemLongClickListener mOnLongClickListener;
     private Cursor mCursor;
     private Resources resources;
+    private LongItemClickAccessor longItemClickAccessor;
 
-    public EmployeeListAdapter(ListItemClickListener mOnClickListener, ListItemLongClickListener mOnLongClickListener, Cursor cursor, Resources resources) {
+    public EmployeeListAdapter(ListItemClickListener mOnClickListener, ListItemLongClickListener mOnLongClickListener,
+                               Cursor cursor, Resources resources, LongItemClickAccessor longItemClickAccessor) {
         this.mOnClickListener = mOnClickListener;
         this.mOnLongClickListener = mOnLongClickListener;
         this.mCursor = cursor;
         this.resources = resources;
+        this.longItemClickAccessor = longItemClickAccessor;
     }
 
-    /**
-     * Interface ListItemClickListener for clickable of list items
-     */
+    interface LongItemClickAccessor {
+        boolean isEmployeeSortedByName();
+    }
+
     interface ListItemClickListener {
         void onListItemClick(Employee employee);
     }
@@ -67,10 +71,11 @@ public class EmployeeListAdapter extends RecyclerView.Adapter<EmployeeListAdapte
             return;
         }
         int id = mCursor.getInt(mCursor.getColumnIndex(EmployeeEntry._ID));
+        int orderNumber = mCursor.getInt(mCursor.getColumnIndex(EmployeeEntry.COLUMN_EMPLOYEE_ORDER_NUMBER));
         String name = mCursor.getString(mCursor.getColumnIndex(EmployeeEntry.COLUMN_EMPLOYEE_NAME));
         boolean enable = mCursor.getInt(mCursor.getColumnIndex(EmployeeEntry.COLUMN_EMPLOYEE_ENABLE)) == 1;
         holder.itemView.setTag(id);
-        holder.bind(id, name, enable);
+        holder.bind(id, orderNumber, name, enable);
     }
 
     @Override
@@ -84,11 +89,17 @@ public class EmployeeListAdapter extends RecyclerView.Adapter<EmployeeListAdapte
 
         TextView listName;
         Employee employee;
+        ImageView reorder;
         ImageView visible;
+
+        public Employee getEmployee() {
+            return employee;
+        }
 
         public EmployeeViewHolder(View itemView) {
             super(itemView);
             listName = (TextView) itemView.findViewById(R.id.tv_employee_name);
+            reorder = (ImageView) itemView.findViewById(R.id.element_reorder_employee);
             visible = (ImageView) itemView.findViewById(R.id.element_hidden_employee);
             itemView.setOnClickListener(this);
             itemView.setOnLongClickListener(this);
@@ -96,6 +107,9 @@ public class EmployeeListAdapter extends RecyclerView.Adapter<EmployeeListAdapte
 
         @Override
         public boolean onLongClick(View v) {
+            if (longItemClickAccessor.isEmployeeSortedByName()) {
+                return false;
+            }
             mOnLongClickListener.onListItemLongClick(employee);
             v.setBackgroundColor(resources.getColor(R.color.colorPrimaryLight));
             return true;
@@ -106,10 +120,10 @@ public class EmployeeListAdapter extends RecyclerView.Adapter<EmployeeListAdapte
             mOnClickListener.onListItemClick(employee);
         }
 
-        public void bind(int employeeId, String employeeName, boolean employeeEnable) {
-            employee = new Employee(employeeId, employeeName, employeeEnable);
+        public void bind(int employeeId, int orderNumber, String employeeName, boolean employeeEnable) {
+            employee = new Employee(employeeId, orderNumber, employeeName, employeeEnable);
             listName.setText(employeeName);
-//            visible.setVisibility(employee.isEnable() ? View.INVISIBLE : View.VISIBLE);
+            reorder.setVisibility(longItemClickAccessor.isEmployeeSortedByName() ? View.INVISIBLE : View.VISIBLE);
             if (employee.isEnable()) {
                 visible.setVisibility(View.INVISIBLE);
                 listName.setTextColor(resources.getColor(R.color.colorPrimary));
@@ -118,7 +132,5 @@ public class EmployeeListAdapter extends RecyclerView.Adapter<EmployeeListAdapte
                 listName.setTextColor(resources.getColor(android.R.color.darker_gray));
             }
         }
-
-
     }
 }

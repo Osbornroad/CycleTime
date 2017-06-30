@@ -48,6 +48,7 @@ public class Part implements Parcelable {
     public String toString() {
         return "Part{" +
                 "id=" + id +
+                ", orderNumber=" + orderNumber +
                 ", partName='" + partName + '\'' +
                 ", enable=" + enable +
                 '}';

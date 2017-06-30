@@ -10,19 +10,13 @@ import android.os.Parcelable;
 @SuppressWarnings("serial") //With this annotation we are going to hide compiler warnings
 public class Employee implements Parcelable {
     private Integer id;
+    private Integer orderNumber;
     private final String employeeName;
     private final boolean enable;
 
-    public Employee(String employeeName) {
-        this(null, employeeName, true);
-    }
-
-    public Employee(String employeeName, boolean enable) {
-        this(null, employeeName, enable);
-    }
-
-    public Employee(Integer id, String employeeName, boolean enable) {
+    public Employee(Integer id, Integer orderNumber, String employeeName, boolean enable) {
         this.id = id;
+        this.orderNumber = orderNumber;
         this.employeeName = employeeName;
         this.enable = enable;
     }
@@ -41,6 +35,10 @@ public class Employee implements Parcelable {
         this.id = id;
     }
 
+    public Integer getOrderNumber() {
+        return orderNumber;
+    }
+
     public String getEmployeeName() {
         return employeeName;
     }
@@ -53,10 +51,12 @@ public class Employee implements Parcelable {
     public String toString() {
         return "Employee{" +
                 "id=" + id +
+                ", orderNumber=" + orderNumber +
                 ", employeeName='" + employeeName + '\'' +
                 ", enable=" + enable +
                 '}';
     }
+
     /**
      * Parcelable part
      */
@@ -69,6 +69,7 @@ public class Employee implements Parcelable {
     @Override
     public void writeToParcel(Parcel dest, int flags) {
         dest.writeInt(id);
+        dest.writeInt(orderNumber);
         dest.writeString(employeeName);
         dest.writeInt(enable ? 1 : 0);
     }
@@ -88,6 +89,7 @@ public class Employee implements Parcelable {
 
     public Employee(Parcel source) {
         id = source.readInt();
+        orderNumber = source.readInt();
         employeeName = source.readString();
         enable = (source.readInt() == 1);
     }

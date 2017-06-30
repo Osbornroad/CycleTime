@@ -20,7 +20,9 @@ public class EmployeesFragment extends Fragment
         implements EmployeeListAdapter.ListItemClickListener,
         EmployeeListAdapter.ListItemLongClickListener,
         NavigationFragment,
-        SavableToDatabase {
+        SavableToDatabase,
+        EmployeeListAdapter.LongItemClickAccessor,
+        View.OnClickListener{
 
     private static final int NUM_LIST_ITEMS = 100;
     protected EmployeeListAdapter employeeListAdapter;
@@ -60,7 +62,7 @@ public class EmployeesFragment extends Fragment
         mainActivity = (MainActivity) getActivity();
 
         Cursor cursor = getAllEmployees();
-        employeeListAdapter = new EmployeeListAdapter(this, this, cursor, getResources());
+        employeeListAdapter = new EmployeeListAdapter(this, this, cursor, getResources(), this);
         recyclerView.setAdapter(employeeListAdapter);
 
         new ItemTouchHelper(new ItemTouchHelper.SimpleCallback(0, ItemTouchHelper.LEFT | ItemTouchHelper.RIGHT) {
@@ -139,5 +141,15 @@ public class EmployeesFragment extends Fragment
     @Override
     public String getRowIdFromDatabase() {
         return StopWatchContract.EmployeeEntry._ID;
+    }
+
+    @Override
+    public void onClick(View v) {
+
+    }
+
+    @Override
+    public boolean isEmployeeSortedByName() {
+        return false;
     }
 }
