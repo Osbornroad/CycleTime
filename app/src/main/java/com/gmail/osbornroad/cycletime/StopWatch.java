@@ -18,6 +18,13 @@ public class StopWatch {
     private StopWatch() {
     }
 
+    public void resetStopWatch() {
+        mStartTime = 0;
+        mStopTime = 0;
+        mTotalPaused = 0;
+        mRunning = false;
+    }
+
     public static StopWatch getStopWatch() {
         if (stopWatch == null) {
             stopWatch = new StopWatch();

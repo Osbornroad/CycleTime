@@ -128,6 +128,16 @@ public class MainActivity extends AppCompatActivity
         mDb = helper.getWritableDatabase();
     }
 
+    @Override
+    protected void onPause() {
+        super.onPause();
+    }
+
+    @Override
+    protected void onStop() {
+        super.onStop();
+    }
+
     /**
      * Switch hamburger to back button and revert back
      */
@@ -279,6 +289,7 @@ public class MainActivity extends AppCompatActivity
             super.onBackPressed();
         }
         if (fragMan.getBackStackEntryCount() == 0) {
+            stopWatch.resetStopWatch();
             finish();
             return;
         }
@@ -309,6 +320,10 @@ public class MainActivity extends AppCompatActivity
         MenuItem item = menu.getItem(((NavigationFragment) fragment).getMenuId());
         item.setChecked(true);
         showAll = false;
+
+        if (fragment.getClass() == StopWatchFragment.class) {
+            stopWatch.resetStopWatch();
+        }
     }
 
     @Override
