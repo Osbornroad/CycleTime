@@ -1,12 +1,18 @@
 package com.gmail.osbornroad.cycletime.utility;
 
 import android.content.ContentValues;
+import android.content.Context;
 import android.database.Cursor;
 import android.database.SQLException;
 import android.database.sqlite.SQLiteDatabase;
+import android.os.Environment;
+import android.util.Log;
 
 import com.gmail.osbornroad.cycletime.dao.StopWatchContract;
+import com.gmail.osbornroad.cycletime.dao.StopWatchDbHelper;
 
+import java.io.File;
+import java.io.FileWriter;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -321,5 +327,42 @@ public class Utility {
         }
         cursor.close();
         return maxOrderNumber;
+    }
+
+    public static final String FILE_NAME = "export.csv";
+
+    public static void exportDB(StopWatchDbHelper stopWatchDbHelper, Context context) {
+
+        File dbFile = context.getDatabasePath(stopWatchDbHelper.getDatabaseName());
+        File exportDir = new File(Environment.getExternalStorageDirectory(), "");
+        if (!exportDir.exists()) {
+            exportDir.mkdirs();
+        }
+
+        File file = new File(exportDir, FILE_NAME);
+        try {
+            file.createNewFile();
+            CSVWriter csvWrite = new CSVWriter(new FileWriter(file));
+            SQLiteDatabase db = stopWatchDbHelper.getReadableDatabase();
+            Cursor curCSV = db.rawQuery("SELECT sample_table._id, quantity, startDateTime, duration," +
+                            "    employee_table.employeeName, process_table.processName, machine_table.machineName, parts_table.partsName\n" +
+                            "    FROM sample_table" +
+                            "    LEFT JOIN employee_table ON sample_table.employeeId = employee_table._id" +
+                            "    LEFT JOIN process_table ON sample_table.processId = process_table._id" +
+                            "    LEFT JOIN machine_table ON sample_table.machineId = machine_table._id" +
+                            "    LEFT JOIN parts_table ON sample_table.partId = parts_table._id" +
+                            "    ORDER BY process_table.processName, machine_table.machineName, parts_table.partsName",
+                    null);
+            csvWrite.writeNext(curCSV.getColumnNames());
+            while (curCSV.moveToNext()) {
+                //Which column you want to exprort
+                String arrStr[] = {curCSV.getString(0), curCSV.getString(1), curCSV.getString(2)};
+                csvWrite.writeNext(arrStr);
+            }
+            csvWrite.close();
+            curCSV.close();
+        } catch (Exception sqlEx) {
+            Log.e("MainActivity", sqlEx.getMessage(), sqlEx);
+        }
     }
 }

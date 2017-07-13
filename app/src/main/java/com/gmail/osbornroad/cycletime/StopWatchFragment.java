@@ -180,6 +180,7 @@ public class StopWatchFragment extends Fragment implements NavigationFragment {
             public void onClick(View v) {
                 if (!mainActivity.mStarted) {
                     mainActivity.mInProgress = false;
+                    stopWatch.resetStopWatch();
                     timeRunningView.setText("00:00:00");
                     startButton.setText(R.string.button_start);
                     startButton.setBackgroundResource(R.drawable.start_button_selector_title_start);

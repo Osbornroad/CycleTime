@@ -22,6 +22,11 @@ public class StopWatchDbHelper extends SQLiteOpenHelper {
         super(context, DATABASE_NAME, null, DATABASE_VERSION);
     }
 
+
+    public String getDatabaseName() {
+        return DATABASE_NAME;
+    }
+
     @Override
     public void onCreate(SQLiteDatabase db) {
         db.execSQL("PRAGMA foreign_keys=on");

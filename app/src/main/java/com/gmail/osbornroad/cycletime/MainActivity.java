@@ -4,7 +4,9 @@ import android.content.ContentValues;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.database.sqlite.SQLiteDatabase;
+import android.net.Uri;
 import android.os.Bundle;
+import android.os.Environment;
 import android.support.design.widget.NavigationView;
 import android.support.v4.app.DialogFragment;
 import android.support.v4.app.Fragment;
@@ -31,9 +33,8 @@ import com.gmail.osbornroad.cycletime.model.Part;
 import com.gmail.osbornroad.cycletime.model.Process;
 import com.gmail.osbornroad.cycletime.utility.Utility;
 
-//import com.gmail.osbornroad.cycletime.service.MachineService;
-//import com.gmail.osbornroad.cycletime.service.PartService;
-//import com.gmail.osbornroad.cycletime.service.ProcessService;
+import java.io.File;
+
 
 public class MainActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener,
@@ -73,6 +74,7 @@ public class MainActivity extends AppCompatActivity
     private StopWatch stopWatch;
 
     protected SQLiteDatabase mDb;
+    StopWatchDbHelper helper;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -124,7 +126,7 @@ public class MainActivity extends AppCompatActivity
 
         setSavedFragment(savedInstanceState);
         setSavedInfo(savedInstanceState);
-        StopWatchDbHelper helper = new StopWatchDbHelper(this);
+        helper = new StopWatchDbHelper(this);
         mDb = helper.getWritableDatabase();
     }
 
@@ -340,6 +342,8 @@ public class MainActivity extends AppCompatActivity
 //        menu.findItem(R.id.main_action_machine_plus).setVisible(fragment.getClass() == MachinesFragment.class);
 //        menu.findItem(R.id.main_action_part_plus).setVisible(fragment.getClass() == PartsFragment.class);
 
+        menu.findItem(R.id.send_file).setVisible(fragment.getClass() == SampleFragment.class);
+
         menu.findItem(R.id.main_action_show_all)
                 .setIcon(!showAll ? R.drawable.ic_visibility_white_24dp : R.drawable.ic_visibility_off_white_24dp)
                 .setVisible((fragment.getClass() != StopWatchFragment.class) && (fragment.getClass() != SampleFragment.class));
@@ -364,6 +368,25 @@ public class MainActivity extends AppCompatActivity
             DialogEmployeeFragment dialogEmployeeFragment = new DialogEmployeeFragment();
             dialogEmployeeFragment.show(fragMan, "dialogEmployeeFragment");
         }*/
+        if (id == R.id.send_file) {
+            Utility.exportDB(helper, getApplicationContext());
+
+            File fileLocation = new File(Environment.getExternalStorageDirectory().getAbsolutePath(), Utility.FILE_NAME);
+            Uri path = Uri.fromFile(fileLocation);
+
+            Intent emailIntent = new Intent(Intent.ACTION_SEND);
+            emailIntent.setData(Uri.parse("mailto:"));
+            emailIntent.putExtra(Intent.EXTRA_EMAIL, Utility.getMailAddresses());
+            emailIntent.putExtra(Intent.EXTRA_SUBJECT, "Collect table");
+            emailIntent.putExtra(Intent.EXTRA_STREAM, path);
+            emailIntent.setType("message/rfc822");
+            if (emailIntent.resolveActivity(getPackageManager()) != null) {
+                startActivity(Intent.createChooser(emailIntent, "Send email..."));
+            }
+            else {
+                Toast.makeText(this, R.string.no_email_app, Toast.LENGTH_SHORT).show();
+            }
+        }
         if (id == R.id.main_action_sort) {
             ((NavigationFragment) fragment).setSortingType();
             invalidateOptionsMenu();
