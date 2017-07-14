@@ -47,6 +47,8 @@ public class ResultMeasurementActivity extends AppCompatActivity {
     private TextView resultStopWatchDisplay;
     private TextView cycleTimeDisplay;
 
+    private String[] emailAdresses;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -60,12 +62,21 @@ public class ResultMeasurementActivity extends AppCompatActivity {
 
         StopWatchDbHelper helper = new StopWatchDbHelper(this);
         mDb = helper.getWritableDatabase();
+
     }
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.menu_result, menu);
         return super.onCreateOptionsMenu(menu);
+    }
+
+    @Override
+    public boolean onPrepareOptionsMenu(Menu menu) {
+        menu.findItem(R.id.action_mail);
+        menu.findItem(R.id.action_save);
+        menu.findItem(R.id.result_action_setting);
+        return super.onPrepareOptionsMenu(menu);
     }
 
     @Override
@@ -77,10 +88,13 @@ public class ResultMeasurementActivity extends AppCompatActivity {
                 if(getSupportFragmentManager().getBackStackEntryCount()>0)
                     getSupportFragmentManager().popBackStack();
                 return true;
+            case R.id.action_settings:
+                Intent intent = new Intent(this, SettingActivity.class);
+                startActivity(intent);
             case R.id.action_mail:
                 Intent emailIntent = new Intent(Intent.ACTION_SEND);
                 emailIntent.setData(Uri.parse("mailto:"));
-                emailIntent.putExtra(Intent.EXTRA_EMAIL, Utility.getMailAddresses());
+                emailIntent.putExtra(Intent.EXTRA_EMAIL, Utility.getMailAddresses(getApplicationContext()));
                 emailIntent.putExtra(Intent.EXTRA_SUBJECT, "Cycletime result for " + processNameDisplay.getText() + " " + partNameDisplay.getText());
                 emailIntent.putExtra(Intent.EXTRA_TEXT,
                         getResources().getString(R.string.cycle_time_result) + " " + "\t" + cycleTimeDisplay.getText() + "\n" +

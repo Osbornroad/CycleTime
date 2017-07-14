@@ -100,4 +100,6 @@
     <string name="sample_fragment_title">Trials</string>
     <string name="sort">Sort</string>
     <string name="hint_add_part">Please add part</string>
+    <string name="e_mail_addresses">E-MAIL</string>
+    <string name="hint_input_email">Please input e-mails devided by \";\"</string>
 </resources>

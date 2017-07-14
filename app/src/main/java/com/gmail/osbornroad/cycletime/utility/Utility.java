@@ -2,6 +2,7 @@ package com.gmail.osbornroad.cycletime.utility;
 
 import android.content.ContentValues;
 import android.content.Context;
+import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.database.SQLException;
 import android.database.sqlite.SQLiteDatabase;
@@ -16,15 +17,21 @@ import java.io.FileWriter;
 import java.util.ArrayList;
 import java.util.List;
 
+import static com.gmail.osbornroad.cycletime.SettingActivity.SETTING_EMAIL_PREFERENCE;
+
 /**
  * Created by User on 28.04.2017.
  */
 
 public class Utility {
 
-    private static final String[] MAIL_ADDRESSES = {"artem.gapenkov@sanoh-rus.com"};
-    public static String[] getMailAddresses() {
-        return MAIL_ADDRESSES;
+    private static final String[] MAIL_ADDRESSES = {/*"artem.gapenkov@sanoh-rus.com", */"maksim.tkachenko@sanoh-rus.com"};
+    public static String[] getMailAddresses(Context context) {
+        SharedPreferences sharedPreferences = context.getSharedPreferences(SETTING_EMAIL_PREFERENCE, 0);
+        String savedAddresses = sharedPreferences.getString("settingEmailPreference", "");
+        String[] addresses = savedAddresses.split(";");
+
+        return addresses;
     }
 
     public static void insertFakeEmployeeData(SQLiteDatabase db) {
@@ -331,15 +338,17 @@ public class Utility {
 
     public static final String FILE_NAME = "export.csv";
 
+    public static final File EXPORT_DIR = new File(Environment.getExternalStorageDirectory(), "Cycletime");
+
     public static void exportDB(StopWatchDbHelper stopWatchDbHelper, Context context) {
 
         File dbFile = context.getDatabasePath(stopWatchDbHelper.getDatabaseName());
-        File exportDir = new File(Environment.getExternalStorageDirectory(), "");
-        if (!exportDir.exists()) {
-            exportDir.mkdirs();
+//        File EXPORT_DIR = new File(Environment.getExternalStorageDirectory(), "Cycletime");
+        if (!EXPORT_DIR.exists()) {
+            EXPORT_DIR.mkdirs();
         }
 
-        File file = new File(exportDir, FILE_NAME);
+        File file = new File(EXPORT_DIR, FILE_NAME);
         try {
             file.createNewFile();
             CSVWriter csvWrite = new CSVWriter(new FileWriter(file));
@@ -356,7 +365,8 @@ public class Utility {
             csvWrite.writeNext(curCSV.getColumnNames());
             while (curCSV.moveToNext()) {
                 //Which column you want to exprort
-                String arrStr[] = {curCSV.getString(0), curCSV.getString(1), curCSV.getString(2)};
+                String arrStr[] = {curCSV.getString(0), curCSV.getString(1), curCSV.getString(2),
+                        curCSV.getString(3), curCSV.getString(4), curCSV.getString(5), curCSV.getString(6), curCSV.getString(7)};
                 csvWrite.writeNext(arrStr);
             }
             csvWrite.close();

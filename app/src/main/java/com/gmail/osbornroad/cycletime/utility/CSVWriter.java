@@ -30,7 +30,8 @@ public class CSVWriter {
      * The default quote character to use if none is supplied to the
      * constructor.
      */
-    public static final char DEFAULT_QUOTE_CHARACTER = '"';
+//    public static final char DEFAULT_QUOTE_CHARACTER = '"';
+    public static final char DEFAULT_QUOTE_CHARACTER = '\u0000';
 
     /** The quote constant to use when you wish to suppress all quoting. */
     public static final char NO_QUOTE_CHARACTER = '\u0000';

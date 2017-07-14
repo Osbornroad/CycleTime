@@ -25,4 +25,10 @@
         app:showAsAction="ifRoom"
         android:orderInCategory="400"
         android:icon="@drawable/sent_white"/>
+
+    <item
+        android:id="@+id/main_action_setting"
+        android:title="@string/action_settings"
+        app:showAsAction="never"
+        android:orderInCategory="500"/>
 </menu>
